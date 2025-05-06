@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Usuarios</title>
+    <link rel="stylesheet" href="/public/css/usuarios.css">
+    <%- include('../commons/head') %>
+</head>
+<body>
+    <div class="d-flex">
+        <div class="contenedor-barra-lateral">
+            
+        </div>
+
+        <div class="contenedor-listado-usuarios flex-fill">
+            <div class="contenedor mt-5 container-listado-usuarios container">
+                <h1 class="text-center my-4">Listado de Usuarios</h1>
+
+                <!-- Botones de filtro -->
+                <div class="text-center mb-4">
+                    <button class="filtro-btn btn-sombreado seleccionado" data-categoria="todos">Todos</button>
+                    <button class="filtro-btn btn-sombreado" data-categoria="Administradores">Administradores</button>
+                    <button class="filtro-btn btn-sombreado" data-categoria="Médicos">Médicos</button>
+                    <button class="filtro-btn btn-sombreado" data-categoria="Secretarias">Secretarias</button>
+
+                </div>
+
+                <div class="contenedor-usuarios">
+                    <table class="tabla-listado-usuarios">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Categoría</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-usuarios">
+                            <% usuarios.forEach(function(user) { %>
+                                <tr class="usuario-fila" data-categoria="<%= user.categoria %>">
+                                    <td><%= user.id %></td>
+                                    <td><%= user.nombre %></td>
+                                    <td><%= user.email %></td>
+                                    <td>
+                                        <%= user.categoria %>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-editar" href="/usuario/editar/<%= user.id %>">Editar</a>
+                                        <button class="btn btn-eliminar borrarUsuario" data-id="<%= user.id %>">Eliminar</button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                        
+                    </table>
+                </div>
+
+                <a href="/usuario/agregar/0" class="btn">Crear Usuario</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Funcionalidad para eliminar usuarios
+        document.querySelectorAll('.borrarUsuario').forEach(button => {
+            button.addEventListener('click', async () => {
+                const userId = button.getAttribute('data-id');
+                if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+                    const response = await fetch(`/usuario/eliminar/${userId}`, {
+                        method: 'DELETE'
+                    });
+                    location.reload();
+                }
+            });
+        });
+
+        // Funcionalidad de filtrado de usuarios
+        /*document.querySelectorAll('.filtro-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const categoriaSeleccionada = button.getAttribute('data-categoria');
+                const filasUsuarios = document.querySelectorAll('.usuario-fila');
+                
+                // Filtrar las filas según la categoría seleccionada
+                filasUsuarios.forEach(fila => {
+                    const categoriaFila = fila.getAttribute('data-categoria');
+                    if (categoriaSeleccionada === "todos" || categoriaFila === categoriaSeleccionada) {
+                        fila.style.display = ""; // Mostrar fila
+                    } else {
+                        fila.style.display = "none"; // Ocultar fila
+                    }
+                });
+                
+                // Remover la clase 'seleccionado' de todos los botones
+                document.querySelectorAll('.filtro-btn').forEach(btn => {
+                    btn.classList.remove('seleccionado');
+                });
+                
+                // Agregar la clase 'seleccionado' al botón clicado
+                button.classList.add('seleccionado');
+            });
+        }); */
+
+        
+    </script>
+</body>
+</html>

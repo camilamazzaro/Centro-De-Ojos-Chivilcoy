@@ -5,7 +5,7 @@ const port = 3000;
 
 
 // Rutas y middleware de la aplicación
-
+const rutasUsuarios = require('./routes/usuariosRoute.js');
 
 // Middleware
 app.use(express.json());
@@ -15,6 +15,8 @@ app.use('/public', express.static('public'));
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
+
+app.use('/', rutasUsuarios);
 
 //muestra el puerto que escucha el server
 app.listen(port, () => { 
