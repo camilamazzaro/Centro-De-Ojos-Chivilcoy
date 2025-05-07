@@ -114,12 +114,12 @@ class usuariosController{
         const id = req.params.id;
         usuarioModel.eliminarUsuario(id, (result) => {
             if (!result) {
-                return res.status(500).send("Error al eliminar el usuario.");
-            } else{
-                res.redirect('/usuarios');
+                return res.status(500).json({ success: false, message: "Error al eliminar el usuario." });
+            } else {
+                return res.json({ success: true });
             }
         });
-    }
+    }    
 }
 
 module.exports = usuariosController;

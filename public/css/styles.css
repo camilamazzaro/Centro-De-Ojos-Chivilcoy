@@ -28,7 +28,6 @@
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    margin-top: 30px;
     font-size: 16px;
     font-weight: 600;
     color: white;
@@ -53,7 +52,8 @@ h1 {
 
 
 .btn-sombreado{
-    color: #090909;
+    color: var(--COLOR_OSCURO);
+    font-weight: 500;
     padding: 0.7em 1.7em;
     font-size: 16px;
     border-radius: 0.5em;
@@ -75,3 +75,165 @@ h1 {
     box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
 }
 
+.btn-editar{
+    font-weight: 700;
+    color: var(--COLOR_PRINCIPAL);
+    text-decoration: none;
+    transition: all .3s ease;
+}
+
+.btn-editar:hover{
+    color: var(--COLOR_SECUNDARIO_3);
+}
+
+
+.btn-editar i{
+    margin-right: 5px;
+}
+
+.btn-eliminar{
+    font-weight: 600;
+    color: red;
+    transition: all .3s ease;
+}
+.btn-eliminar i{
+    margin-left: 20px;
+    font-size: 20px;
+}
+.btn-eliminar:hover{
+    cursor: pointer;
+    color: rgb(158, 0, 0);
+    transform: scale(1.5);
+}
+
+
+.btn-crear {
+    background-color: var(--COLOR_PRINCIPAL);
+    color: #fff;
+    width: 200px;
+    height: 40px;
+    border: var(--COLOR_PRINCIPAL) 2px solid;
+    border-radius: 11px;
+    text-align: right;
+    transition: all 0.6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    text-decoration: none; 
+    margin-top: 2em;
+  }
+  
+  .btn-crear:hover {
+    background-color: transparent;
+    color: var(--COLOR_PRINCIPAL);
+  }
+  
+  .btn-crear svg {
+    width: 1.6em;
+    margin: -0.2em 0.8em 1em;
+    margin-bottom: 0 !important;
+    position: absolute;
+    display: flex;
+    transition: all 0.6s ease;
+  }
+  
+  .btn-crear:hover svg {
+    transform: translateX(5px);
+  }
+  
+  .btn-crear .text {
+    margin-left: 3em;
+    font-weight: 500;
+  }
+  
+
+
+/* FORMULARIOS */
+select{
+    width: 100% !important;
+    border: 2px solid #ccc; 
+    border-radius: 4px;
+    padding: 13px 12px; 
+    font-size: 14px; 
+}
+
+.form-group select:focus {
+    outline: none; 
+    border-color: #007bff; 
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.25); 
+}
+
+.form-group label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background-color: white;
+    padding: 0 10px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 400;
+    z-index: 1;
+}
+
+.form-group input {
+    width: 100%;
+    border: 2px solid #ccc; 
+    border-radius: 4px;
+    padding: 13px 12px; 
+    font-size: 14px; 
+    box-sizing: border-box;
+}
+
+.form-group {
+    position: relative;
+    display: flex;
+    flex-direction: column; /*para que el label aparezca después del input*/
+    margin-top: 16px; 
+}
+
+.form-group textarea {
+    font-family: 'Montserrat', 'sans-serif'; 
+    font-size: 16px;
+    line-height: 1.5;
+    width: 100%;
+    max-width: 100%; 
+    border: 2px solid #ccc; 
+    border-radius: 4px;
+    padding: 13px 12px; 
+    font-size: 14px; 
+    box-sizing: border-box; 
+    resize: vertical; 
+}
+
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-bottom: 1rem;
+    gap: 4em;
+}
+
+.col-md-12{
+    flex: 0 100%;
+    max-width: 100%;
+    width: 100%;
+    padding: 0 ;
+}
+
+.col-md-6 {
+    flex: 0 50%;
+    max-width: 50%;
+    padding: 0;
+}
+
+.col-md-4 {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+    padding: 0;
+}
+
+.col-md-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
+    padding: 0 ;
+}

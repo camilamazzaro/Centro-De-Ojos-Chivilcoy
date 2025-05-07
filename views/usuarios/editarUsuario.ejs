@@ -58,47 +58,104 @@
     
     <script>
         const botonGuardar = document.querySelector("#guardar");
-
+    
         const usuarioNombre = document.querySelector("#usuario_nombre");
         const usuarioEmail = document.querySelector("#usuario_email");
         const usuarioPassword = document.querySelector("#usuario_password");
         const usuarioCategoria = document.querySelector("#usuario_categoria");
-
-        botonGuardar.addEventListener("click", async () => {
-            const datos = {
-                usuario_nombre: usuarioNombre.value,
-                usuario_email: usuarioEmail.value,
-                usuario_password: usuarioPassword.value,
-                usuario_categoria: usuarioCategoria.value
-            };
-
-            if (!usuarioNombre.value || !usuarioEmail.value || !usuarioCategoria.value) { 
-                alert("Todos los campos son requeridos.");
+    
+        botonGuardar.addEventListener("click", async (e) => {
+            e.preventDefault();
+    
+            const nombre = usuarioNombre.value.trim();
+            const email = usuarioEmail.value.trim();
+            const password = usuarioPassword.value;
+            const categoria = usuarioCategoria.value;
+    
+            // Validar campos obligatorios
+            if (!nombre || !email || !categoria) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Todos los campos son requeridos.',
+                    confirmButtonColor: '#f39c12',
+                    confirmButtonText: 'Aceptar'
+                });
                 return;
             }
-
-            const results = await fetch(`/usuario/editar/<%= usuario.id %>`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' 
-                },
-                body: JSON.stringify({
-                    id: "<%= usuario.id %>",
-                    nombre: usuarioNombre.value,
-                    email: usuarioEmail.value,
-                    password: usuarioPassword.value,
-                    categoria: usuarioCategoria.value
-                })
-            });
-
-            const data = await results.json();
-            if (data.success) { 
-                alert ("Usuario guardado correctamente"); 
-                location.href = "/usuarios";  
-            } else { 
-                alert ("No se pudieron actualizar los valores"); 
+    
+            // Validar nombre completo (al menos dos palabras)
+            const nombrePalabras = nombre.split(" ");
+            if (nombrePalabras.length < 2) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Nombre incompleto',
+                    text: 'Por favor, ingresá nombre y apellido.',
+                    confirmButtonColor: '#f39c12',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+    
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Email inválido',
+                    text: 'Ingresá un email con el formato correcto (ej: ejemplo@correo.com).',
+                    confirmButtonColor: '#f39c12',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+    
+            try {
+                const results = await fetch(`/usuario/editar/<%= usuario.id %>`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: "<%= usuario.id %>",
+                        nombre,
+                        email,
+                        password,
+                        categoria
+                    })
+                });
+    
+                const data = await results.json();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Usuario actualizado',
+                        text: 'Los datos se guardaron correctamente.',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        location.href = "/usuarios";
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudieron actualizar los valores.',
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Cerrar'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo conectar con el servidor.',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Cerrar'
+                });
             }
         });
-    </script>
+    </script>    
+    
 </body>
 </html>

@@ -28,27 +28,25 @@
 
                 <div class="contenedor-usuarios">
                     <table class="tabla-listado-usuarios">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Categoría</th>
-                                <th>Opciones</th>
-                            </tr>
-                        </thead>
+
                         <tbody id="tabla-usuarios">
                             <% usuarios.forEach(function(user) { %>
                                 <tr class="usuario-fila" data-categoria="<%= user.categoria %>">
-                                    <td><%= user.id %></td>
+                                    <td style="font-weight: 700; color: #005b6f; font-size: 20px;"><%= user.id %></td>
                                     <td><%= user.nombre %></td>
                                     <td><%= user.email %></td>
                                     <td>
                                         <%= user.categoria %>
                                     </td>
-                                    <td>
-                                        <a class="btn btn-editar" href="/usuario/editar/<%= user.id %>">Editar</a>
-                                        <button class="btn btn-eliminar borrarUsuario" data-id="<%= user.id %>">Eliminar</button>
+                                    <td class="acciones">
+                                        <a class="btn-editar" href="/usuario/editar/<%= user.id %>">
+                                            <i class="fa-regular fa-pen-line"></i>
+                                            Editar
+                                        </a>
+                                        <a class="btn-eliminar borrarUsuario" data-id="<%= user.id %>">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                            
+                                        </a>
                                     </td>
                                 </tr>
                             <% }); %>
@@ -57,7 +55,16 @@
                     </table>
                 </div>
 
-                <a href="/usuario/agregar/0" class="btn">Crear Usuario</a>
+                <!-- Botón que lleva a una sección con id="contacto" -->
+                <a href="/usuario/agregar/0" class="btn-crear">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" 
+                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+                    </svg>
+                    <div class="text">Nuevo Usuario</div>
+                </a>
+
             </div>
         </div>
     </div>
@@ -69,19 +76,57 @@
     <script>
         // Funcionalidad para eliminar usuarios
         document.querySelectorAll('.borrarUsuario').forEach(button => {
-            button.addEventListener('click', async () => {
-                const userId = button.getAttribute('data-id');
-                if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+        button.addEventListener('click', async () => {
+            const userId = button.getAttribute('data-id');
+
+            const resultado = await Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (resultado.isConfirmed) {
+                try {
                     const response = await fetch(`/usuario/eliminar/${userId}`, {
                         method: 'DELETE'
                     });
-                    location.reload();
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Eliminado',
+                            text: 'El usuario fue eliminado correctamente.',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar'
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo eliminar el usuario.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error de conexión',
+                        text: 'No se pudo conectar con el servidor.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
                 }
-            });
+            }
         });
+    });
 
         // Funcionalidad de filtrado de usuarios
-        /*document.querySelectorAll('.filtro-btn').forEach(button => {
+        document.querySelectorAll('.filtro-btn').forEach(button => {
             button.addEventListener('click', () => {
                 const categoriaSeleccionada = button.getAttribute('data-categoria');
                 const filasUsuarios = document.querySelectorAll('.usuario-fila');
@@ -104,8 +149,7 @@
                 // Agregar la clase 'seleccionado' al botón clicado
                 button.classList.add('seleccionado');
             });
-        }); */
-
+        }); 
         
     </script>
 </body>
