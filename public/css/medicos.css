@@ -1,0 +1,351 @@
+/* VARIABLES */
+
+:root { /*es para no tener que escribir los códigos de color en cada propiedad*/
+    --AZUL_OSCURO: #0a3768;
+    --AZUL_CLARO: #165bba;
+    --VERDE_AGUA: #38b5a9;
+    --DEGRADADO: linear-gradient(90deg, var(--VERDE_AGUA), var(--AZUL_CLARO));
+    --DEGRADADOREVES: linear-gradient(90deg, var(--AZUL_CLARO), var(--VERDE_AGUA));
+}
+
+
+/*ESTILOS PREESTABLECIDOS EN CLASES. Para usarlos, agregar el nombre de la clase al elemento HTML que quieras*/
+
+.sombra{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+
+/* ---------------------------- LISTAR MÉDICOS -------------------------------------------*/
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+    min-height: 100vh; /*para que el body siempre ocupe toda la vista de la pantalla, como mínimo*/
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%2338b5a9" fill-opacity="0.1" d="M0,0L120,26.7C240,53,480,107,720,112C960,117,1200,75,1320,53.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
+
+.contenedor-flex{
+    display: flex;
+    gap: 1.5em;
+}
+
+.contenedor-listado-agregar{
+    flex: 1;
+    margin-right: 4em;
+}
+
+.contenedor-listado-agregar .container-listado-medicos{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 2%;
+    width: 100%;
+}
+
+.contenedor-titulo-boton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.contenedor-titulo-boton h1 {
+    flex: 1; /* Hace que el título ocupe el espacio restante */
+    text-align: center; /* Centra el título en el espacio */
+    margin: 0;
+    color: var(--AZUL_OSCURO);
+    font-weight: 650;
+}
+
+body h1 {
+    margin: 0 0 .7em 0;
+    color: var(--AZUL_OSCURO);
+    font-weight: 650;
+    font-size: 33px;
+}
+
+
+.contenedor .listado-medicos{
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    text-align: center;
+    align-content: center;
+}
+
+.contenedor .listado-medicos table{
+    width: 100% !important;
+    margin: 0 auto;
+}
+
+.contenedor .listado-medicos table thead tr th{
+    background-color: var(--VERDE_AGUA);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.contenedor .listado-medicos table tbody tr td{
+    align-content: center;
+    color: #626262;
+}
+
+.contenedor .btn-editar{
+    background-color: var(--AZUL_CLARO);
+    transition: all .3s;
+}
+
+.contenedor .btn-editar:hover{
+    background-color: var(--VERDE_AGUA);
+}
+
+.contenedor .listado-medicos table tbody tr .contenedor-descripcion{
+    width: 30%;
+}
+
+.contenedor .listado-medicos table tbody tr .contenedor-nombre{
+    width: 12%;
+}
+
+.contenedor .listado-medicos table tbody .horarios ul li{
+    list-style: none;
+}
+
+.contenedor .listado-medicos table tbody .horarios ul{
+    padding: 0;
+    margin-top: 1em;
+}
+
+.contenedor  .listado-medicos table tbody tr .contenedor-id{
+    font-weight: 600;
+    color: var(--VERDE_AGUA);
+    font-size: 20px;
+}
+
+.contenedor .btn-agregar{
+    margin: 25px 0;
+    max-width: 250px;
+    background-color: var(--VERDE_AGUA);
+    padding: 12px 18px;
+    border-radius: 25px 0 25px 0;
+    transition: all .3s;
+}
+
+.contenedor .btn-agregar:hover{
+    background-color: var(--AZUL_CLARO);
+}
+
+.contenedor .btn-agregar a{
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.contenedor .btn-eliminar{
+    background-color: white;
+    border: 1px solid var(--AZUL_CLARO);
+    transition: all .3s;
+}
+
+.contenedor .btn-eliminar:hover{
+    background-color: #bc062d;
+    color: white;
+}
+
+.contenedor button{
+    font-size: 16px;
+    font-weight: 450;
+}
+
+
+/* Estilo para el contenedor fijo */
+.atajo-agregar {
+    position: fixed;
+    bottom: 1%; 
+    right: 1%; 
+    max-width: 300px;
+    transition: opacity 0.3s ease; /* Suaviza la aparición/desaparición */
+    opacity: 1; /* Comienza visible */
+    display: flex; /* Permite alinear el contenido horizontalmente */
+    flex-direction: column; /* Alinea el texto y el botón en columna */
+    align-items: center; /* Centra el contenido */
+}
+
+/* Estilo para el texto del párrafo */
+.atajo-agregar p {
+    color: var(--VERDE_AGUA); /* Color verde agua */
+    font-size: 20px; /* Tamaño de fuente más grande */
+    font-weight: bold; /* Hace el texto más grueso */
+    margin-bottom: 10px; /* Espacio entre el texto y el botón */
+    text-align: center; /* Centra el texto */
+}
+
+/* Estilo para el botón de flecha */
+.atajo-agregar .btn-flecha {
+    width: 60px; /* Ancho del botón */
+    height: 60px; /* Alto del botón */
+    background-color: var(--VERDE_AGUA);
+    border-radius: 50%; /* Forma circular */
+    padding: 15px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s; /* Transición para el hover */
+    color: white; /* Color del ícono */
+    font-size: 24px; /* Tamaño del ícono */
+    text-align: center; 
+}
+
+/* Efecto hover para el botón de flecha */
+.atajo-agregar .btn-flecha:hover {
+    background-color: var(--AZUL_CLARO); /* Color al pasar el mouse */
+    transform: scale(1.1) translateY(5px); /* Efecto de zoom y desplazamiento hacia abajo */
+}
+
+/* Estilo del ícono dentro del botón */
+.atajo-agregar .btn-flecha i {
+    margin: 0 auto;
+    transition: transform 0.3s; /* Suaviza el desplazamiento del ícono */
+}
+
+/* Efecto hover para el ícono de la flecha */
+.atajo-agregar .btn-flecha:hover i {
+    transform: translateY(5px); /* Desplaza el ícono hacia abajo */
+}
+
+/* Oculta el contenedor cuando se establece en invisible */
+.atajo-agregar.hidden {
+    opacity: 0; /* Se desvanece */
+    pointer-events: none; /* Desactiva el clic */
+}
+
+/* Estilos para el botón Ver/Editar Horarios */
+.ver-editar-horarios {
+    color: var(--AZUL_CLARO);
+    font-weight: 700;
+    text-decoration: underline; 
+    background: none; 
+}
+
+.contenedor .listado-medicos table tbody tr .contenedor-descripcion {
+    width: 20%; 
+    max-width: 200px; 
+}
+
+
+
+
+
+/* -------------------------- EDITAR MÉDICOS ----------------------------------*/
+
+.contenedor-editar{
+    width: 90%;
+}
+
+.editar-medico-contenedor {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-contenedor {
+    width: 40%;
+}
+
+.foto-actual {
+    width: 45%;
+    text-align: right;
+}
+
+.foto-actual img {
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 30px 0;
+    border: 3px solid var(--VERDE_AGUA);
+    padding: 0;
+}
+
+.container .btn-guardar{
+    background-color: var(--VERDE_AGUA);
+    transition: all .3s;
+    color: white;
+    font-weight: 500;
+}
+
+
+.container .btn-guardar:hover{
+    background-color: var(--AZUL_CLARO);
+    color: white;
+}
+
+.container .btn-cancelar{
+    border: 2px solid var(--VERDE_AGUA);
+    transition: all .3s;
+    color: var(--AZUL_OSCURO);
+    font-weight: 500;
+}
+
+.container .btn-cancelar:hover{
+    background-color: #c6c6c6;
+}
+
+
+.contenedor{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container .contenedor-volver-atras {
+    display: flex;
+    align-items: center;
+    justify-content:left;
+    width: fit-content; /* Ajusta el ancho al contenido */
+    padding: 10px 20px; /* Añade más espacio interior */
+    background-color: var(--AZUL_CLARO);
+    border-radius: 12px 0;
+    transition: all .3s;
+    cursor: pointer;
+}
+
+.container .contenedor-volver-atras:hover{
+    background-color: var(--VERDE_AGUA);
+}
+
+.container .contenedor-volver-atras a{
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.container .contenedor-volver-atras i{
+    color: white;
+    font-size: 20px;
+}
+
+
+/*---------------------------------- INSERTAR MÉDICOS ------------------------- */
+
+.contenedor-insertar{
+    width: 90%;
+    margin-top: 40px;
+}
+
+.contenedor-formulario-insertar{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.contenedor-formulario-insertar .formulario-insertar{
+    width: 45%;
+    margin-bottom: 2%;
+}
