@@ -5,6 +5,12 @@
     font-family: "Montserrat", sans-serif;
 }
 
+/* Tipografía importada */
+@font-face {
+    font-family: 'Isadora';
+    src: url('../fuentes/IsidoraSans-Medium.ttf') format('truetype');
+}  
+
 /* VARIABLES DE COLOR */
 
 :root { 
@@ -12,11 +18,36 @@
     --COLOR_OSCURO: #0a3749;
     --COLOR_SECUNDARIO_1: #457d84;
     --COLOR_SECUNDARIO_2: #c0d8db;
+    --COLOR_SECUNDARIO_3: #38b5a9;
     /* --DEGRADADO: linear-gradient(90deg, var(--VERDE_AGUA), var(--AZUL_CLARO));
     --DEGRADADOREVES: linear-gradient(90deg, var(--AZUL_CLARO), var(--VERDE_AGUA)); */
+    --COLOR-MENU-HOVER:  #e6e6e6;
+    --COLOR-MENU-TEXTO-HOVER: #272727;
+    --COLOR-BARRA-LATERAL: #fff;
+    --COLOR-BARRA-INFO: #0a3768;
+    --COLOR-FONDO-BOTON: #38b5a9;
+    --COLOR-SWITCH-BASE:#d7d7d7; 
+    --COLOR-SWITCH-CIRCULO: #fff;
+    --COLOR-FONDO-USUARIO: #d7d7d7;
+    --COLOR-ICONO-USUARIO: #656565;
+    --TEXTOS-BARRA-LATERAL: #0a3768;
+    --COLOR-TEXTO-LOGOUT: #38b5a9;
+    --COLOR-FONDO-LOGOUT: #0a3768;
 }
 
 /*GENERAL*/
+
+.contenedor-flex{
+    display: flex;
+    gap: 1.5em;
+    height: 100% !important;
+    flex: 1;
+}
+
+.contenedor-listado, .contenedor-agregar, .contenedor-editar{
+    flex: 1;
+    margin-right: 1%;
+}
 
 .contenedor-listado-usuarios{
     margin-right: 1%;
@@ -236,4 +267,277 @@ select{
     flex: 0 0 25%;
     max-width: 25%;
     padding: 0 ;
+}
+
+/* --------------------------- BARRA LATERAL PANEL ADMIN ------------------------------- */
+
+.barra-lateral span{
+    margin-left: 7px;
+    opacity: 1;
+    transition: opacity .3s ease, width .3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.contenedor-barra-lateral{
+    min-height: 100vh;
+}
+
+.barra-lateral{
+    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.2);
+    width: 240px;
+    height: 100% !important;
+    padding: 20px 15px;
+    background-color: var(--COLOR-BARRA-LATERAL);
+}
+
+.mini-barra-lateral{
+    width: 85px;
+    height: 100%;
+}
+
+.barra-lateral .logo{
+    width: 100%;
+    height: 80px;
+    display: flex;
+    gap: .2em;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.barra-lateral #icono{
+    width: 60px;
+}
+
+.barra-lateral .logo svg{
+    min-width: 40px;
+    height: 100%;
+    cursor: pointer;
+    color: var(--TEXTOS-BARRA-LATERAL) !important;
+}
+
+.logo svg path, .logo svg circle {
+    fill: var(--TEXTOS-BARRA-LATERAL); 
+}
+
+.barra-lateral .logo span{
+    color: var(--TEXTOS-BARRA-LATERAL);
+    text-align: left;
+    font-family: 'Isadora', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.barra-lateral span.oculto{
+    opacity: 0;
+    width: 0;
+    margin: 0;
+}
+
+
+.barra-lateral .boton{
+    width: 100%;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--COLOR-FONDO-BOTON);
+    color: white;
+    margin-bottom: 20px;
+    text-decoration: none;
+    transition: all .3s ease;
+}
+.barra-lateral .boton:hover{
+    background-color: var(--COLOR_PRINCIPAL);
+    color: white;
+}
+
+.barra-lateral .boton i{
+    min-width: 30px;
+    text-align: center;
+}
+
+
+/*-----------------------menú navegación -----------------------*/
+
+.barra-lateral .navegacion ul{
+    padding: 0;
+}
+
+.barra-lateral .navegacion li{
+    list-style: none;
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.barra-lateral .navegacion li a{
+    width: 100%;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 10px;
+    color: var(--TEXTOS-BARRA-LATERAL);
+    text-align: center;
+}
+
+.barra-lateral .navegacion li a:hover{
+    background-color: var(--COLOR-MENU-HOVER) ;
+    color: var(--COLOR-MENU-TEXTO-HOVER);
+}
+.barra-lateral .navegacion li a.active{
+    color: var(--COLOR-FONDO-BOTON);
+    font-weight: 600;
+}
+
+.barra-lateral .navegacion li a i{
+    min-width: 50px;
+    font-size: 20px;
+}
+
+.barra-lateral .linea{
+    width: 100%;
+    height: 2px;
+    background-color: var(--COLOR-LINEA);
+}
+
+
+/*------------- MODO OSCURO -----------------------*/
+
+.barra-lateral .modo-oscuro{
+    width: 100%;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.barra-lateral .modo-oscuro .info{
+    width: 150px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    color: var(--COLOR-BARRA-INFO);
+}
+
+.barra-lateral .modo-oscuro .info i{
+    text-align: center;
+    width: 50px;
+    font-size: 20px;
+}
+
+.barra-lateral .modo-oscuro .switch{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-left: 7px;
+    min-width: 60px;
+    height: 45px;
+    cursor: pointer;
+}
+
+.barra-lateral .modo-oscuro .base{
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 35px;
+    height: 20px;
+    background-color: var(--COLOR-SWITCH-BASE);
+    border-radius: 50px;
+}
+
+.barra-lateral .modo-oscuro .circulo{
+    position: absolute;
+    width: 18px;
+    height: 90%;
+    background-color: var(--COLOR-SWITCH-CIRCULO);
+    border-radius: 50%;
+    left: 2px;
+    transition: left .5s ease;
+}
+
+.barra-lateral .modo-oscuro .circulo.prendido{
+    left: 15px;
+}
+
+
+/*USUARIO*/
+
+.barra-lateral .usuario{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    height: 45px;
+    margin-top: 65%;
+}
+
+.barra-lateral .usuario .contenedor-icono-usuario{
+    width: 40px;
+    background-color: var(--COLOR-FONDO-USUARIO);
+    border-radius: 50%;
+    height: 50px;
+    text-align: center;
+    align-content: center;
+    min-width: 50px;
+}
+
+.barra-lateral .usuario .contenedor-icono-usuario i{
+    font-size: 20px;
+    color: var(--COLOR-ICONO-USUARIO);
+}
+
+
+.barra-lateral .usuario .info-usuario{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--TEXTOS-BARRA-LATERAL);
+    overflow: hidden;
+}
+
+.barra-lateral .usuario .nombre-email{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+}
+
+.barra-lateral .usuario .nombre-email .nombre{
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.barra-lateral .usuario .nombre-email .email{
+    font-size: 10px;
+}
+
+
+.logout{
+    margin-top: 1.5em;
+}
+
+.logout .boton-logout{
+    text-decoration: none;
+    color: var(--COLOR-TEXTO-LOGOUT);
+    /* background-color: var(--COLOR-FONDO-LOGOUT); */
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.logout .boton-logout i{
+    min-width: 30px;
+    text-align: center;
+}
+
+.logout .boton-logout span{
+    font-weight: 600;
 }
