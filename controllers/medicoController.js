@@ -103,12 +103,12 @@ class MedicoController {
 
     // Eliminar un médico
     async eliminarMedico(req, res) {
-        const id = req.params.id;
-        medicoModel.eliminarMedico(id, (result) => {
+        const medicoId = req.params.medicoId;
+        medicoModel.eliminarMedico(medicoId, (result) => {
             if (!result) {
                 return res.status(500).send("Error al eliminar el médico.");
             } else {
-            res.redirect('/medicos'); // Redirige a la lista de turnos tras eliminar
+                return res.json({ success: true });
             }
         });
     }   

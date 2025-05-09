@@ -41,17 +41,11 @@
         
         <div class="contenedor-editar">
             <div class="container contenedor mt-5">
-                <div class="container my-5 contenedor-agregar-turno">
-                    <div class="contenedor-titulo-boton">
-                        <div class="contenedor-volver-atras">
-                            <a href="/turnos"><i class="fa-solid fa-arrow-left"></i></a>
-                        </div>
-                        <h1 class="text-center mb-4">Editar Médico</h1>
-                    </div>
+                <h1>Editar Médico</h1>
                 <div class="editar-medico-contenedor">
                     <form id="editarMedicoForm" class="form-contenedor">
                         <div class="form-group mb-3">
-                            <label for="id_usuario">Nombre:</label>
+                            <label for="id_usuario">Nombre</label>
                             <select name="id_usuario" id="id_usuario" class="form-select" required>
                                 <% usuarios.forEach(function(usuario) { %>
                                     <option value="<%= usuario.id %>" <%= usuario.id === medico.id_usuario ? 'selected' : '' %>><%= usuario.nombre %></option>
@@ -60,17 +54,17 @@
                         </div>
         
                         <div class="form-group mb-3">
-                            <label for="telefono">Teléfono:</label>
+                            <label for="telefono">Teléfono</label>
                             <input type="text" name="telefono" id="telefono" class="form-control" value="<%= medico.telefono %>" required>
                         </div>
         
                         <div class="form-group mb-3">
-                            <label for="descripcion">Descripción:</label>
+                            <label for="descripcion">Descripción</label>
                             <textarea name="descripcion" id="descripcion" class="form-control" required><%= medico.descripcion %></textarea>
                         </div>
         
                         <div class="form-group mb-3">
-                            <label for="foto">Foto:</label>
+                            <label for="foto">Foto</label>
                             <input type="file" name="foto" id="foto" class="form-control">
                         </div>
         

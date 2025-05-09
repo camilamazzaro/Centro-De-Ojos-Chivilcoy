@@ -80,11 +80,16 @@
 
 
 /* -------------- AGREGAR USUARIO ---------------- */
+
+.contenedor-editar, .contenedor-agregar{
+    margin-left: 2em;
+}
+
 .contenedor-formulario-insertar, .contenedor-formulario-editar{
     display: flex;
     justify-content: center;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
     width: 100%;
 }
 

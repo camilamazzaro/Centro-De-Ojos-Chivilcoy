@@ -8,6 +8,14 @@
     --DEGRADADOREVES: linear-gradient(90deg, var(--AZUL_CLARO), var(--VERDE_AGUA));
 }
 
+:root { 
+    --COLOR_PRINCIPAL: #005b6f;
+    --COLOR_OSCURO: #0a3749;
+    --COLOR_SECUNDARIO_1: #457d84;
+    --COLOR_SECUNDARIO_2: #c0d8db;
+    --COLOR_SECUNDARIO_3: #38b5a9;
+}
+
 
 /*ESTILOS PREESTABLECIDOS EN CLASES. Para usarlos, agregar el nombre de la clase al elemento HTML que quieras*/
 
@@ -36,6 +44,7 @@ body {
 .contenedor-listado-agregar{
     flex: 1;
     margin-right: 4em;
+    margin-top: 2em;
 }
 
 .contenedor-listado-agregar .container-listado-medicos{
@@ -56,7 +65,7 @@ body {
 
 .contenedor-titulo-boton h1 {
     flex: 1; /* Hace que el título ocupe el espacio restante */
-    text-align: center; /* Centra el título en el espacio */
+    text-align: center;
     margin: 0;
     color: var(--AZUL_OSCURO);
     font-weight: 650;
@@ -76,32 +85,44 @@ body h1 {
     overflow: hidden;
     text-align: center;
     align-content: center;
+    border-radius: 8px;
 }
 
 .contenedor .listado-medicos table{
     width: 100% !important;
-    margin: 0 auto;
-}
-
-.contenedor .listado-medicos table thead tr th{
-    background-color: var(--VERDE_AGUA);
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
+    border-collapse: separate;
+    background-color: #fff;
+    border-spacing: 0 15px;
 }
 
 .contenedor .listado-medicos table tbody tr td{
     align-content: center;
+    text-align: left;
     color: #626262;
+    font-size: 17px;
 }
 
-.contenedor .btn-editar{
-    background-color: var(--AZUL_CLARO);
-    transition: all .3s;
+.contenedor .listado-medicos table tbody tr{
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    height: 70px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 1em;
+}
+.contenedor .listado-medicos .contenedor-medico{
+    align-items: left;
+    text-align: left;
 }
 
-.contenedor .btn-editar:hover{
-    background-color: var(--VERDE_AGUA);
+.contenedor .listado-medicos .contenedor-medico img{
+    margin-left: 5px;
+    width: 110px;
+    height: 110px;
+}
+
+table .foto-medico {
+    border-radius: 8px;
+    object-fit: cover;
 }
 
 .contenedor .listado-medicos table tbody tr .contenedor-descripcion{
@@ -127,37 +148,6 @@ body h1 {
     font-size: 20px;
 }
 
-.contenedor .btn-agregar{
-    margin: 25px 0;
-    max-width: 250px;
-    background-color: var(--VERDE_AGUA);
-    padding: 12px 18px;
-    border-radius: 25px 0 25px 0;
-    transition: all .3s;
-}
-
-.contenedor .btn-agregar:hover{
-    background-color: var(--AZUL_CLARO);
-}
-
-.contenedor .btn-agregar a{
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
-    font-size: 20px;
-}
-
-.contenedor .btn-eliminar{
-    background-color: white;
-    border: 1px solid var(--AZUL_CLARO);
-    transition: all .3s;
-}
-
-.contenedor .btn-eliminar:hover{
-    background-color: #bc062d;
-    color: white;
-}
-
 .contenedor button{
     font-size: 16px;
     font-weight: 450;
@@ -170,73 +160,79 @@ body h1 {
     bottom: 1%; 
     right: 1%; 
     max-width: 300px;
-    transition: opacity 0.3s ease; /* Suaviza la aparición/desaparición */
-    opacity: 1; /* Comienza visible */
-    display: flex; /* Permite alinear el contenido horizontalmente */
-    flex-direction: column; /* Alinea el texto y el botón en columna */
-    align-items: center; /* Centra el contenido */
+    transition: opacity 0.3s ease; 
+    opacity: 1; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
 }
 
-/* Estilo para el texto del párrafo */
 .atajo-agregar p {
-    color: var(--VERDE_AGUA); /* Color verde agua */
-    font-size: 20px; /* Tamaño de fuente más grande */
-    font-weight: bold; /* Hace el texto más grueso */
-    margin-bottom: 10px; /* Espacio entre el texto y el botón */
-    text-align: center; /* Centra el texto */
+    color: var(--VERDE_AGUA);
+    font-size: 20px; 
+    font-weight: bold; 
+    margin-bottom: 10px;
+    text-align: center;
 }
 
-/* Estilo para el botón de flecha */
 .atajo-agregar .btn-flecha {
-    width: 60px; /* Ancho del botón */
-    height: 60px; /* Alto del botón */
+    width: 60px; 
+    height: 60px; 
     background-color: var(--VERDE_AGUA);
-    border-radius: 50%; /* Forma circular */
+    border-radius: 50%;
     padding: 15px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, transform 0.3s; /* Transición para el hover */
-    color: white; /* Color del ícono */
-    font-size: 24px; /* Tamaño del ícono */
+    transition: background-color 0.3s, transform 0.3s; 
+    color: white; 
+    font-size: 24px; 
     text-align: center; 
 }
 
-/* Efecto hover para el botón de flecha */
 .atajo-agregar .btn-flecha:hover {
-    background-color: var(--AZUL_CLARO); /* Color al pasar el mouse */
-    transform: scale(1.1) translateY(5px); /* Efecto de zoom y desplazamiento hacia abajo */
+    background-color: var(--AZUL_CLARO);
+    transform: scale(1.1) translateY(5px); 
 }
 
-/* Estilo del ícono dentro del botón */
 .atajo-agregar .btn-flecha i {
     margin: 0 auto;
-    transition: transform 0.3s; /* Suaviza el desplazamiento del ícono */
+    transition: transform 0.3s; 
 }
 
-/* Efecto hover para el ícono de la flecha */
 .atajo-agregar .btn-flecha:hover i {
     transform: translateY(5px); /* Desplaza el ícono hacia abajo */
 }
 
-/* Oculta el contenedor cuando se establece en invisible */
 .atajo-agregar.hidden {
-    opacity: 0; /* Se desvanece */
+    opacity: 0; 
     pointer-events: none; /* Desactiva el clic */
 }
 
-/* Estilos para el botón Ver/Editar Horarios */
-.ver-editar-horarios {
-    color: var(--AZUL_CLARO);
-    font-weight: 700;
-    text-decoration: underline; 
-    background: none; 
+.btn-ver-horarios{
+    background-color: var(--COLOR_SECUNDARIO_3);
+    cursor: pointer;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-top: 1em;
+    transition: all .3s ease;
+}
+
+.btn-ver-horarios a{
+    text-decoration: none;
+    color: white;
+}
+
+.btn-ver-horarios:hover{
+    background-color: var(--COLOR_PRINCIPAL);
+}
+.btn-ver-horarios a:hover{
+    color: white;
 }
 
 .contenedor .listado-medicos table tbody tr .contenedor-descripcion {
     width: 20%; 
     max-width: 200px; 
 }
-
-
 
 
 
@@ -253,7 +249,7 @@ body h1 {
 }
 
 .form-contenedor {
-    width: 40%;
+    width: 50%;
 }
 
 .foto-actual {
@@ -262,43 +258,11 @@ body h1 {
 }
 
 .foto-actual img {
-    max-height: 500px;
+    max-height: 400px;
     object-fit: cover;
     border-radius: 30px 0;
-    border: 3px solid var(--VERDE_AGUA);
+    border: 3px solid var(--COLOR_SECUNDARIO_3);
     padding: 0;
-}
-
-.container .btn-guardar{
-    background-color: var(--VERDE_AGUA);
-    transition: all .3s;
-    color: white;
-    font-weight: 500;
-}
-
-
-.container .btn-guardar:hover{
-    background-color: var(--AZUL_CLARO);
-    color: white;
-}
-
-.container .btn-cancelar{
-    border: 2px solid var(--VERDE_AGUA);
-    transition: all .3s;
-    color: var(--AZUL_OSCURO);
-    font-weight: 500;
-}
-
-.container .btn-cancelar:hover{
-    background-color: #c6c6c6;
-}
-
-
-.contenedor{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 .container .contenedor-volver-atras {
@@ -333,19 +297,92 @@ body h1 {
 /*---------------------------------- INSERTAR MÉDICOS ------------------------- */
 
 .contenedor-insertar{
-    width: 90%;
-    margin-top: 40px;
+    width: 100%;
+    margin-top: 100px;
+    margin-left: 2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 .contenedor-formulario-insertar{
     display: flex;
     justify-content: center;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
+    align-items: left;
+    width: 600px !important;
+    margin: 0 !important;
 }
 
 .contenedor-formulario-insertar .formulario-insertar{
-    width: 45%;
+    width: 100%;
     margin-bottom: 2%;
+}
+
+/*Preview de la img cargada*/
+
+.contenedor-imagen-preview {
+    position: relative;
+    width: 400px;
+    height: 430px; 
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    right: 180px;
+}
+
+.cartel-vista-previa {
+    opacity: 0;
+    cursor: pointer;
+    transition: all .3s ease;
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: rgba(3, 74, 83, 0.8);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    z-index: 9999;
+}
+
+.cartel-vista-previa:hover{
+    opacity: 1;
+}
+
+.imagen-preview {
+    object-fit: cover;
+    border-radius: 8px;
+    width: 400px;
+    height: 400px;
+    border: 3px solid var(--COLOR_SECUNDARIO_3);
+    position: relative;
+    z-index: 2;
+}
+
+/* Círculos decorativos */
+.circulo-decorativo {
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--COLOR_SECUNDARIO_3); 
+    z-index: 1;
+}
+
+/* Primer círculo - más grande */
+.circulo-decorativo:nth-child(2) {
+    width: 220px;
+    height: 220px;
+    top: -30px;
+    left: -30px;
+}
+
+/* Segundo círculo - más pequeño */
+.circulo-decorativo:nth-child(3) {
+    width: 160px;
+    height: 160px;
+    bottom: -20px;
+    right: -20px;
 }

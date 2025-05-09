@@ -23,6 +23,6 @@ router.post('/medico/editar/:id', upload.single('foto'), medicoController.guarda
 
 
 // Ruta para eliminar un médico (por ID)
-router.delete('/medicos/eliminar/:id', medicoController.eliminarMedico);
+router.delete('/medicos/eliminar/:medicoId', medicoController.eliminarMedico);
 
 module.exports = router;

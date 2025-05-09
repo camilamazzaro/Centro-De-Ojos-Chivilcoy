@@ -18,9 +18,9 @@
         <div class="contenedor-listado-agregar">
             <div class="contenedor mt-5 container-listado-medicos">
                 <h1>Listado de Médicos</h1>
-                <div class="listado-medicos sombra">
+                <div class="listado-medicos">
                     <table class="table table-striped table-bordered border rounded shadow-lg">
-                        <thead>
+                        <!-- <thead>
                             <tr>
                                 <th class="col">ID</th>
                                 <th class="col">Nombre</th>
@@ -30,15 +30,26 @@
                                 <th class="col">Horarios</th>
                                 <th class="col">Acciones</th>
                             </tr>
-                        </thead>
+                        </thead> -->
                         <tbody>
                             <% medicos.forEach(function(medico) { %>
                                 <tr>
-                                    <td class="contenedor-id"><%= medico.id %></td>
-                                    <td class="contenedor-nombre"><%= medico.nombre_medico %></td>
-                                    <td><%= medico.telefono %></td>
-                                    <td class="contenedor-descripcion"><%= medico.descripcion %></td>
-                                    <td><img width="100" height="100" src="<%= medico.foto %>" alt=""></td>
+                                    <!-- Columna con imagen redondeada, nombre y teléfono -->
+                                    <td class="contenedor-medico">
+                                        <img class="foto-medico" width="100" height="100" src="<%= medico.foto %>" alt="">
+                                    </td>
+
+                                    <td class="contenedor-datos-medico">
+                                        <strong><%= medico.nombre_medico %></strong>
+                                            <p class="telefono-medico"><%= medico.telefono %></p>
+                                    </td>
+                        
+                                    <!-- Columna de descripción -->
+                                    <td class="contenedor-descripcion">
+                                        <%= medico.descripcion %>
+                                    </td>
+                                    
+                                    <!-- Columna de horarios -->
                                     <td class="horarios">
                                         <% if (medico.horarios && medico.horarios.length > 0) { 
                                             const diasSemana = {
@@ -55,16 +66,16 @@
                                                 const dia = diasSemana[horario.dia_semana]; 
                                                 const horaInicio = new Date('1970-01-01T' + horario.hora_inicio);
                                                 const horaFin = new Date('1970-01-01T' + horario.hora_fin);
-        
+                        
                                                 const formatoHora = (hora) => {
                                                     return hora.getMinutes() === 0 
                                                         ? hora.getHours() 
                                                         : hora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
                                                 };
-        
+                        
                                                 const horaInicioFormateada = formatoHora(horaInicio);
                                                 const horaFinFormateada = formatoHora(horaFin);
-        
+                        
                                                 if (!horariosPorDia[dia]) { 
                                                     horariosPorDia[dia] = []; 
                                                 } 
@@ -81,23 +92,34 @@
                                         <% } %>
                                         
                                         <!--Botón de ver y editar horarios-->
-        
-                                        <button class="btn btn-ver-horarios">
-                                            <a href="/medico/<%= medico.id %>/horarios" class="ver-editar-horarios">Ver/Editar Horarios</a>
+                                        <button class="btn-ver-horarios">
+                                            <a href="/medico/<%= medico.id %>/horarios" class="ver-editar-horarios">
+                                                Ver
+                                                <i class="fa-regular fa-clock"></i>
+                                            </a>
                                         </button>
-        
                                     </td>
+
                                     <td>
-                                        <button class="btn btn-editar"><a href="/medico/editar/<%= medico.id %>" class="text-white text-decoration-none">Editar</a></button>
-                                        <button class="btn btn-eliminar btnEliminar" data-id="<%= medico.id %>">Eliminar</button>
+                                        <a class="btn-editar" href="/medico/editar/<%= medico.id %>">
+                                            <i class="fa-regular fa-pen-line"></i>
+                                            Editar
+                                        </a>
+                                        <button class="btn-eliminar btnEliminar" data-id="<%= medico.id %>"><i class="fa-regular fa-trash-can"></i></button>
+                                        
                                     </td>
                                 </tr>
                             <% }); %>
                         </tbody>
+                        
                     </table>
                 </div>
-        
-                <div id="btn-agregar" class="btn btn-agregar"><a href="/medico/agregar/0">Agregar Nuevo Médico</a></div>
+
+                <div id="btn-agregar" class="btn-agregar">
+                    <button class="btn-wave">
+                        <a href="/medico/agregar/0">Agregar Nuevo Médico</a>
+                    </button>
+                </div>
             </div>
         
             <!-- Ícono de flecha fijo en la esquina inferior derecha -->
@@ -117,14 +139,47 @@
         document.querySelectorAll('.btnEliminar').forEach(button => {
             button.addEventListener('click', async () => {
                 const medicoId = button.getAttribute('data-id');
-                if (confirm('¿Estás seguro de que deseas eliminar este médico?')) {
-                    const response = await fetch(`/medicos/eliminar/${medicoId}`, {
-                        method: 'DELETE'
-                    });
-                    location.reload();
-                }
+
+                // Mostrar un SweetAlert de confirmación antes de eliminar
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Esta acción eliminará al médico de la lista. No podrás deshacerlo.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        // Si el usuario confirma la eliminación, se hace la petición al backend
+                        const response = await fetch(`/medicos/eliminar/${medicoId}`, {
+                            method: 'DELETE'
+                        });
+
+                        // Verificar si la eliminación fue exitosa y actualizar la vista
+                        if (response.ok) {
+                            Swal.fire({
+                                title: 'Eliminado!',
+                                text: 'El médico ha sido eliminado correctamente.',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar'
+                            }).then(() => {
+                                location.reload(); // Recargar la página para actualizar la lista
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Hubo un problema al eliminar el médico.',
+                                icon: 'error',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    }
+                });
             });
         });
+
 
         //Botón fixed
         const atajoAgregar = document.getElementById('atajo-agregar');
