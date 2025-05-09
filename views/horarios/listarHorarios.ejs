@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<!--HEAD-->
+<head>
+    <link rel="stylesheet" href="/public/css/horarios.css">
+</head>
+<%- include('../commons/head') %>
+<title>Listar horarios</title>
+
+<body>
+    <div class="contenedor-flex">
+        <div class="contenedor-barra-lateral">
+            <!-- Mostrar el menú correspondiente basado en el idCategoriaUsuario -->
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
+        <div class="contenedor-listado">
+            <div class="container mt-5 container-listado-horarios">
+                <h1>Listado de Horarios de <%= horarios.length ? horarios[0].nombre_medico : '' %></h1>
+                <div class="listado-horarios sombra">
+                    <table class="table table-striped table-bordered border rounded shadow-lg">
+                        <thead>
+                            <tr>
+                                <th class="col">Día de la Semana</th>
+                                <th class="col">Hora de Inicio</th>
+                                <th class="col">Hora de Fin</th>
+                                <th class="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (horarios.length > 0) { %>
+                                <% horarios.forEach(function(horario) { %>
+                                    <tr>
+                                        <td style="display:none;"><%= horario.id %></td> <!-- Oculta el ID pero sigue capturándolo -->
+                                        <td><%= horario.dia_semana %></td>
+                                        <td><%= horario.hora_inicio %></td>
+                                        <td><%= horario.hora_fin %></td>
+                                        <td>
+                                            <button class="btn btn-editar"><a href="/medico/<%= medicoId %>/horarios/editar/<%= horario.id %>" class="text-white text-decoration-none">Editar</a></button>
+                                            <button class="btn btn-eliminar btnEliminar" data-id="<%= horario.id %>">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="4" class="text-center">No hay horarios disponibles para este médico</td> <!-- Ajusta colspan a 4 -->
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="botones">
+                    <div class="contenedor-volver-atras">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <a href="/medicos">Volver Atrás</a>
+                    </div>
+                    <div id="btn-agregar" class="btn btn-agregar">
+                        <a href="/medico/<%= medicoId %>/horarios/agregar">Agregar Nuevo Horario</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.btnEliminar').forEach(button => {
+            button.addEventListener('click', async () => {
+                const horarioId = button.getAttribute('data-id');  // Captura el ID del horario desde el botón
+                const medicoId = '<%= medicoId %>';  // Obtiene el ID del médico desde el backend
+                
+                if (horarioId && medicoId) {  // Verifica que ambos IDs existan
+                    // Mostrar SweetAlert de confirmación
+                    const result = await Swal.fire({
+                        title: '¿Estás seguro de eliminar?',
+                        text: 'No podrás revertir esta acción.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    });
+
+                    if (result.isConfirmed) {
+                        // Realizar la eliminación si el usuario confirma
+                        const response = await fetch(`/medico/${medicoId}/horarios/eliminar/${horarioId}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        // Si la eliminación es exitosa, recargar la página
+                        if (response.ok) {
+                            const result = await response.json();
+                            if (result.success) {
+                                Swal.fire('Eliminado!', 'El horario ha sido eliminado.', 'success');
+                                location.reload();  // Recarga la página para actualizar la lista de horarios
+                            } else {
+                                Swal.fire('Error!', result.message, 'error');
+                            }
+                        } else {
+                            Swal.fire('Error!', 'No se pudo eliminar el horario. Intenta nuevamente.', 'error');
+                        }
+                    }
+                } else {
+                    Swal.fire('Error!', 'No se pudo encontrar el ID del horario o del médico.', 'error');
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
