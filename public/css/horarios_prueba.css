@@ -1,0 +1,165 @@
+/* Variables de color */
+:root {
+    --verde-agua: #50c9c3;
+    --verde-agua-oscuro: #3ba59f;
+    --blanco: #ffffff;
+    --gris-claro: #f8f9fa;
+    --sombra: rgba(0, 0, 0, 0.1);
+    --sombra-intensa: rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos generales */
+
+/* Título */
+h1 {
+    color: var(--verde-agua-oscuro);
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Contenedor de tarjetas */
+.listado-horarios {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Tarjetas de horarios */
+.tarjeta-horario {
+    background-color: var(--blanco);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px var(--sombra);
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover en tarjetas */
+.tarjeta-horario:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 20px var(--sombra-intensa);
+}
+
+/* Línea decorativa en cada tarjeta */
+.tarjeta-horario::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: var(--verde-agua);
+    top: 0;
+    left: 0;
+}
+
+/* Horarios dentro de la tarjeta */
+.horarios {
+    margin-top: 10px;
+}
+
+/* Cada horario dentro de la tarjeta */
+.horario-item {
+    background-color: var(--gris-claro);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0px 2px 5px var(--sombra);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Hover en cada horario */
+.horario-item:hover {
+    background-color: var(--verde-agua);
+    color: var(--blanco);
+}
+
+/* Botones */
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    color: var(--blanco);
+    font-size: 14px;
+}
+
+/* Botón Editar */
+.btn-editar {
+    background-color: var(--verde-agua);
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.btn-editar:hover {
+    background-color: var(--verde-agua-oscuro);
+    box-shadow: 0px 4px 10px var(--sombra-intensa);
+}
+
+/* Botón Eliminar */
+.btn-eliminar {
+    background-color: #d33;
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.btn-eliminar:hover {
+    background-color: #a00;
+    box-shadow: 0px 4px 10px var(--sombra-intensa);
+}
+
+/* Botón Agregar */
+.btn-agregar {
+    background-color: var(--verde-agua);
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px var(--sombra);
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.btn-agregar:hover {
+    box-shadow: 0px 6px 15px var(--sombra-intensa);
+    transform: scale(1.05);
+}
+
+/* Botón Volver */
+.btn-volver {
+    background-color: var(--verde-agua-oscuro);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.btn-volver:hover {
+    background-color: var(--verde-agua);
+}
+
+/* Botones de acción */
+.botones-acciones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Animación de carga */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contenedor-listado {
+    animation: fadeIn 0.5s ease-in-out;
+}

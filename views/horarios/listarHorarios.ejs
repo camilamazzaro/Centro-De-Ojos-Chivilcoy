@@ -9,58 +9,50 @@
 
 <body>
     <div class="contenedor-flex">
-        <div class="contenedor-barra-lateral">
-            <!-- Mostrar el menú correspondiente basado en el idCategoriaUsuario -->
+        <!-- Barra lateral -->
+        <aside class="contenedor-barra-lateral">
             <%- include('../commons/barra-lateral-admin') %>
-        </div>
-        <div class="contenedor-listado">
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="contenedor-listado">
             <div class="container mt-5 container-listado-horarios">
                 <h1>Horarios de <%= horarios.length ? horarios[0].nombre_medico : '' %></h1>
-                <div class="listado-horarios sombra">
-                    <table class="table table-striped table-bordered border rounded shadow-lg">
-                        <thead>
-                            <tr>
-                                <th class="col">Día de la Semana</th>
-                                <th class="col">Hora de Inicio</th>
-                                <th class="col">Hora de Fin</th>
-                                <th class="col">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if (horarios.length > 0) { %>
-                                <% horarios.forEach(function(horario) { %>
-                                    <tr>
-                                        <td style="display:none;"><%= horario.id %></td> <!-- Oculta el ID pero sigue capturándolo -->
-                                        <td><%= horario.dia_semana %></td>
-                                        <td><%= horario.hora_inicio %></td>
-                                        <td><%= horario.hora_fin %></td>
-                                        <td>
-                                            <button class="btn btn-editar"><a href="/medico/<%= medicoId %>/horarios/editar/<%= horario.id %>" class="text-white text-decoration-none">Editar</a></button>
-                                            <button class="btn btn-eliminar btnEliminar" data-id="<%= horario.id %>">Eliminar</button>
-                                        </td>
-                                    </tr>
-                                <% }); %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="4" class="text-center">No hay horarios disponibles para este médico</td> <!-- Ajusta colspan a 4 -->
-                                </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
+
+                <!-- Contenedor de tarjetas en dos filas -->
+                <div class="listado-horarios">
+                    <% const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]; %>
+                    <% diasSemana.forEach((dia, index) => { %>
+                        <div class="tarjeta-horario">
+                            <h3><%= dia %></h3>
+                            <div class="horarios">
+                                <% const horariosDia = horarios.filter(horario => horario.dia_semana.toLowerCase() === dia.toLowerCase()); %>
+                                <% if (horariosDia.length > 0) { %>
+                                    <% horariosDia.forEach(horario => { %>
+                                        <div class="horario-item">
+                                            <p><%= horario.hora_inicio %> a <%= horario.hora_fin %></p>
+                                            <div>
+                                                <a href="/medico/<%= medicoId %>/horarios/editar/<%= horario.id %>" class="icono-editar"><i class="fa-regular fa-pen-line"></i></a>
+                                                <button class="icono-eliminar btnEliminar" data-id="<%= horario.id %>"><i class="fa-regular fa-trash-can"></i></button>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                <% } else { %>
+                                    <p class="mensaje-vacio">No hay horarios disponibles.</p>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
                 </div>
-                <div class="botones">
-                    <div class="contenedor-volver-atras">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        <a href="/medicos">Volver Atrás</a>
-                    </div>
-                    <div id="btn-agregar" class="btn btn-agregar">
-                        <a href="/medico/<%= medicoId %>/horarios/agregar">Agregar Nuevo Horario</a>
-                    </div>
+
+                <!-- Botones de acción -->
+                <div class="botones-acciones">
+                    <a href="/medicos" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Volver Atrás</a>
+                    <a href="/medico/<%= medicoId %>/horarios/agregar" class="btn btn-agregar">Agregar Nuevo Horario</a>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
