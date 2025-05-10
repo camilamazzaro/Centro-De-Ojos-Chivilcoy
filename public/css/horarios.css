@@ -166,13 +166,14 @@ body {
 
 /* Contenedor del formulario */
 .contenedor-agregar-horario {
-    background-color: var(--blanco);
+    background-color: #fff;
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0px 4px 10px var(--sombra);
     width: 80%;
     max-width: 800px;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    margin: 0 auto;
 }
 
 /* Hover en el contenedor */
@@ -183,7 +184,7 @@ body {
 
 /* Título */
 .contenedor-agregar-horario h1 {
-    color: var(--verde-agua-oscuro);
+    color: var(--COLOR_PRINCIPAL);
     text-align: center;
     font-size: 24px;
     font-weight: bold;
@@ -195,34 +196,39 @@ body {
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0px 4px 10px var(--sombra);
 }
 
-/* Encabezado de la tabla */
 .table thead {
-    background-color: var(--verde-agua);
-    color: var(--blanco);
+    background-color: var(--COLOR_PRINCIPAL);
+    color: #fff;
     text-align: center;
+    border-radius: 10px;
+    border: none;
 }
 
-/* Celdas de la tabla */
+.table thead tr th{
+    padding: 10px; 
+    border: none;
+}
+
 .table td {
     padding: 12px;
     text-align: center;
+    align-content: center;
+}
+
+.table td tr{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Estilos para los campos del formulario */
-.form-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 
-/* Select y Inputs */
 .form-select, .form-control {
     width: 90%;
     padding: 10px;
-    border: 2px solid var(--verde-agua);
+    border: 2px solid var(--COLOR_SECUNDARIO_3);
     border-radius: 8px;
     text-align: center;
     font-size: 16px;
@@ -231,51 +237,50 @@ body {
 
 /* Hover en inputs */
 .form-select:focus, .form-control:focus {
-    border-color: var(--verde-agua-oscuro);
+    border-color: var(--COLOR_PRINCIPAL);
     outline: none;
     box-shadow: 0px 4px 10px var(--sombra-intensa);
 }
 
 /* Botones */
 
-/* Botón Guardar */
-.btn-guardar {
-    background-color: var(--verde-agua);
-    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+.horarios-acciones{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center !important;
+    gap: 10px;
 }
 
-.btn-guardar:hover {
-    background-color: var(--verde-agua-oscuro);
+.horarios-acciones .btn-guardar {
+    background-color: var(--COLOR_SECUNDARIO_3);
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    font-size: 14px !important;
+    margin: 0 !important;
+}
+
+.horarios-acciones .btn-guardar:hover {
+    background-color: var(--COLOR_PRINCIPAL);
     box-shadow: 0px 4px 10px var(--sombra-intensa);
     transform: scale(1.05);
 }
 
 /* Botón Cancelar */
-.btn-cancelar {
+.horarios-acciones .btn-cancelar {
     background-color: #d33;
     transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    font-size: 14px !important;
 }
 
-.btn-cancelar:hover {
-    background-color: #a00;
+.horarios-acciones .btn-cancelar:hover {
+    background-color: #a00 !important;
     box-shadow: 0px 4px 10px var(--sombra-intensa);
+    color: #fff !important;
+    border: none;
 }
 
-/* Botón Volver */
-.contenedor-volver-atras {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 18px;
-    color: var(--verde-agua-oscuro);
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    margin-top: 20px;
-}
-
-.contenedor-volver-atras:hover {
-    transform: translateX(-5px);
+.contenedor-agregar-horario .btn-volver{
+    margin-top: 2em;
 }
 
 /* Animación de carga */

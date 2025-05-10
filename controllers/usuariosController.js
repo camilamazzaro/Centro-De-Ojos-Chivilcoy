@@ -22,7 +22,7 @@ class usuariosController{
     async registrarUsuario(req, res){
         try {
             const categorias = await usuarioModel.listarCategorias();
-            console.log("Categorías obtenidas en controller: ", categorias)
+            console.log("Categorías obtenidas en controller: ", categorias);
 
             const usuario = usuarioModel.obtenerUsuarioBase();
             res.render("usuarios/registrarUsuarios", {

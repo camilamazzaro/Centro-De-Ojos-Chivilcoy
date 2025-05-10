@@ -205,12 +205,17 @@ h1 {
     font-size: 18px;
     width: 150px;
     text-align: center;
+    text-decoration: none;
 }
 
 .container .btn-cancelar:hover{
     background-color: #c6c6c6;
 }
 
+.container .btn-cancelar a{
+    text-decoration: none;
+    color: var(--COLOR_SECUNDARIO_3);
+}
 
 /* FORMULARIOS */
 select{
@@ -674,6 +679,8 @@ select{
 
 .icono-editar{
     border-radius: 50%;
+    height: 50px;
+    width: 50px;
     padding: 7px;
     background-color: var(--COLOR_SECUNDARIO_3);
     color: white;

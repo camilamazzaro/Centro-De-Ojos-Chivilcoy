@@ -20,7 +20,7 @@
         
                 <form>
                     <table class="table table-bordered">
-                        <thead class="thead-dark">
+                        <thead>
                             <tr>
                                 <th>Día de la Semana</th>
                                 <th>Hora de Inicio</th>
@@ -53,21 +53,18 @@
                                         <input class="form-control" id="hora_fin" type="time" value="<%= horario.hora_fin %>" required>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="horarios-acciones">
                                     <button type="button" class="btn btn-guardar guardar">Guardar</button>
                                     <button type="button" class="btn btn-cancelar">
-                                        <a href="/medico/<%= horario.id_medico %>/horarios" class="text-decoration-none">Cancelar</a>
+                                        <a href="/medico/<%= horario.id_medico %>/horarios">Cancelar</a>
                                     </button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </form>
-        
-                <div class="contenedor-volver-atras">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <a href="/medico/<%= horario.id_medico %>/horarios">Volver Atrás</a>
-                </div>
+    
+                <a href="/medico/<%= horario.id_medico %>/horarios" class="btn btn-volver"><i class="fa-solid fa-arrow-left"></i> Volver Atrás</a>
                 
             </div>
         </div>
