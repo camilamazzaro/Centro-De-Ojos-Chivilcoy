@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-04-2025 a las 01:37:17
+-- Tiempo de generación: 10-05-2025 a las 21:41:45
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -60,6 +60,27 @@ CREATE TABLE `historias_clinicas` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `horarios`
+--
+
+CREATE TABLE `horarios` (
+  `id` int(11) NOT NULL,
+  `id_medico` int(11) NOT NULL,
+  `dia_semana` enum('lunes','martes','miercoles','jueves','viernes','sabado') NOT NULL,
+  `hora_inicio` time NOT NULL,
+  `hora_fin` time NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `horarios`
+--
+
+INSERT INTO `horarios` (`id`, `id_medico`, `dia_semana`, `hora_inicio`, `hora_fin`) VALUES
+(1, 1, 'lunes', '06:00:00', '15:00:00');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `medicos`
 --
 
@@ -70,6 +91,14 @@ CREATE TABLE `medicos` (
   `foto` varchar(255) NOT NULL,
   `descripcion` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `medicos`
+--
+
+INSERT INTO `medicos` (`id`, `id_usuario`, `telefono`, `foto`, `descripcion`) VALUES
+(1, 8, '3444', '/public\\uploads\\1746729677147.jpeg', 'Actualizada'),
+(5, 8, '2222222', '/public\\uploads\\1746818581613.png', 'Hola');
 
 -- --------------------------------------------------------
 
@@ -175,6 +204,15 @@ CREATE TABLE `usuarios` (
   `id_categoriaUsuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `id_categoriaUsuario`) VALUES
+(2, 'Camila Mazzaro', 'camilamazzaro90@gmail.com', '*******', 1),
+(8, 'Esteban Mazzaro', 'estebanmazzaro@gmail.com', 'Camila123', 2),
+(9, 'Bruno Mazzaro', 'camilamazzaro90@gmail.com', 'Camila123', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -185,6 +223,15 @@ CREATE TABLE `usuario_categorias` (
   `id` int(11) NOT NULL,
   `categoria` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuario_categorias`
+--
+
+INSERT INTO `usuario_categorias` (`id`, `categoria`) VALUES
+(1, 'Administrador'),
+(2, 'Medico'),
+(3, 'Secretaria');
 
 --
 -- Índices para tablas volcadas
@@ -200,6 +247,12 @@ ALTER TABLE `ciudades`
 -- Indices de la tabla `historias_clinicas`
 --
 ALTER TABLE `historias_clinicas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `horarios`
+--
+ALTER TABLE `horarios`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -279,10 +332,16 @@ ALTER TABLE `historias_clinicas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `horarios`
+--
+ALTER TABLE `horarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `medicos`
 --
 ALTER TABLE `medicos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `medico_horarios`
@@ -330,13 +389,13 @@ ALTER TABLE `turno_estados`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_categorias`
 --
 ALTER TABLE `usuario_categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
