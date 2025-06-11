@@ -84,7 +84,7 @@ class PacienteController {
             });
 
             // Renderizar la vista de agregar paciente
-            res.render("../views/pacientes/agregarPacientes", {
+            res.render("../views/pacientes/agregarPaciente", {
                 paciente: pacienteModel.obtenerPacienteBase(), obrasSociales
             });
         } catch (error) {

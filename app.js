@@ -8,7 +8,7 @@ const port = 3000;
 const rutasUsuarios = require('./routes/usuariosRoute.js');
 const rutasMedicos = require('./routes/medicosRoute');
 const rutasTurnos = require('./routes/turnosRoute'); 
-const rutasPacientes = require('./routes/pacienteRoute');
+const rutasPacientes = require('./routes/pacientesRoute');
 const rutasHorarios = require('./routes/horariosRoute');
 
 // Middleware

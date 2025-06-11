@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Usuarios</title>
+    <link rel="stylesheet" href="/public/css/pacientes.css">
+    <%- include('../commons/head') %>
+</head>
+
+<body>
+    <div class="contenedor-flex">
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
+    
+        <!-- PASO 1: INFORMACIÓN PERSONAL -->
+        <div class="container-pasoUno">
+
+            <div class="proceso-agregar-paciente">
+                <h1 style="text-align: center;">Agregar Paciente</h1>
+
+                    <!-- Diagrama de Proceso -->
+                    <div class="diagrama-proceso">
+                        <div class="paso" id="paso1">
+                            <div class="circulo circulo-activo" id="circulo-paso1">1</div>
+                            <span>Información Personal</span>
+                        </div>
+                        <div class="paso" id="paso2">
+                            <div class="circulo" id="circulo-paso2">2</div>
+                            <span>Información Médica</span>
+                        </div>
+                        <div class="paso" id="paso3">
+                            <div class="circulo" id="circulo-paso3">3</div>
+                            <span>Revisión</span>
+                        </div>
+                    </div>
+
+                    <!-- datos del cliente -->
+                    <div class="formulario-proceso">
+
+                        <h5>Datos Personales</h5>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <!-- Input oculto para capturar el id_usuario -->
+                                <!-- <input type="hidden" name="id_usuario" id="idUsuario" value="<%= // idUsuario || '' %>"> -->
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" name="nombre">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="apellido">Apellido</label>
+                                <input type="text" name="apellido">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="dni">DNI</label>
+                                <input type="text" name="dni">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="genero">Género</label>
+                                <select name="genero" id="genero">
+                                    <option value="femenino">Femenino</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                                <input type="date" name="fecha_nacimiento">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="direccion">Dirección</label>
+                                <input type="text" name="direccion">
+                            </div>
+                        </div>
+            
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="telefono">Teléfono</label>
+                                <input type="text" name="telefono">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="email">Email</label>
+                                <input type="email" name="email">
+                            </div>
+                        </div>
+
+                    </div>
+                
+
+                    <button class="boton-siguiente boton-siguiente-paso-1 boton">Siguiente</button>
+
+            </div>
+        
+        </div>
+
+        <!-- PASO 2: INFORMACIÓN MÉDICA -->
+        <div class="container-pasoDos ocultar">
+
+            <div class="proceso-agregar-paciente">
+
+                <h1 style="text-align: center;">Agregar Paciente</h1>
+
+                <div class="columna-izquierda">
+                    <div class="logo"></div>
+
+                    <!-- Diagrama de Proceso -->
+                    <div class="diagrama-proceso">
+                        <div class="paso" id="paso1">
+                            <div class="circulo circulo-activo" id="circulo-paso1">1</div>
+                            <span>Información Personal</span>
+                        </div>
+                        <div class="paso" id="paso2">
+                            <div class="circulo circulo-activo" id="circulo-paso2">2</div>
+                            <span>Información Médica</span>
+                        </div>
+                        <div class="paso" id="paso3">
+                            <div class="circulo" id="circulo-paso3">3</div>
+                            <span>Revisión</span>
+                        </div>
+                    </div>
+
+
+                    <div class="formulario-proceso">
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="cobertura">Cobertura</label>
+                                <select name="cobertura" id="cobertura">
+                                    <option value="cobertura1">Cobertura 1</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="nro-afiliado">Nro. Afiliado</label>
+                                <input type="text" name="nro-afiliado" id="">
+                            </div>
+                        </div>
+
+                    </div>
+                
+                    <button class="boton-anterior boton-anterior-paso-2 boton">Anterior</button>
+                    <button class="boton-siguiente boton-siguiente-paso-2 boton">Siguiente</button>
+
+                </div>
+                
+            </div>
+
+        
+        </div>
+
+        <!-- PASO 3: REVISIÓN -->
+        <div class="container-pasoTres ocultar">
+            <div class="proceso-agregar-paciente">
+                <h1 style="text-align: center;">Agregar Paciente</h1>
+
+                <div class="columna-izquierda">
+                    <div class="logo"></div>
+                    <!-- Diagrama de Proceso -->
+                    <div class="diagrama-proceso">
+                        <div class="paso" id="paso1">
+                            <div class="circulo circulo-activo" id="circulo-paso1">1</div>
+                            <span>Información Personal</span>
+                        </div>
+                        <div class="paso" id="paso2">
+                            <div class="circulo circulo-activo" id="circulo-paso2">2</div>
+                            <span>Información Médica</span>
+                        </div>
+                        <div class="paso" id="paso3">
+                            <div class="circulo circulo-activo" id="circulo-paso3">3</div>
+                            <span>Revisión</span>
+                        </div>
+                    </div>
+
+                    <div class="formulario-proceso">
+                        <h3>Revisar Datos</h3>
+                        <div class="resumen-pedido">
+
+                                <!-- Resumen de datos del paciente -->
+                                <div class="resumen-datos">
+                                    <h4>Datos del Cliente</h4>
+                                    <p><strong>Nombre:</strong> <span id="resumen-nombre"></span></p>
+                                    <p><strong>DNI:</strong> <span id="resumen-dni"></span></p>
+                                    <p><strong>Fecha de nacimiento:</strong> <span id="resumen-fecha-nacimiento"></span></p>
+                                    <p><strong>Género:</strong> <span id="resumen-genero"></span></p>
+                                    <p><strong>Dirección:</strong> <span id="resumen-direccion"></span></p>
+                                </div>
+
+                                <!-- Resumen de contacto del paciente -->
+                                <div class="resumen-datos">
+                                    <h4>Contacto</h4>
+                                    <p><strong>Teléfono:</strong> <span id="resumen-teléfono"></span></p>
+                                    <p><strong>Email:</strong> <span id="resumen-email"></span></p>
+                                </div>
+
+                                <!-- Resumen de información médica -->
+                                <div class="resumen-datos" id="resumen-pago">
+                                    <h4>Información médica</h4>
+                                    <p><strong>Cobertura:</strong> <span id="resumen-cobertura"></span></p>
+                                    <p><strong>Nro. Afiliado:</strong> <span id="resumen-nro-afiliado"></span></p>
+                                </div>
+                            
+                        </div>
+
+                        <div class="botones">
+                            <button class="boton-anterior boton-anterior-paso-3 boton">Anterior</button>
+                            <button class="boton-confirmar boton">Guardar Paciente</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    
+    </div>
+
+    <script>
+
+        // PARA MOSTRAR LOS PASOS DE A POCO
+        document.addEventListener("DOMContentLoaded", function(){
+            let pasoActual = 1;
+
+            function mostrarPaso(paso) {
+                document.querySelectorAll('.container-pasoUno, .container-pasoDos, .container-pasoTres').forEach((container, index) => {
+                    container.style.display = (index + 1 === paso) ? 'block' : 'none';
+                });
+            }
+
+            // Mostrar el primer paso al cargar
+            mostrarPaso(pasoActual);
+
+            // Botón Siguiente paso 1
+            document.querySelector('.boton-siguiente-paso-1').addEventListener('click', function () {
+                pasoActual = 2;
+                mostrarPaso(pasoActual);
+            });
+
+            // Botón Anterior paso 2
+            document.querySelector('.boton-anterior-paso-2').addEventListener('click', function () {
+                pasoActual = 1;
+                mostrarPaso(pasoActual);
+            });
+
+            // Botón Siguiente paso 2
+            document.querySelector('.boton-siguiente-paso-2').addEventListener('click', function () {
+                pasoActual = 3;
+                mostrarPaso(pasoActual);
+            });
+
+            // Botón Anterior paso 3
+            document.querySelector('.boton-anterior-paso-3').addEventListener('click', function () {
+                pasoActual = 2;
+                mostrarPaso(pasoActual);
+            });
+
+            //Función para validar paso 1
+
+            //Función para validar el paso 2
+
+            //Función para mostrar el mensaje de error
+
+
+        })
+    </script>
+
+</body>
+</html>
