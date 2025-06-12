@@ -178,6 +178,21 @@ class PacienteModel{
             callback(results);
         });
     }
+
+    async crearPaciente(nuevoPaciente){
+        console.log("Datos a ingresar: ", nuevoPaciente);
+        return new Promise((resolve, reject) => {
+
+            const sql = `INSERT INTO pacientes (nombre, dni, fecha_nacimiento, genero, direccion, email, telefono, id_obra_social, nro_afiliado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            conx.query(sql, [nuevoPaciente.nombre_apellido, nuevoPaciente.dni, nuevoPaciente.fecha_nacimiento, nuevoPaciente.genero, nuevoPaciente.direccion, nuevoPaciente.email ,nuevoPaciente.telefono, nuevoPaciente.cobertura, nuevoPaciente.nro_afiliado], (err, results) => {
+                if(err){
+                    reject(`Error al crear paciente: ${err.message} `);
+                }else{
+                    resolve(results);
+                }
+            });
+        });
+    }
 }
 
 //exporto la función/es para poder ser utilizada/s desde el controlador

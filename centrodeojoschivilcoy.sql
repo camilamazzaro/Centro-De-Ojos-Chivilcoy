@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-05-2025 a las 21:41:45
+-- Tiempo de generación: 12-06-2025 a las 20:46:20
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -76,7 +76,9 @@ CREATE TABLE `horarios` (
 --
 
 INSERT INTO `horarios` (`id`, `id_medico`, `dia_semana`, `hora_inicio`, `hora_fin`) VALUES
-(1, 1, 'lunes', '06:00:00', '15:00:00');
+(1, 1, 'lunes', '06:00:00', '15:00:00'),
+(3, 1, 'lunes', '16:39:00', '21:35:00'),
+(4, 1, 'martes', '10:00:00', '12:00:00');
 
 -- --------------------------------------------------------
 
@@ -149,6 +151,13 @@ CREATE TABLE `obras_sociales` (
   `nombre` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `obras_sociales`
+--
+
+INSERT INTO `obras_sociales` (`id`, `nombre`) VALUES
+(1, 'IOMA');
+
 -- --------------------------------------------------------
 
 --
@@ -159,10 +168,23 @@ CREATE TABLE `pacientes` (
   `id` int(11) NOT NULL,
   `nombre` varchar(255) NOT NULL,
   `dni` int(11) NOT NULL,
+  `fecha_nacimiento` date NOT NULL,
+  `genero` enum('femenino','masculino','otro') NOT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `telefono` varchar(255) NOT NULL,
-  `id_obraSocial` int(11) NOT NULL
+  `id_obra_social` int(11) NOT NULL,
+  `nro_afiliado` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pacientes`
+--
+
+INSERT INTO `pacientes` (`id`, `nombre`, `dni`, `fecha_nacimiento`, `genero`, `direccion`, `email`, `telefono`, `id_obra_social`, `nro_afiliado`) VALUES
+(5, 'Camila Mazzaro', 44488835, '2025-06-14', 'femenino', 'Las Heras 122', 'camilamazzaro90@gmail.com', '2346665555', 1, '123'),
+(6, 'Camila Mazzaro', 44488835, '2025-06-14', 'femenino', 'Las Heras 122', 'camilamazzaro90@gmail.com', '2346665555', 1, '123'),
+(7, 'Camila Mazzaro', 44488835, '2025-06-21', 'femenino', 'Las Heras 122', 'camilamazzaro90@gmail.com', '2346665555', 1, '123');
 
 -- --------------------------------------------------------
 
@@ -335,7 +357,7 @@ ALTER TABLE `historias_clinicas`
 -- AUTO_INCREMENT de la tabla `horarios`
 --
 ALTER TABLE `horarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `medicos`
@@ -365,13 +387,13 @@ ALTER TABLE `medico_practicas`
 -- AUTO_INCREMENT de la tabla `obras_sociales`
 --
 ALTER TABLE `obras_sociales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `pacientes`
 --
 ALTER TABLE `pacientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `turnos`

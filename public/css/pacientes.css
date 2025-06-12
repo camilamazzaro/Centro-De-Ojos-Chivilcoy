@@ -8,10 +8,14 @@
     --COLOR_SECUNDARIO_3: #38b5a9;
 }
 
-
 .boton-siguiente{
     font-size: 20px;
     float: right;
+    width: 150px;
+}
+
+.container-pasoUno, .container-pasoDos, .container-pasoTres{
+    margin-bottom: 2em;
 }
 
 .container-pasoDos h1 {
@@ -33,6 +37,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.diagrama-proceso .paso span{
+    margin-top: 10px;
+    font-weight: 600;
+    color: var(--COLOR_SECUNDARIO_3);
 }
 
 .diagrama-proceso .circulo {
@@ -57,8 +67,8 @@
     justify-content: space-between;
     flex-direction: column;
     width: 800px !important;
-    margin-left: 200px;
-    padding-top: 3em;
+    margin-left: 170px;
+    padding-top: 2em;
     padding-bottom: 3em;
 }
 
@@ -89,6 +99,7 @@
 
 .resumen-datos {
     background-color: #fff;
+    border: 2px solid var(--COLOR_SECUNDARIO_3);
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 8px;
@@ -118,21 +129,24 @@
 }
 
 
-.boton-anterior, .boton-confirmar {
-    background-color: gray;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.boton-confirmar{
+    background-color: var(--COLOR_SECUNDARIO_3) !important;
 }
 
-.boton-anterior:hover, .boton-confirmar:hover {
-    background-color: var(--COLOR_PRINCIPAL);
+.boton-anterior{
+    background-color: #fff !important;
+    border: 2px solid var(--COLOR_PRINCIPAL) !important;
+    color: var(--COLOR_PRINCIPAL) !important;
+}
+.boton-anterior:hover{
+    background-color: var(--COLOR_PRINCIPAL) !important;
+    color: #fff !important;
+}
+
+.boton-confirmar:hover {
+    background-color: var(--COLOR_PRINCIPAL) !important;
     border: none;
-    color: white;
+    color: #fff !important;
 }
 
 .botones {

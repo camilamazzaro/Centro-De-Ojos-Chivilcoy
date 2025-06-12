@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const PacienteController = require('../controllers/pacienteController'); //importo el controller para poder utilizar sus funciones
+const PacienteController = require('../controllers/pacienteController'); 
 const pacienteController = new PacienteController();
+
 const PacienteModel = require('../models/pacienteModel');
 const pacienteModel = new PacienteModel();
 
@@ -12,9 +13,13 @@ router.get('/pacientes', pacienteController.listarPacientes);
 
 //Ruta para editar y agregar pacientes
 router.get('/pacientes/editar/:id', pacienteController.editarPaciente);
-router.post('/pacientes/editar/:id', pacienteController.guardarPaciente);
+// router.post('/pacientes/editar/:id', pacienteController.guardarPaciente);
 router.get('/pacientes/agregar/0', pacienteController.mostrarAgregarPaciente);
-router.post('/pacientes/agregar/0', pacienteController.guardarPaciente);
+
+//Rutas para agregar por pasos al cliente
+router.post('/pacientes/guardar-info-personal', pacienteController.guardarInfoPersonal); //paso 1
+router.post('/pacientes/guardar-info-medica', pacienteController.guardarInfoMedica); //paso 2
+router.post('/pacientes/agregar/0', pacienteController.crearPaciente);
 
 //Ruta para eliminar pacientes
 router.delete('/pacientes/eliminar/:id', pacienteController.eliminarPaciente);

@@ -93,22 +93,52 @@ class PacienteController {
         }
     }
 
-    // Función para guardar un nuevo paciente
-    async guardarPaciente(req, res) {
-        const datos = req.body; // Datos recibidos del formulario
-        console.log(datos);
-        try {
-            await new Promise((resolve, reject) => {
-                pacienteModel.guardarPaciente(datos, (result) => {
-                    if (!result) reject(new Error("Error al guardar el paciente"));
-                    resolve(result);
-                });
-            });
+    // AGREGAR PACIENTE POR PASOS
 
-            res.send({ success: true });
-        } catch (error) {
-            console.error("Error al guardar el paciente:", error);
-            res.status(500).send({ success: false });
+    // Guardar Paso 1
+    guardarInfoPersonal(req, res){
+        console.log("Datos recibidos en guardar información personal: ", req.body);
+
+        const { nombre_apellido, dni, fecha_nacimiento, genero, direccion, telefono, email} = req.body;
+
+        res.json({ success: true, message: "Datos personales guardados temporalmente."});
+    }
+
+    // Guardar Paso 2
+    guardarInfoMedica(req, res){
+        console.log("Datos recibidos en guardar información personal: ", req.body);
+
+        const { cobertura, nro_afiliado } = req.body;
+
+        res.json({ success: true, message: "Datos personales guardados temporalmente."});
+    }
+
+    // Crear paciente
+    async crearPaciente(req, res){
+        try{
+            console.log("Datos recibidos en guardar paciente: ", req.body);
+
+            const { nombre_apellido, dni, fecha_nacimiento, genero, direccion, telefono, email, cobertura, nro_afiliado } = req.body;
+
+
+            const nuevoPaciente = {
+                nombre_apellido,
+                dni,
+                fecha_nacimiento,
+                genero,
+                direccion,
+                telefono,
+                email,
+                cobertura,
+                nro_afiliado,
+            };
+
+            const pacienteCreado = await pacienteModel.crearPaciente(nuevoPaciente);
+
+            return res.status(201).json({error: 0, message: "Paciente registrado exitosamente.", pacienteCreado});
+        }catch(err){
+            console.error("Error al registrar al paciente:", err);
+            return res.status(500).json({error: 1, message: "Error al registrar al paciente."});
         }
     }
 

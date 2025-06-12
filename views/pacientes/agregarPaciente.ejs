@@ -40,8 +40,6 @@
                     <!-- datos del cliente -->
                     <div class="formulario-proceso">
 
-                        <h5>Datos Personales</h5>
-
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <!-- Input oculto para capturar el id_usuario -->
@@ -102,7 +100,10 @@
                     </div>
                 
 
-                    <button class="boton-siguiente boton-siguiente-paso-1 boton">Siguiente</button>
+                    <button class="boton-siguiente boton-siguiente-paso-1 btn">
+                        Siguiente
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
 
             </div>
         
@@ -141,19 +142,25 @@
                             <div class="form-group col-md-6">
                                 <label for="cobertura">Cobertura</label>
                                 <select name="cobertura" id="cobertura">
-                                    <option value="cobertura1">Cobertura 1</option>
+                                    <% obrasSociales.forEach(obras => { %>
+                                        <option value="<%= obras.id %>"><%= obras.nombre %></option>
+                                    <% }); %>
                                 </select>
+
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="nro-afiliado">Nro. Afiliado</label>
-                                <input type="text" name="nro-afiliado" id="">
+                                <label for="nro_afiliado">Nro. Afiliado</label>
+                                <input type="text" name="nro_afiliado" id="">
                             </div>
                         </div>
 
                     </div>
                 
-                    <button class="boton-anterior boton-anterior-paso-2 boton">Anterior</button>
-                    <button class="boton-siguiente boton-siguiente-paso-2 boton">Siguiente</button>
+                    <button class="boton-anterior boton-anterior-paso-2 btn">Anterior</button>
+                    <button class="boton-siguiente boton-siguiente-paso-2 btn">
+                        Siguiente
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
 
                 </div>
                 
@@ -186,7 +193,6 @@
                     </div>
 
                     <div class="formulario-proceso">
-                        <h3>Revisar Datos</h3>
                         <div class="resumen-pedido">
 
                                 <!-- Resumen de datos del paciente -->
@@ -202,7 +208,7 @@
                                 <!-- Resumen de contacto del paciente -->
                                 <div class="resumen-datos">
                                     <h4>Contacto</h4>
-                                    <p><strong>Teléfono:</strong> <span id="resumen-teléfono"></span></p>
+                                    <p><strong>Teléfono:</strong> <span id="resumen-telefono"></span></p>
                                     <p><strong>Email:</strong> <span id="resumen-email"></span></p>
                                 </div>
 
@@ -216,8 +222,8 @@
                         </div>
 
                         <div class="botones">
-                            <button class="boton-anterior boton-anterior-paso-3 boton">Anterior</button>
-                            <button class="boton-confirmar boton">Guardar Paciente</button>
+                            <button class="boton-anterior boton-anterior-paso-3 btn">Anterior</button>
+                            <button class="boton-confirmar btn">Guardar Paciente</button>
                         </div>
                     </div>
                 </div>
@@ -229,6 +235,168 @@
     </div>
 
     <script>
+
+        // IR GUARDANDO LA INFORMACIÓN DE A POCO Y LUEGO ENVIAR TODO JUNTO
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // Al ingresar datos del paso 1
+            document.querySelector(".boton-siguiente-paso-1").addEventListener("click", async () => {
+                const nombre = document.querySelector("[name=nombre]").value.trim(); // trim() se utiliza para eliminar los espacios en blanco al principio y al final
+                const apellido = document.querySelector("[name=apellido]").value.trim();
+                const nombre_apellido = `${nombre} ${apellido}`;
+
+                const dni = document.querySelector("[name=dni]").value.trim();
+                const fecha_nacimiento = document.querySelector("[name=fecha_nacimiento]").value;
+                const genero = document.querySelector("[name=genero]").value;
+                const direccion = document.querySelector("[name=direccion]").value.trim();
+                const telefono = document.querySelector("[name=telefono]").value.trim();
+                const email = document.querySelector("[name=email]").value.trim();
+
+                // Guardar en sessionStorage
+                sessionStorage.setItem("nombre", nombre_apellido);
+                sessionStorage.setItem("dni", dni);
+                sessionStorage.setItem("fecha_nacimiento", fecha_nacimiento);
+                sessionStorage.setItem("genero", genero);
+                sessionStorage.setItem("direccion", direccion);
+                sessionStorage.setItem("telefono", telefono);
+                sessionStorage.setItem("email", email);
+
+                // Enviamos datos al backend para guardarlos temporalmente
+                await fetch("/pacientes/guardar-info-personal", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nombre_apellido, dni, fecha_nacimiento, genero, direccion, telefono, email})
+                });
+
+            });
+
+            // Guardar Paso 2
+            
+            document.querySelector(".boton-siguiente-paso-2").addEventListener("click", async () => {
+                
+                const cobertura = document.querySelector("[name=cobertura]").value;
+                const nro_afiliado = document.querySelector("[name=nro_afiliado]").value.trim();
+
+                sessionStorage.setItem("cobertura", cobertura);
+                sessionStorage.setItem("nro_afiliado", nro_afiliado);
+
+                await fetch("/pacientes/guardar-info-medica", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cobertura, nro_afiliado})
+                });
+
+                //Cargar resumen desde Storage --> ESTO DESPUÉS PASARLO AL MISMO ÁMBITO DONDE ESTÁN LAS VALIDACIONES DEL PASO 2
+                function cargarResumenDesdeStorage(){
+                    console.log("Cargando datos del resumen...");
+
+                    const nombre_apellido = sessionStorage.getItem("nombre") || "No especificado";
+                    const dni = sessionStorage.getItem("dni") || "No especificado";
+                    const fecha_nacimiento = sessionStorage.getItem("fecha_nacimiento") || "No especificado";
+                    const genero = sessionStorage.getItem("genero") || "No especificado";
+                    const direccion = sessionStorage.getItem("direccion") || "No especificado";
+                    const email = sessionStorage.getItem("email") || "No especificado";
+                    const telefono = sessionStorage.getItem("telefono") || "No especificado";
+                    const nro_afiliado = sessionStorage.getItem("nro_afiliado") || "No especificado";
+
+                    let cobertura = "No especificado";
+                    const coberturaId = sessionStorage.getItem("cobertura");
+
+                    if (coberturaId) {
+                        const coberturaOption = document.querySelector(`#cobertura option[value="${coberturaId}"]`);
+                        if (coberturaOption) {
+                            cobertura = coberturaOption.textContent;
+                        }
+                    }
+                    
+
+                    //Mostrar datos en el resumen (paso 3)
+                    document.getElementById("resumen-nombre").textContent = nombre_apellido;
+                    document.getElementById("resumen-dni").textContent = dni;
+                    document.getElementById("resumen-fecha-nacimiento").textContent = fecha_nacimiento;
+                    document.getElementById("resumen-genero").textContent = genero;
+                    document.getElementById("resumen-direccion").textContent = direccion;
+                    document.getElementById("resumen-email").textContent = email;
+                    document.getElementById("resumen-telefono").textContent = telefono;
+                    document.getElementById("resumen-cobertura").textContent = cobertura;
+                    document.getElementById("resumen-nro-afiliado").textContent = nro_afiliado;
+
+                    console.log("Resumen actualizado.")
+                }
+
+                // Llamamos a la función para cargar el resumen (paso 3)
+                cargarResumenDesdeStorage();
+            })
+
+            // Cuando se toca el botón de guardar, se envían todos los datos recopilados
+
+            document.querySelector(".boton-confirmar").addEventListener("click", async () => {
+                const nombre_apellido = sessionStorage.getItem("nombre") || "";
+                const dni = sessionStorage.getItem("dni") || "";
+                const fecha_nacimiento = sessionStorage.getItem("fecha_nacimiento") || "";
+                const genero = sessionStorage.getItem("genero") || "";
+                const direccion = sessionStorage.getItem("direccion") || "";
+                const email = sessionStorage.getItem("email") || "";
+                const telefono = sessionStorage.getItem("telefono") || "";
+                const cobertura = sessionStorage.getItem("cobertura") || "";
+                const nro_afiliado = sessionStorage.getItem("nro_afiliado") || "";
+
+                const payload = JSON.stringify({
+                    nombre_apellido,
+                    dni,
+                    fecha_nacimiento,
+                    genero,
+                    direccion,
+                    email,
+                    telefono,
+                    cobertura,
+                    nro_afiliado
+                });
+
+                console.log("Enviando datos al back: ", payload);
+
+                try {
+                    const response = await fetch("/pacientes/agregar/0", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: payload
+                    });
+
+                    const result = await response.json();
+                    console.log("Respuesta del servidor: ", result);
+
+                    if (result.error === 0) {
+                        Swal.fire({
+                            title: 'Paciente guardado con éxito',
+                            text: result.message || 'Paciente guardado correctamente.',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar'
+                        }).then(() => {
+                            window.location.href = "/pacientes";
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: result.message || 'No se pudo guardar el paciente.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+
+                } catch (error) {
+                    console.error("Error al guardar paciente:", error);
+                    Swal.fire({
+                        title: 'Error inesperado',
+                        text: 'Ocurrió un error al guardar el paciente.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
+
+
+        })
 
         // PARA MOSTRAR LOS PASOS DE A POCO
         document.addEventListener("DOMContentLoaded", function(){
@@ -272,6 +440,7 @@
             //Función para validar el paso 2
 
             //Función para mostrar el mensaje de error
+
 
 
         })
