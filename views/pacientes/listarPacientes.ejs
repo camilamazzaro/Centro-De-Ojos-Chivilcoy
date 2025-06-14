@@ -3,9 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Pacientes</title>
+    <link rel="stylesheet" href="/public/css/pacientes.css">
+    <%- include('../commons/head') %>
 </head>
 <body>
-    HOLA
+    <div class="contenedor-flex">
+
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
+
+        <div class="contenedor-pacientes">
+            <h1>Listado de pacientes</h1>
+
+            <div class="barra-superior-pacientes">
+
+                <!-- Barra de búsqueda -->
+                <div class="search-bar">
+                    <form method="GET">
+                        <input type="text" id="search" name="search" placeholder="Buscar" value="" />
+                        <i class="fa-regular fa-magnifying-glass buscador-icono"></i>
+                    </form>
+                </div>
+
+                <!-- Hacer filtros -->
+                <div class="filtros">
+                    <button id="filterButton" class="btn">
+                        <i class="fa-regular fa-bars-filter"></i>
+                        Filtros
+                    </button>
+                </div>
+
+                <!-- Agregar paciente -->
+                <a href="/pacientes/agregar/0" class="btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Nuevo paciente</a>
+            </div>
+
+            
+
+            <!-- Listado pacientes -->
+            <table class="tabla-listado-pacientes">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Cobertura</th>
+                        <th>Contacto</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% pacientes.forEach(paciente => { %>
+                        <tr data-id="<%= paciente.id %>">
+
+                            <td>
+                                <button class="info-paciente"><%= paciente.nombre %></button> <br>
+                                <%= paciente.dni %>
+                            </td>
+
+                            <td>
+                                <span class="paciente-cobertura"><%= paciente.obra_social %></span> <br>
+                                <%= paciente.nro_afiliado %>
+                            </td>
+
+                            <td>
+                                <a href="" class="paciente-telefono">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    <%= paciente.telefono %>
+                                </a>
+                            </td>
+
+                            <td class="paciente-acciones">
+                                <a href="">HCE</a>
+                                <button>Receta</button>
+                                <button>Turno</button>
+                            </td>
+
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

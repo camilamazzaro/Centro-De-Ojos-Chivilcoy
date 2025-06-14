@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Usuarios</title>
+    <title>Registrar Paciente</title>
     <link rel="stylesheet" href="/public/css/pacientes.css">
     <%- include('../commons/head') %>
 </head>
@@ -14,97 +14,100 @@
         <div class="contenedor-barra-lateral">
             <%- include('../commons/barra-lateral-admin') %>
         </div>
-    
-        <!-- PASO 1: INFORMACIÓN PERSONAL -->
-        <div class="container-pasoUno">
+        
+        <div class="contenedor-pacientes">
 
-            <div class="proceso-agregar-paciente">
-                <h1 style="text-align: center;">Agregar Paciente</h1>
+            <!-- PASO 1: INFORMACIÓN PERSONAL -->
+            <div class="container-pasoUno">
 
-                    <!-- Diagrama de Proceso -->
-                    <div class="diagrama-proceso">
-                        <div class="paso" id="paso1">
-                            <div class="circulo circulo-activo" id="circulo-paso1">1</div>
-                            <span>Información Personal</span>
-                        </div>
-                        <div class="paso" id="paso2">
-                            <div class="circulo" id="circulo-paso2">2</div>
-                            <span>Información Médica</span>
-                        </div>
-                        <div class="paso" id="paso3">
-                            <div class="circulo" id="circulo-paso3">3</div>
-                            <span>Revisión</span>
-                        </div>
-                    </div>
+                <div class="proceso-agregar-paciente">
+                    <h1 style="text-align: center;">Agregar Paciente</h1>
 
-                    <!-- datos del cliente -->
-                    <div class="formulario-proceso">
-
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <!-- Input oculto para capturar el id_usuario -->
-                                <!-- <input type="hidden" name="id_usuario" id="idUsuario" value="<%= // idUsuario || '' %>"> -->
+                        <!-- Diagrama de Proceso -->
+                        <div class="diagrama-proceso">
+                            <div class="paso" id="paso1">
+                                <div class="circulo circulo-activo" id="circulo-paso1">1</div>
+                                <span>Información Personal</span>
+                            </div>
+                            <div class="paso" id="paso2">
+                                <div class="circulo" id="circulo-paso2">2</div>
+                                <span>Información Médica</span>
+                            </div>
+                            <div class="paso" id="paso3">
+                                <div class="circulo" id="circulo-paso3">3</div>
+                                <span>Revisión</span>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="nombre">Nombre</label>
-                                <input type="text" name="nombre">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="apellido">Apellido</label>
-                                <input type="text" name="apellido">
-                            </div>
-                        </div>
+                        <!-- datos del cliente -->
+                        <div class="formulario-proceso">
 
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="dni">DNI</label>
-                                <input type="text" name="dni">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <!-- Input oculto para capturar el id_usuario -->
+                                    <!-- <input type="hidden" name="id_usuario" id="idUsuario" value="<%= // idUsuario || '' %>"> -->
+                                </div>
                             </div>
 
-                            <div class="form-group col-md-6">
-                                <label for="genero">Género</label>
-                                <select name="genero" id="genero">
-                                    <option value="femenino">Femenino</option>
-                                    <option value="masculino">Masculino</option>
-                                    <option value="otro">Otro</option>
-                                </select>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="nombre">Nombre</label>
+                                    <input type="text" name="nombre">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="apellido">Apellido</label>
+                                    <input type="text" name="apellido">
+                                </div>
                             </div>
-                            
-                        </div>
 
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="fecha_nacimiento">Fecha de nacimiento</label>
-                                <input type="date" name="fecha_nacimiento">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="direccion">Dirección</label>
-                                <input type="text" name="direccion">
-                            </div>
-                        </div>
-            
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="telefono">Teléfono</label>
-                                <input type="text" name="telefono">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="email">Email</label>
-                                <input type="email" name="email">
-                            </div>
-                        </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="dni">DNI</label>
+                                    <input type="text" name="dni">
+                                </div>
 
-                    </div>
+                                <div class="form-group col-md-6">
+                                    <label for="genero">Género</label>
+                                    <select name="genero" id="genero">
+                                        <option value="femenino">Femenino</option>
+                                        <option value="masculino">Masculino</option>
+                                        <option value="otro">Otro</option>
+                                    </select>
+                                </div>
+                                
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                                    <input type="date" name="fecha_nacimiento">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="direccion">Dirección</label>
+                                    <input type="text" name="direccion">
+                                </div>
+                            </div>
                 
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="telefono">Teléfono</label>
+                                    <input type="text" name="telefono">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email">
+                                </div>
+                            </div>
 
-                    <button class="boton-siguiente boton-siguiente-paso-1 btn">
-                        Siguiente
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
+                        </div>
+                    
 
+                        <button class="boton-siguiente boton-siguiente-paso-1 btn">
+                            Siguiente
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                </div>
             </div>
         
         </div>
@@ -231,6 +234,7 @@
             </div>
 
         </div>
+
     
     </div>
 

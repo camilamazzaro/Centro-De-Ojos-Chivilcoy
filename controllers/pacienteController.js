@@ -35,7 +35,7 @@ class PacienteController {
                 pacientes: pacientes,
                 currentPage: parseInt(page),
                 totalPages: totalPages,
-                currentFilters: filtros
+                currentFilters: filtros,
             }); //Antes no me funcionaba por no pasar la variable pacientes como parametro en el render
         });
     };

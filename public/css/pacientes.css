@@ -1,3 +1,5 @@
+/*GENERAL*/
+
 /* VARIABLES DE COLOR */
 
 :root { 
@@ -8,6 +10,14 @@
     --COLOR_SECUNDARIO_3: #38b5a9;
 }
 
+.contenedor-pacientes{
+    margin-right: 1%;
+    padding: 20px;
+    padding-left: 3em;
+    width: 75%;
+}
+
+/* ------------ AGREGAR PACIENTE ------------- */
 .boton-siguiente{
     font-size: 20px;
     float: right;
@@ -66,8 +76,8 @@
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    width: 800px !important;
-    margin-left: 170px;
+    margin-left: 2em;
+    width: 80%;
     padding-top: 2em;
     padding-bottom: 3em;
 }
@@ -165,6 +175,146 @@
     color: red;
     font-size: 12px;
     margin-top: 5px;
+}
+
+
+/* LISTADO DE PACIENTES -------------------------------> */
+
+/* ------------- barra superior*/
+.barra-superior-pacientes{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 2em;
+}
+
+/*buscador*/
+.search-bar{
+    width: 700px;
+}
+
+.search-bar form {
+    display: flex;
+    position: relative;
+}
+
+.search-bar input {
+    padding: 13px 35px 13px 15px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+.buscador-icono {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #888;
+}
+
+#search{
+    border: 2px solid #ccc;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+    outline: none;
+}
+
+#search:focus{
+    border-color: var(--COLOR_SECUNDARIO_3);
+}
+
+/*filtros*/
+.extra-filters {
+    display: flex;
+    align-items: center;
+}
+
+#filterButton{
+    background-color: #c0d8db;
+    color: var(--COLOR_OSCURO);
+    margin-right: 2em;
+    transition: all .3s ease;
+}
+
+#filterButton:hover{
+    transform: scale(1.1);
+}
+
+/* --------------- tabla listado pacientes*/
+
+.tabla-listado-pacientes{
+    width: 100%;
+    border-collapse: separate;
+    background-color: #fff;
+    border-spacing: 0 15px;
+    color: #333;
+}
+
+.tabla-listado-pacientes thead{
+    color: var(--COLOR_PRINCIPAL);
+    font-weight: bold;
+    text-align: left;
+    border-radius: 8px 8px 0 0;
+    text-transform: uppercase;
+}
+
+.tabla-listado-pacientes th, .tabla-listado-pacientes td{
+    padding: 12px 20px;
+    text-align: left;
+}
+
+.tabla-listado-pacientes tbody tr{
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    height: 70px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 2em;
+}
+
+.tabla-listado-pacientes tbody tr:hover{
+    background-color: #f7f7f7;
+    transform: scale(1.02);
+}
+
+.tabla-listado-pacientes td{
+    border-bottom: 1px solid #eee;
+}
+
+tbody .info-paciente{
+    background: none;
+    border: none;
+    color: var(--COLOR_SECUNDARIO_3);
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+tbody .paciente-cobertura{
+    font-weight: 500;
+}
+
+tbody .paciente-telefono{
+    color: var(--COLOR_SECUNDARIO_3);
+    text-decoration: none;
+}
+
+tbody .paciente-acciones a, .paciente-acciones button{
+    font-size: 15px;
+    background-color: #ddecee;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 8px;
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--COLOR_PRINCIPAL);
+    margin-right: 8px;
 }
 
 /*RESPONSIVE -----------------------------------------*/

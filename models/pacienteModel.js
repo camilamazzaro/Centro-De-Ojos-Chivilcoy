@@ -8,9 +8,14 @@ class PacienteModel{
         return {
             id: 0,
             nombre: '',
+            dni: '',
+            fecha_nacimiento: '',
+            genero: '',
+            direccion: '',
             email: '',
             telefono: '',
-            id_obrasocial: ''
+            id_obra_social: '',
+            nro_afiliado: '',
         }
     }
 
@@ -22,9 +27,9 @@ class PacienteModel{
         let params = [];
 
         let sqlFiltros = "";
-        if (filtros.id_obrasocial && filtros.id_obrasocial != 0) {
-            sqlFiltros += "AND pacientes.id_obrasocial = ? ";
-            params.push(filtros.id_obrasocial);
+        if (filtros.id_obra_social && filtros.id_obra_social != 0) {
+            sqlFiltros += "AND pacientes.id_obra_social = ? ";
+            params.push(filtros.id_obra_social);
         }
 
         if (filtros.buscador && filtros.buscador != '') {
@@ -41,11 +46,15 @@ class PacienteModel{
                 pacientes.id AS id, 
                 pacientes.nombre AS nombre, 
                 pacientes.dni AS dni,
+                pacientes.fecha_nacimiento AS fecha_nacimiento,
                 pacientes.email AS email, 
                 pacientes.telefono AS telefono,
+                pacientes.genero AS genero,
+                pacientes.direccion AS direccion,
+                pacientes.nro_afiliado AS nro_afiliado,
                 obras_sociales.nombre AS obra_social
             FROM pacientes
-            LEFT JOIN obras_sociales ON pacientes.id_obrasocial = obras_sociales.id
+            LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
             WHERE 1 = 1
             ${sqlFiltros}
             LIMIT ? OFFSET ?;
@@ -54,13 +63,12 @@ class PacienteModel{
         let sqlCount = `
             SELECT COUNT(*) AS total
             FROM pacientes
-            LEFT JOIN obras_sociales ON pacientes.id_obrasocial = obras_sociales.id
+            LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
             WHERE 1 = 1
             ${sqlFiltros}
         `;
 
         //Validación para asegurarse de que callback sea una función
-        console.log("Tipo de callback:", typeof callback); // Verifica el tipo
         if (typeof callback !== 'function') {
             // jajajajajajaajaja, buen console.error
             console.error("Error: Acá está el error papu(pacienteModel).");
@@ -91,7 +99,7 @@ class PacienteModel{
                 pacientes.dni,
                 pacientes.email, 
                 pacientes.telefono, 
-                pacientes.id_obrasocial
+                pacientes.id_obra_social
             FROM pacientes
             WHERE pacientes.id = ?`;
         conx.query(sql, [id], async (err, results) => {
@@ -118,9 +126,9 @@ class PacienteModel{
 
     async guardarPaciente(datos, callback) {
         if(datos.id == 0){
-            let sql = `INSERT INTO pacientes (nombre, dni, email, telefono, id_obrasocial)`;
+            let sql = `INSERT INTO pacientes (nombre, dni, email, telefono, id_obra_social)`;
             sql += `VALUES (?,?,?,?,?)`;
-            conx.query(sql, [datos.nombre, datos.dni, datos.email, datos.telefono, datos.id_obrasocial], async (err, results)=>{
+            conx.query(sql, [datos.nombre, datos.dni, datos.email, datos.telefono, datos.id_obra_social], async (err, results)=>{
                 if (err) {
                     console.error(err);
                     callback(null);
@@ -129,8 +137,8 @@ class PacienteModel{
                 }
         });
         } else {
-            let sql = `UPDATE pacientes SET nombre= ?, dni= ?, email= ?, telefono= ?, id_obrasocial= ? WHERE id = ?`;
-            conx.query(sql, [datos.nombre, datos.dni, datos.email, datos.telefono, datos.id_obrasocial, datos.id], async (err, results)=>{
+            let sql = `UPDATE pacientes SET nombre= ?, dni= ?, email= ?, telefono= ?, id_obra_social= ? WHERE id = ?`;
+            conx.query(sql, [datos.nombre, datos.dni, datos.email, datos.telefono, datos.id_obra_social, datos.id], async (err, results)=>{
                 if (err) {
                     console.error(err);
                     callback(null);
