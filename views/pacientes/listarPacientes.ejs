@@ -21,27 +21,18 @@
 
                 <!-- Barra de búsqueda -->
                 <div class="search-bar">
-                    <form method="GET">
-                        <input type="text" id="search" name="search" placeholder="Buscar" value="" />
+                    <form id="buscador" class="buscador" action="/pacientes" method="GET">
+                        <input type="text" id="search" name="buscador" placeholder="Buscar por nombre, apellido o DNI" value="<%= currentFilters.buscador %>" />
+                        <input type="hidden" name="page" value="<%= currentPage %>">
                         <i class="fa-regular fa-magnifying-glass buscador-icono"></i>
                     </form>
                 </div>
 
-                <!-- Hacer filtros -->
-                <div class="filtros">
-                    <button id="filterButton" class="btn">
-                        <i class="fa-regular fa-bars-filter"></i>
-                        Filtros
-                    </button>
-                </div>
-
                 <!-- Agregar paciente -->
-                <a href="/pacientes/agregar/0" class="btn">
+                <a href="/pacientes/agregar/0" class="btn" target="_blank">
                     <i class="fa-solid fa-plus"></i>
                     Nuevo paciente</a>
             </div>
-
-            
 
             <!-- Listado pacientes -->
             <table class="tabla-listado-pacientes">
@@ -59,7 +50,19 @@
                         <tr data-id="<%= paciente.id %>">
 
                             <td>
-                                <button class="info-paciente"><%= paciente.nombre %></button> <br>
+                                <button class="info-paciente btnEditarPaciente"
+                                    data-id="<%= paciente.id %>"
+                                    data-nombre="<%= paciente.nombre %>"
+                                    data-dni="<%= paciente.dni %>"
+                                    data-fecha-nacimiento="<%= paciente.fecha_nacimiento %>"
+                                    data-genero="<%= paciente.genero %>"
+                                    data-direccion="<%= paciente.direccion %>"
+                                    data-telefono="<%= paciente.telefono %>"
+                                    data-email="<%= paciente.email %>"
+                                    data-cobertura="<%= paciente.obra_social %>"
+                                    data-nro-afiliado="<%= paciente.nro_afiliado %>">
+                                    <%= paciente.nombre %>
+                                </button> <br>
                                 <%= paciente.dni %>
                             </td>
 
@@ -85,7 +88,68 @@
                     <% }) %>
                 </tbody>
             </table>
+
+            <!-- Paginación -->
+
+            <div class="pagination-container">
+                <div class="pagination">
+                    <% if (currentPage > 1) { %>
+                        <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>&buscador=<%= currentFilters.buscador %>" class="page-link anterior">Anterior</a>
+                    <% } %>
+                
+                    <!-- Páginas iniciales -->
+                    <% if (currentPage > 2) { %>
+                        <a href="?page=1&limit=<%= limit %>&buscador=<%= currentFilters.buscador %>" class="page-link">1</a>
+                        <% if (currentPage > 3) { %>
+                            <span>...</span>
+                        <% } %>
+                    <% } %>
+                
+                    <!-- Páginas cercanas a la actual -->
+                    <% for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) { %>
+                        <% if (i === currentPage) { %>
+                            <span class="current-page"><%= i %></span>
+                        <% } else { %>
+                            <a href="?page=<%= i %>&limit=<%= limit %>&buscador=<%= currentFilters.buscador %>" class="page-link"><%= i %></a>
+                        <% } %>
+                        <% } %>
+                
+                    <!-- Páginas finales -->
+                    <% if (currentPage < totalPages - 1) { %>
+                        <% if (currentPage < totalPages - 2) { %>
+                            <span>...</span>
+                        <% } %>
+                        <a href="?page=<%= totalPages %>&limit=<%= limit %>&buscador=<%= currentFilters.buscador %>" class="page-link"><%= totalPages %></a>
+                    <% } %>
+                
+                    <% if (currentPage < totalPages) { %>
+                        <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>&buscador=<%= currentFilters.buscador %>" class="page-link siguiente">Siguiente</a>
+                    <% } %>
+                </div>
+
+                <form method="GET" action="/pacientes" class="d-flex mb-4 cantidad-paginas align-items-center">
+                    <!-- Etiqueta informativa -->
+                    <label for="limit" class="me-2">Filas por página:</label>
+                        
+                    <!-- Seleccionar el límite de registros por página -->
+                    <select name="limit" id="limit" onchange="this.form.submit()" class="form-select w-auto" aria-label="Cantidad de registros por página">
+                        <option value="5" <%= limit == 5 ? 'selected' : '' %>>5</option>
+                        <option value="10" <%= limit == 10 ? 'selected' : '' %>>10</option>
+                        <option value="15" <%= limit == 15 ? 'selected' : '' %>>15</option>
+                        <option value="20" <%= limit == 20 ? 'selected' : '' %>>20</option>
+                    </select>
+                </form>  
+            </div>
+
+
         </div>
     </div>
+
+    <!-- MODAL DETALLES PACIENTE -->
+    <%- include('./detallesPaciente') %>
+
+
 </body>
+
+
 </html>

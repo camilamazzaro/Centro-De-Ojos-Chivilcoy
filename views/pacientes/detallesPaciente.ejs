@@ -1,0 +1,184 @@
+<div class="modal-editar-paciente modal" id="editarPacienteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalles del paciente</h2>
+                <button class="cerrar-modal-editar cerrar-modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formEditarPaciente">
+                    <input type="hidden" id="editId" name="id">
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label>Nombre</label>
+                            <input type="text" id="editNombre" name="nombre">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>DNI</label>
+                            <input type="text" id="editDni" name="dni">
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>Fecha de nacimiento</label>
+                            <input type="date" id="editFechaNacimiento" name="fecha_nacimiento">
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>Género</label>
+                            <input type="text" id="editGenero" name="genero" disabled>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>Dirección</label>
+                            <input type="text" id="editDireccion" name="direccion">
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>Teléfono</label>
+                            <input type="text" id="editTelefono" name="telefono">
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>Email</label>
+                            <input type="email" id="editEmail" name="email">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>Cobertura</label>
+                            <select name="cobertura" id="editCobertura">
+                                <% obrasSociales.forEach(obras => { %>
+                                    <option value="<%= obras.id %>"><%= obras.nombre %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>Número de afiliado</label>
+                            <input type="text" id="editNroAfiliado" name="nro_afiliado">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn guardar">Actualizar Datos</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        //MODAL EDITAR PACIENTE
+        document.addEventListener("DOMContentLoaded", () => {
+            const modalEditar = document.querySelector(".modal-editar-paciente");
+            const cerrarModalEditar = document.querySelector(".cerrar-modal-editar");
+
+            modalEditar.style.display = "none";
+
+            document.addEventListener("click", (event) => {
+                let button = event.target.closest(".btnEditarPaciente");
+                if(!button) return;
+
+                //Le asigno los valores actuales a los input
+                document.querySelector("#editId").value = button.getAttribute("data-id") || "";
+                document.querySelector("#editNombre").value = button.getAttribute("data-nombre") || "";
+                document.querySelector("#editDni").value = button.getAttribute("data-dni") || "";
+                let fechaNacimiento = button.getAttribute("data-fecha-nacimiento") || "";
+                document.querySelector("#editFechaNacimiento").value = fechaNacimiento ? new Date(fechaNacimiento).toISOString().split('T')[0] : "";    
+                document.querySelector("#editGenero").value = button.getAttribute("data-genero") || "";
+                document.querySelector("#editDireccion").value = button.getAttribute("data-direccion") || "";
+                document.querySelector("#editTelefono").value = button.getAttribute("data-telefono") || "";
+                document.querySelector("#editEmail").value = button.getAttribute("data-email") || "";
+                document.querySelector("#editNroAfiliado").value = button.getAttribute("data-nro-afiliado") || "";
+
+                 // Establecer la cobertura seleccionada
+                let coberturaSelect = document.querySelector("#editCobertura");
+                let coberturaId = button.getAttribute("data-cobertura") || "";
+
+                [...coberturaSelect.options].forEach(option => {
+                    if (option.textContent === coberturaId) {
+                        option.selected = true;
+                    }
+                });
+
+                // Mostrar modal
+                modalEditar.style.display = "flex";
+                modalEditar.classList.add("visible");
+            });
+
+            //Cerrar modal al hacer clic en la X
+            cerrarModalEditar.addEventListener("click", () => {
+                modalEditar.style.display = "none";
+                modalEditar.classList.remove("visible");
+            });
+
+        })
+
+        // ACTUALIZAR DATOS DEL PACIENTE
+        document.querySelector("#formEditarPaciente").addEventListener("submit", async function (event){
+
+            event.preventDefault();
+
+            const pacienteId = document.querySelector("#editId").value;
+
+            // Obtener valores de los input
+            const datosActualizados = {
+                nombre: document.querySelector("#editNombre").value.trim(),
+                dni: document.querySelector("#editDni").value.trim(),
+                fecha_nacimiento: document.querySelector("#editFechaNacimiento").value.trim(),
+                genero: document.querySelector("#editGenero").value.trim(),
+                direccion: document.querySelector("#editDireccion").value.trim(),
+                telefono: document.querySelector("#editTelefono").value.trim(),
+                email: document.querySelector("#editEmail").value.trim(),
+                cobertura: document.querySelector("#editCobertura").value.trim(),
+                nro_afiliado: document.querySelector("#editNroAfiliado").value.trim(),
+            };
+
+            try {
+                const response = await fetch(`/pacientes/editar/${pacienteId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(datosActualizados)
+                });
+
+                if (response.ok){
+                    Swal.fire({
+                        icon: "success",
+                        title: "Paciente actualizado",
+                        text: "Los datos del paciente se han actualizado correctamente.",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        location.reload(); // Recargar la página para ver los cambios
+                    });
+                } else {
+                    const errorData = await response.json();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Error al actualizar el paciente: " + errorData.error
+                    });
+                }
+            } catch(error){
+                console.error("Error:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Hubo un problema con la solicitud."
+                });
+            }
+            
+        })
+    </script>

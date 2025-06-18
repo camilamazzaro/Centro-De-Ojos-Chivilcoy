@@ -32,14 +32,16 @@ class PacienteModel{
             params.push(filtros.id_obra_social);
         }
 
-        if (filtros.buscador && filtros.buscador != '') {
-            sqlFiltros += `AND pacientes.nombre LIKE ? `;
-            params.push(`%${filtros.buscador}%`);
+        if (filtros.buscador && filtros.buscador !== '') {
+            sqlFiltros += `AND (
+                pacientes.nombre LIKE ? 
+                OR pacientes.dni LIKE ? 
+                OR pacientes.email LIKE ?
+            ) `;
+            params.push(`%${filtros.buscador}%`, `%${filtros.buscador}%`, `%${filtros.buscador}%`);
         }
 
         let paginatorParams = [limit, offset];
-
-        console.log(params)
 
         let sql = `
             SELECT 
@@ -99,7 +101,8 @@ class PacienteModel{
                 pacientes.dni,
                 pacientes.email, 
                 pacientes.telefono, 
-                pacientes.id_obra_social
+                pacientes.id_obra_social,
+                pacientes.nro_afiliado
             FROM pacientes
             WHERE pacientes.id = ?`;
         conx.query(sql, [id], async (err, results) => {
@@ -124,29 +127,37 @@ class PacienteModel{
         });
     }
 
-    async guardarPaciente(datos, callback) {
-        if(datos.id == 0){
-            let sql = `INSERT INTO pacientes (nombre, dni, email, telefono, id_obra_social)`;
-            sql += `VALUES (?,?,?,?,?)`;
-            conx.query(sql, [datos.nombre, datos.dni, datos.email, datos.telefono, datos.id_obra_social], async (err, results)=>{
+    async editarPaciente(id, datos) {
+        let sql = `
+            UPDATE pacientes
+            SET nombre = ?, dni = ?, fecha_nacimiento = ?, genero = ?, direccion = ?, telefono = ?, email = ?, id_obra_social = ?, nro_afiliado = ?
+            WHERE id = ?;
+        `;
+
+        const params = [
+            datos.nombre,
+            datos.dni,
+            datos.fecha_nacimiento,
+            datos.genero,
+            datos.direccion,
+            datos.telefono,
+            datos.email,
+            datos.cobertura,
+            datos.nro_afiliado,
+            id
+        ];
+
+        return new Promise((resolve, reject) => {
+            conx.query(sql, params, (err, result) => {
                 if (err) {
-                    console.error(err);
-                    callback(null);
+                    console.error("Error al actualizar paciente:", err);
+                    reject(err);
                 } else {
-                    callback(results);
+                    resolve(result.affectedRows > 0);
                 }
+            });
         });
-        } else {
-            let sql = `UPDATE pacientes SET nombre= ?, dni= ?, email= ?, telefono= ?, id_obra_social= ? WHERE id = ?`;
-            conx.query(sql, [datos.nombre, datos.dni, datos.email, datos.telefono, datos.id_obra_social, datos.id], async (err, results)=>{
-                if (err) {
-                    console.error(err);
-                    callback(null);
-                } else {
-                    callback(results);
-                }
-        });
-        }
+
     }     
 
     async eliminarPaciente(id, callback) {
@@ -188,7 +199,6 @@ class PacienteModel{
     }
 
     async crearPaciente(nuevoPaciente){
-        console.log("Datos a ingresar: ", nuevoPaciente);
         return new Promise((resolve, reject) => {
 
             const sql = `INSERT INTO pacientes (nombre, dni, fecha_nacimiento, genero, direccion, email, telefono, id_obra_social, nro_afiliado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;

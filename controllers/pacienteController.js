@@ -24,6 +24,13 @@ class PacienteController {
             buscador: buscador || '',
         }
 
+        const obrasSociales = await new Promise((resolve, reject) => {
+                pacienteModel.obtenerObrasSociales((result) => {
+                    if (!result) reject(new Error("No se encontraron obras sociales"));
+                    resolve(result);
+                });
+            });
+
         pacienteModel.listarPacientes(limit, offset, filtros, (pacientes, total) => {
             if (!pacientes || pacientes.length === 0) {
                 console.log("No se encontraron pacientes.");
@@ -36,39 +43,30 @@ class PacienteController {
                 currentPage: parseInt(page),
                 totalPages: totalPages,
                 currentFilters: filtros,
+                limit: limit,
+                obrasSociales
             }); //Antes no me funcionaba por no pasar la variable pacientes como parametro en el render
         });
     };
 
-    //funcion para editar los pacientes
+    //funcion para actualizar datos de los pacientes
     async editarPaciente(req, res) {
+        const { id } = req.params;
+        const datosActualizados = req.body;
+
         try {
-            const id = req.params.id;
-    
-            // Obtener el paciente por su ID
-            const paciente = await new Promise((resolve, reject) => {
-                pacienteModel.obtenerPaciente(id, (result) => {
-                    if (!result) reject(new Error("No se encontró el paciente"));
-                    resolve(result);
-                });
-            });
-    
-            // Obtener las obras sociales
-            const obrasSociales = await new Promise((resolve, reject) => {
-                pacienteModel.obtenerObrasSociales((result) => {
-                    if (!result) reject(new Error("No se encontraron obras sociales"));
-                    resolve(result);
-                });
-            });
-    
-            // Renderizar la vista de edición con los datos del paciente y las obras sociales
-            res.render("../views/pacientes/editarPacientes", {
-                paciente, obrasSociales
-            });
-    
-        } catch (error) {
-            console.error("Error al editar paciente:", error);
-            res.status(500).send("Ocurrió un error al intentar editar el paciente.");
+
+            // Actualizar datos
+            const actualizado = await pacienteModel.editarPaciente(id, datosActualizados);
+            if(actualizado){
+                res.json({ mensaje: "Paciente actualizado con éxito", paciente: datosActualizados });
+            } else {
+                res.status(500).json({ error: "Error al actualizar el paciente" });
+            }
+
+        } catch(error){
+            console.error("Error al actualizar paciente:", error);
+            res.status(500).json({ error: "Error al actualizar el cliente" });
         }
     }
 
@@ -97,8 +95,6 @@ class PacienteController {
 
     // Guardar Paso 1
     guardarInfoPersonal(req, res){
-        console.log("Datos recibidos en guardar información personal: ", req.body);
-
         const { nombre_apellido, dni, fecha_nacimiento, genero, direccion, telefono, email} = req.body;
 
         res.json({ success: true, message: "Datos personales guardados temporalmente."});
@@ -106,8 +102,6 @@ class PacienteController {
 
     // Guardar Paso 2
     guardarInfoMedica(req, res){
-        console.log("Datos recibidos en guardar información personal: ", req.body);
-
         const { cobertura, nro_afiliado } = req.body;
 
         res.json({ success: true, message: "Datos personales guardados temporalmente."});
@@ -116,8 +110,6 @@ class PacienteController {
     // Crear paciente
     async crearPaciente(req, res){
         try{
-            console.log("Datos recibidos en guardar paciente: ", req.body);
-
             const { nombre_apellido, dni, fecha_nacimiento, genero, direccion, telefono, email, cobertura, nro_afiliado } = req.body;
 
 

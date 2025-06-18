@@ -24,4 +24,7 @@ router.post('/pacientes/agregar/0', pacienteController.crearPaciente);
 //Ruta para eliminar pacientes
 router.delete('/pacientes/eliminar/:id', pacienteController.eliminarPaciente);
 
+//Ruta para editar datos del paciente
+router.put('/pacientes/editar/:id', pacienteController.editarPaciente)
+
 module.exports = router; //exporto el módulo para que pueda ser incorporado en app.js
