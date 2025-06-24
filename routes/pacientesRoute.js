@@ -3,6 +3,9 @@ const router = express.Router();
 const PacienteController = require('../controllers/pacienteController'); 
 const pacienteController = new PacienteController();
 
+const HistoriaClinicaController = require('../controllers/historiaClinicaController');
+const historiaClinicaController = new HistoriaClinicaController();
+
 const PacienteModel = require('../models/pacienteModel');
 const pacienteModel = new PacienteModel();
 
@@ -26,5 +29,8 @@ router.delete('/pacientes/eliminar/:id', pacienteController.eliminarPaciente);
 
 //Ruta para editar datos del paciente
 router.put('/pacientes/editar/:id', pacienteController.editarPaciente)
+
+// HISTORIAS CLÍNICAS
+router.get('/paciente/historias-clinicas/:pacienteId', historiaClinicaController.mostrarListadoHCE);
 
 module.exports = router; //exporto el módulo para que pueda ser incorporado en app.js
