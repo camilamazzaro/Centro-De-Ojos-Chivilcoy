@@ -93,24 +93,19 @@ class PacienteModel{
         });
     }
 
-    async obtenerPaciente(id, callback){
-        let sql = `
-            SELECT 
-                pacientes.id, 
-                pacientes.nombre, 
-                pacientes.dni,
-                pacientes.email, 
-                pacientes.telefono, 
-                pacientes.id_obra_social,
-                pacientes.nro_afiliado
-            FROM pacientes
-            WHERE pacientes.id = ?`;
-        conx.query(sql, [id], async (err, results) => {
-            if (results.length === 0) {
-                callback(this.obtenerPacienteBase());
-            } else {
-            callback(results[0]);
-            }
+    obtenerPaciente(id) {
+        return new Promise((resolve, reject) => {
+            const query = `
+            SELECT p.*, os.nombre AS nombre_obra_social
+            FROM pacientes p
+            JOIN obras_sociales os ON p.id_obra_social = os.id
+            WHERE p.id = ?
+            `;
+            conx.query(query, [id], (err, resultados) => {
+            if (err) return reject(err);
+            if (resultados.length === 0) return resolve(null);
+            resolve(resultados[0]);
+            });
         });
     }
 

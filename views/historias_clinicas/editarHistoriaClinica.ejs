@@ -1,11 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <%- include('../commons/head') %>
+    <link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">
+    <link rel="stylesheet" href="/public/css/his_clinicas.css">
+    <title>Editar historia clínica</title>
 </head>
+
+<head>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
 <body>
-    Editar Historia Clínica
+    <div class="contenedor-flex">
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
+
+        <div class="contenedor-editar-historia container">
+            
+            <div class="mt-5 agregar-historia">
+
+                <h1 class="text-center mb-4">Editar Historia Clínica</h1>
+
+                <!-- Datos Personales -->
+                <div class="card p-4 mb-4">
+                    <h3>Paciente</h3>
+
+                    <div class="datos-paciente">
+                        <strong>Nombre: </strong><span><%= paciente.nombre %></span>
+
+                        <strong>DNI: </strong><span><%= paciente.dni %></span>
+
+                        <strong>Edad: </strong><span id="edad"></span>
+
+                        <strong>Cobertura: </strong><span><%= paciente.nombre_obra_social %></span>
+                        
+                        <strong>Nro. Afiliado: </strong><span><%= paciente.nro_afiliado %></span>
+                    </div>
+                </div>
+
+                <!-- Datos Médicos -->
+                <div class="card p-4 mb-4">
+                    <h3>Información Médica</h3>
+
+                    <div class="row">
+                        <div class="form-group form-group col-md-6">
+                            <label for="motivo">Motivo</label>
+                            <textarea id="motivo" class="form-control" rows="3"><%= historiaClinica.motivo %></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="antecedentes_personales">Antecedentes Personales</label>
+                            <textarea id="antecedentes_personales" class="form-control" rows="3"><%= historiaClinica.antecedentes_personales %></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="medicacion_actual">Medicación actual</label>
+                            <textarea id="medicacion_actual" class="form-control" rows="3"><%= historiaClinica.medicacion_actual %></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="examen_clinico">Examen Clínico</label>
+                            <textarea id="examen_clinico" class="form-control" rows="3"><%= historiaClinica.examen_clinico %></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="diagnostico">Diagnóstico</label>
+                            <textarea id="diagnostico" class="form-control" rows="3"><%= historiaClinica.diagnostico %></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="tratamiento">Tratamiento</label>
+                            <textarea id="tratamiento" class="form-control" rows="3"><%= historiaClinica.tratamiento %></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="botones">
+                    <button class="btn btn-cancelar">
+                        <a href="/historiasclinicas" style="text-decoration: none; color: inherit;">Cancelar</a>
+                    </button>
+                    <button class="btn guardar btn-guardar me-2" id="guardarHCE">Guardar cambios</button>
+                </div>
+            </div>
+
+            <div class="mt-4 contenedor-volver-atras">
+                <a href="/paciente/historias-clinicas/<%= paciente.id %>" class="btn btn-link"><i class="fa-solid fa-arrow-left"></i> Volver Atrás</a>
+            </div>
+
+        </div>
+    </div>
+    
+    <script>
+        // Calcular edad del paciente
+        const fechaNacimiento = new Date('<%= paciente.fecha_nacimiento %>');
+
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+        const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+
+        if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+            edad--;
+        }
+
+        document.getElementById('edad').innerText = `${edad} años`;
+
+        // Enviar datos para editar HCE
+        document.getElementById('guardarHCE').addEventListener('click', async () => {
+            const datos = {
+                motivo: document.getElementById('motivo').value,
+                antecedentes_personales: document.getElementById('antecedentes_personales').value,
+                medicacion_actual: document.getElementById('medicacion_actual').value,
+                examen_clinico: document.getElementById('examen_clinico').value,
+                diagnostico: document.getElementById('diagnostico').value,
+                tratamiento: document.getElementById('tratamiento').value
+            };
+
+            try {
+                const response = await fetch(`/paciente/<%= paciente.id %>/historia-clinica/<%= historiaClinica.id %>/editar`, {
+                    method: 'PUT', // o POST si no usas PUT
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datos)
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: '¡Guardado!',
+                        text: 'La historia clínica fue actualizada exitosamente.',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        window.location.href = `/paciente/historias-clinicas/<%= paciente.id %>`;
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se pudo actualizar la historia clínica.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Ocurrió un problema de conexión con el servidor.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+
+        });
+    </script>
 </body>
 </html>

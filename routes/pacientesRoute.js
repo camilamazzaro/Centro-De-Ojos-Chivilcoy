@@ -32,5 +32,10 @@ router.put('/pacientes/editar/:id', pacienteController.editarPaciente)
 
 // HISTORIAS CLÍNICAS
 router.get('/paciente/historias-clinicas/:pacienteId', historiaClinicaController.mostrarListadoHCE);
+router.get('/paciente/:pacienteId/historia-clinica/agregar', historiaClinicaController.mostrarAgregarHCE);
+router.post('/paciente/:pacienteId/historia-clinica/agregar', historiaClinicaController.guardarHistoriaClinica);
+router.get('/paciente/:pacienteId/historia-clinica/:historiaId/editar', historiaClinicaController.mostrarEditarHCE);
+router.put('/paciente/:pacienteId/historia-clinica/:historiaId/editar', historiaClinicaController.editarHistoriaClinica);
+
 
 module.exports = router; //exporto el módulo para que pueda ser incorporado en app.js

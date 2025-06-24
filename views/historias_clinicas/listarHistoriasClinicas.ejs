@@ -1,11 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <%- include('../commons/head') %>
+    <title>Listado HC paciente</title>
+    <link rel="stylesheet" href="/public/css/his_clinicas.css">
 </head>
+
+
 <body>
-    <h1>Listado de Historias Clínicas</h1>
+    <div class="contenedor-flex">
+
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
+
+        <div class="contenedor-listado">
+
+            <% if (historias.id == 0) { %>
+                <h1 class="text-center mb-4">Este paciente no posee ninguna historia clínica</h1>
+            <% } else { %>
+
+            <div class="container contenedor-historias-clinicas mt-5 contenedor">
+                <h1 class="mb-4">Listado de HH.CC.</h1>
+        
+                <div class="div-superior">
+                    <div class="search-bar">
+                        <form id="buscador" class="buscador" method="GET" action="/paciente/<%= paciente.id %>/historias-clinicas">
+                            <input type="date" name="fecha" value="<%= typeof fecha !== 'undefined' ? fecha : '' %>">
+                            <button type="submit" class="btn btn-buscar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </form>
+
+                    </div>         
+            
+                    <div class="mb-3">
+                        <a class="btn btn-agregar" href="/paciente/<%= paciente.id %>/historia-clinica/agregar">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Nueva Historia Clínica</span>
+                        </a>
+                    </div>
+                </div>
+        
+                <div class="contenedor-his-clinica">
+                    <% historias.forEach(h => { %>
+                        <article>
+                            <div>
+                                <h5><strong>Paciente:</strong> <%= paciente.nombre %> - <strong>Nro. Afiliado:</strong> <%= paciente.nro_afiliado %></h5>
+                                <hr>
+                                <div class="fechaHora">
+                                    <% let date = new Date(h.fecha) %>
+                                    <div class="fecha">
+                                        <i class="fa-regular fa-calendar"></i>
+                                        <span><%= date.getDate() %>/<%= date.getMonth()+1 %>/<%= date.getFullYear() %></span>
+                                    </div>
+                                    <div class="hora">
+                                        <i class="fa-regular fa-clock"></i>
+                                        <span><%= date.getHours() %>:<%= date.getMinutes() %></span>
+                                    </div>
+                                </div>
+                                <p><strong>Motivo de la Consulta</strong><br><%= h.motivo %></p>
+                            </div>
+                            <a href="/paciente/<%= paciente.id %>/historia-clinica/<%= h.historia_id %>/editar">Ver Detalle</a>
+                        </article>
+                    <% }); %>
+                </div>
+
+            </div>
+
+            <% } %>
+        </div>
+    </div>
+    
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.querySelectorAll('.btnEliminar').forEach(button => {
+            button.addEventListener('click', async() => {
+                const pacienteId = button.getAttribute('data-id');
+                if (confirm('¿Estás seguro de que deseas eliminar esta H.C.?')) {
+                    const response = await fetch(`/historiasclinicas/eliminar/${pacienteId}`, {
+                        method: 'DELETE'
+                    });
+                    location.reload(); // Recargar la página después de eliminar
+                }
+            });
+        });
+
+        // Función para eliminar tildes
+        function quitarAcentos(texto) {
+        return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+
+        //BUSCADOR DE HISTORIAS CLÍNICAS
+        document.addEventListener("input", (e) => {
+        if (e.target.matches("#buscador")) {
+            const searchTerm = e.target.value.toLowerCase();
+
+            // Filtrar los artículos que contienen las historias clínicas
+            document.querySelectorAll(".contenedor-his-clinica article").forEach((article) => {
+                const nombrePaciente = quitarAcentos(article.querySelector("h5").textContent.toLowerCase()); //Aplico la funcion para no disernir entre texto con o sin tildes para evitar errores
+
+                if (nombrePaciente.includes(searchTerm)) {
+                    article.style.display = "";  // Mostrar el artículo si coincide con la búsqueda
+                } else {
+                    article.style.display = "none";  // Ocultar el artículo si no coincide
+                }
+            });
+        }
+    });
+    </script>
 </body>
 </html>

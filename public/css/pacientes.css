@@ -190,47 +190,6 @@
     margin-bottom: 2em;
 }
 
-/*buscador*/
-.search-bar{
-    width: 700px;
-}
-
-.search-bar form {
-    display: flex;
-    position: relative;
-}
-
-.search-bar input {
-    padding: 13px 35px 13px 15px;
-    font-size: 14px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    width: 100%;
-}
-
-.buscador-icono {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px;
-    color: #888;
-}
-
-#search{
-    border: 2px solid #ccc;
-    padding: 10px;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 8px;
-    outline: none;
-}
-
-#search:focus{
-    border-color: var(--COLOR_SECUNDARIO_3);
-}
-
 /*filtros*/
 .extra-filters {
     display: flex;

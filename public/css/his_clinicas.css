@@ -1,0 +1,170 @@
+:root { 
+    --COLOR_PRINCIPAL: #005b6f;
+    --COLOR_OSCURO: #0a3749;
+    --COLOR_SECUNDARIO_1: #457d84;
+    --COLOR_SECUNDARIO_2: #c0d8db;
+    --COLOR_SECUNDARIO_3: #38b5a9;
+}
+
+
+/* Estilo para la página en general */
+body {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+    min-height: 100vh; /*para que el body siempre ocupe toda la vista de la pantalla, como mínimo*/
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%2338b5a9" fill-opacity="0.1" d="M0,0L120,26.7C240,53,480,107,720,112C960,117,1200,75,1320,53.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
+
+.contenedor-flex{
+    display: flex;
+    gap: 1.5em;
+    height: 100% !important;
+}
+
+.contenedor-listado, .contenedor-agregar-historia, .contenedor-editar-historia{
+    flex: 1;
+    margin-right: 1%;
+}
+
+.contenedor h1 {
+    color: var(--AZUL_OSCURO);
+    font-weight: 650;
+    font-size: 2rem;
+}
+
+
+/* ---------------------------- Listado de historias clínicas ---------------------------- */
+
+.contenedor-historias-clinicas{
+    margin-left: 2.5em !important;
+}
+
+.contenedor-listado .contenedor-his-clinica{
+    width: 85%;
+    margin-top: 3em;
+}
+
+.contenedor-his-clinica h5{
+    font-size: 16px;
+}
+
+.contenedor-his-clinica article{
+    width: 100%;
+    background-color: #fff;
+    margin-bottom: 1.3em;
+    border-radius: 10px;
+    padding: 1em;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+}
+
+.contenedor-his-clinica article hr{
+    background-color: var(--COLOR_SECUNDARIO_3);
+    border: none;
+    height: 3px;
+    margin: 1em 0;
+}
+
+.contenedor-his-clinica article .fechaHora{
+    display: flex;
+    gap: 1em;
+    margin-bottom: 2em;
+    color: #888888;
+}
+
+.contenedor-his-clinica article .fechaHora i{
+    color: var(--COLOR_SECUNDARIO_3);
+}
+
+.contenedor-his-clinica article a{
+    background-color: var(--COLOR_SECUNDARIO_3);
+    padding: 5px 8px;
+    height: 37px;
+    align-content: center;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+
+/*AGREGAR HISTORIAS CLÍNICAS*/
+
+.agregar-historia{
+    margin-bottom: 2em;
+    margin-left: 2em;
+}
+
+.agregar-historia .card {
+    width: 95%;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    padding: 2em;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1em;
+}
+
+.agregar-historia .card h3{
+    margin-bottom: 1em;
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.agregar-historia .datos-paciente strong{
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.agregar-historia .datos-paciente span{
+    margin-right: 2em;
+}
+
+/*Listado individual de historia clínica*/
+
+.contenedor-listado-individual .card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.contenedor-listado-individual h3 {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* Campos de información */
+.contenedor-listado-individual .campo {
+    font-weight: bold;
+    color: #333;
+}
+
+.contenedor-listado-individual .valor {
+    display: block;
+    background-color: #fff;
+    padding: 8px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Alineación de datos personales */
+.contenedor-listado-individual .row .col-4,
+.contenedor-listado-individual .row .col-6 {
+    margin-bottom: 10px;
+}
+
+/* Sección de datos médicos */
+.contenedor-listado-individual .col-md-6 {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.contenedor-listado-individual .col-md-6 .campo,
+.contenedor-listado-individual .col-md-6 .valor {
+    width: 100%;
+}
