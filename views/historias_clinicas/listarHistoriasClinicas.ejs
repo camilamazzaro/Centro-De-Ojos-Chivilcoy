@@ -25,15 +25,22 @@
                 <h1 class="mb-4">Listado de HH.CC.</h1>
         
                 <div class="div-superior">
-                    <div class="search-bar">
-                        <form id="buscador" class="buscador" method="GET" action="/paciente/<%= paciente.id %>/historias-clinicas">
-                            <input type="date" name="fecha" value="<%= typeof fecha !== 'undefined' ? fecha : '' %>">
-                            <button type="submit" class="btn btn-buscar">
+
+                    <div class="search-bar d-flex align-items-center gap-2">
+                        <form class="buscador d-flex align-items-center" method="GET" action="/paciente/historias-clinicas/<%= paciente.id %>">
+                            <input type="date" name="fecha" value="<%= typeof fecha !== 'undefined' ? fecha : '' %>" class="form-control me-2">
+                            <button type="submit" class="btn-buscar">
                                 <i class="fa fa-search"></i>
                             </button>
                         </form>
 
-                    </div>         
+                        <% if (fecha) { %>
+                            <a href="/paciente/historias-clinicas/<%= paciente.id %>" class="btn btn-outline-secondary">
+                                <i class="fa fa-times"></i> Borrar
+                            </a>
+                        <% } %>
+                    </div>
+
             
                     <div class="mb-3">
                         <a class="btn btn-agregar" href="/paciente/<%= paciente.id %>/historia-clinica/agregar">
@@ -67,9 +74,53 @@
                     <% }); %>
                 </div>
 
+                <div class="pagination-container">
+                    <% if (totalPaginas > 1) { %>
+                        <nav class="mt-4 paginador">
+                        <ul class="pagination justify-content-center">
+
+                            <% const maxNumeros = 5;
+                            let inicio = Math.max(1, pagina - Math.floor(maxNumeros / 2));
+                            let fin = inicio + maxNumeros - 1;
+                            if (fin > totalPaginas) {
+                                fin = totalPaginas;
+                                inicio = Math.max(1, fin - maxNumeros + 1);
+                            }
+                            %>
+
+                            <!-- Flecha anterior -->
+                            <li class="page-item <%= pagina === 1 ? 'disabled' : '' %>">
+                            <a class="page-link" href="?pagina=<%= pagina - 1 %><%= fecha ? '&fecha=' + fecha : '' %>">
+                                &laquo;
+                            </a>
+                            </li>
+
+                            <!-- Números de página -->
+                            <% for (let i = inicio; i <= fin; i++) { %>
+                            <li class="page-item <%= i === pagina ? 'active' : '' %>">
+                                <a class="page-link" href="?pagina=<%= i %><%= fecha ? '&fecha=' + fecha : '' %>"><%= i %></a>
+                            </li>
+                            <% } %>
+
+                            <!-- Flecha siguiente -->
+                            <li class="page-item <%= pagina === totalPaginas ? 'disabled' : '' %>">
+                            <a class="page-link" href="?pagina=<%= pagina + 1 %><%= fecha ? '&fecha=' + fecha : '' %>">
+                                &raquo;
+                            </a>
+                            </li>
+
+                        </ul>
+                        </nav>
+                    <% } %>
+                    </div>
+
+
             </div>
 
             <% } %>
+
+            
+
         </div>
     </div>
     

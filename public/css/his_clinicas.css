@@ -168,3 +168,34 @@ body {
 .contenedor-listado-individual .col-md-6 .valor {
     width: 100%;
 }
+
+/*Buscador de listado historias clínicas*/
+.paginador .pagination {
+    margin-top: 20px;
+    display: flex;
+    text-decoration: none;
+    list-style: none;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--COLOR_SECUNDARIO_2);
+    color: var(--COLOR_PRINCIPAL);
+}
+
+/*buscador*/
+.search-bar .btn-buscar{
+    margin-left: 2em;
+    background: var(--COLOR_SECUNDARIO_2);
+    border: none;
+    color: var(--COLOR_PRINCIPAL);
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.search-bar .btn-outline-secondary {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    margin-top: 1em;
+}

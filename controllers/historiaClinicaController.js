@@ -8,6 +8,9 @@ class HistoriaClinicaController{
 
     async mostrarListadoHCE(req, res){
         const pacienteId = req.params.pacienteId;
+        const fechaFiltro = req.query.fecha || null;
+        const pagina = parseInt(req.query.pagina) || 1;
+        const porPagina = 5;
 
         historiaClinicaModel.listarHistoriasClinicas(pacienteId, (err, datos) => {
             if (err) {
@@ -15,7 +18,13 @@ class HistoriaClinicaController{
             }
 
             if (datos.length === 0) {
-            return res.status(404).send('No se encontraron historias clínicas para este paciente');
+                return res.render('historias_clinicas/listarHistoriasClinicas', {
+                    paciente: {},
+                    historias: [],
+                    pagina: 1,
+                    totalPaginas: 1,
+                    fecha: fechaFiltro
+                });
             }
 
             // separo datos del cliente
@@ -31,7 +40,7 @@ class HistoriaClinicaController{
             cobertura: datos[0].cobertura
             };
 
-            const historias = datos.map(row => ({
+            let historias = datos.map(row => ({
             historia_id: row.historia_id,
             fecha: row.fecha,
             motivo: row.motivo,
@@ -42,9 +51,24 @@ class HistoriaClinicaController{
             tratamiento: row.tratamiento
             }));
 
+            if(fechaFiltro){
+                historias = historias.filter(h => {
+                    const fecha = new Date(h.fecha).toISOString().slice(0,10);
+                    return fecha === fechaFiltro;
+                });
+            }
+
+            const totalHistorias = historias.length;
+            const totalPaginas = Math.ceil(totalHistorias / porPagina);
+            const desde = (pagina - 1) * porPagina;
+            const historiasPaginadas = historias.slice(desde, desde + porPagina);
+
             res.render('historias_clinicas/listarHistoriasClinicas', {
                 paciente,
-                historias
+                historias: historiasPaginadas,
+                pagina,
+                totalPaginas, 
+                fecha: fechaFiltro,
             });
         });
     }
