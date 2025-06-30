@@ -321,6 +321,32 @@ tbody .paciente-acciones a, .paciente-acciones button{
     padding: 20px;
 }
 
+#modalReceta .opciones {
+    display: flex;
+    gap: 1em;
+}
+
+#modalReceta .opciones label {
+    display: flex;
+    align-items: center;
+    gap: 6px; 
+}
+
+.receta-firma{
+    margin-top: 2em;
+}
+
+.receta-firma, .receta-copias, .receta-pdf{
+    margin-bottom: 1em;
+}
+
+.label-opciones{
+    font-weight: bold;
+    color: var(--COLOR_PRINCIPAL);
+}
+
+
+
 /*RESPONSIVE -----------------------------------------*/
 
 @media (max-width: 1024px) {

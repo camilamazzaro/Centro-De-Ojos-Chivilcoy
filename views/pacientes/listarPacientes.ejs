@@ -169,9 +169,9 @@
 
                 <!-- Detalles del médico -->
                 <div id="detallesMedico" class="sombra" style="display: none;"> 
-                    <p><strong>Especialidad</strong> <span id="especialidadMedico"></span></p>
+                    <p><strong>Especialidad</strong> <span id="especialidadMedico">Médico Oftalmólogo</span></p>
                     <p><strong>Matrícula Provincial</strong> <span id="matriculaMedico"></span></p>
-                    <p><strong>Dirección</strong> <span id="direccionMedico"></span></p>
+                    <p><strong>Dirección</strong> <span id="direccionMedico">Av. Sarmiento 171, Chivilcoy, Bs. As.</span></p> <!--Preguntar-->
                 </div>
 
                 <!-- Datos del paciente -->
@@ -213,25 +213,31 @@
                 </div>
 
                 <!-- Opciones -->
-                <hr>
-                <div class="form-group">
-                    <label>Opciones de firma:</label><br>
-                    <label><input type="checkbox" name="firma_manuscrita"> Firma manuscrita</label><br>
-                    <label><input type="checkbox" name="firma_digital"> Adjuntar firma digital (opcional)</label>
+                <div class="receta-firma">
+                    <label class="label-opciones">Opciones de firma:</label>
+                    <div class="opciones">
+                        <label><input type="checkbox" name="firma_manuscrita"> Firma manuscrita</label>
+                        <label><input type="checkbox" name="firma_digital"> Adjuntar firma digital (opcional)</label>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Copias:</label><br>
-                    <label><input type="radio" name="copias" value="sin" checked> Sin copia</label>
-                    <label><input type="radio" name="copias" value="duplicado"> Duplicado</label>
-                    <label><input type="radio" name="copias" value="triplicado"> Triplicado</label>
+                <div class="receta-copias">
+                    <label class="label-opciones">Copias:</label>
+                    <div class="opciones">
+                        <label><input type="radio" name="copias" value="sin" checked> Sin copia</label>
+                        <label><input type="radio" name="copias" value="duplicado"> Duplicado</label>
+                        <label><input type="radio" name="copias" value="triplicado"> Triplicado</label>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Tamaño de PDF:</label><br>
-                    <label><input type="radio" name="formato_pdf" value="A4" checked> A4</label>
-                    <label><input type="radio" name="formato_pdf" value="A5"> A5</label>
+                <div class="receta-pdf">
+                    <label class="label-opciones">Tamaño de PDF:</label>
+                    <div class="opciones">
+                        <label><input type="radio" name="formato_pdf" value="A4" checked> A4</label>
+                        <label><input type="radio" name="formato_pdf" value="A5"> A5</label>
+                    </div>
                 </div>
+
 
                 <button type="submit" class="btn">Generar Receta</button>
             </form>
@@ -273,18 +279,14 @@
 
             const medicoSelect = document.getElementById('medico');
             const detallesMedico = document.getElementById('detallesMedico');
-            const especialidad = document.getElementById('especialidadMedico');
             const matricula = document.getElementById('matriculaMedico');
-            const direccion = document.getElementById('direccionMedico');
 
             medicoSelect.addEventListener('change', () => {
                 const medicoId = parseInt(medicoSelect.value);
                 const medico = medicos.find(m => m.id === medicoId);
 
                 if (medico) {
-                    especialidad.textContent = medico.especialidad;
                     matricula.textContent = medico.matricula;
-                    direccion.textContent = medico.direccion;
                     detallesMedico.style.display = 'flex';
                 } else {
                     detallesMedico.style.display = 'none';
