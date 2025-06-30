@@ -296,6 +296,31 @@ tbody .paciente-acciones a, .paciente-acciones button{
     margin: 2em auto 0 auto;
 }
 
+/* ------- MODAL RECETAS ------------------ */
+
+#modalReceta .modal-content{
+    overflow-y: auto;
+    height: 90vh;
+}
+
+#modalReceta .receta-datos-paciente{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    border-radius: 8px;
+
+}
+
+#modalReceta strong{
+    margin-right: 8px;
+    color: var(--COLOR_PRINCIPAL);
+}
+
+#modalReceta #detallesMedico{
+    justify-content: space-between;
+    padding: 20px;
+}
+
 /*RESPONSIVE -----------------------------------------*/
 
 @media (max-width: 1024px) {
@@ -424,3 +449,4 @@ tbody .paciente-acciones a, .paciente-acciones button{
         transition: background-color 0.3s ease;
     }
 }
+

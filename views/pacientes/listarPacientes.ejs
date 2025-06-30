@@ -80,7 +80,7 @@
 
                             <td class="paciente-acciones">
                                 <a href="/paciente/historias-clinicas/<%= paciente.id %>">HCE</a>
-                                <button>Receta</button>
+                                <button id="btnAbrirModalReceta" data-id="<%= paciente.id %>">Receta</button>
                                 <button>Turno</button>
                             </td>
 
@@ -147,6 +147,170 @@
 
     <!-- MODAL DETALLES PACIENTE -->
     <%- include('./detallesPaciente') %>
+
+    <div id="modalReceta" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Receta Digital</h2>
+                <button class="cerrar-modal-receta cerrar-modal">&times;</button>
+            </div>
+
+            <form id="formReceta">
+                <!-- Selección de médico -->
+                <div class="form-group">
+                    <label for="medico">Médico</label>
+                    <select id="medico" name="medico" required>
+                        <option value="">Seleccione un médico</option>
+                        <% medicos.forEach(m => { %>
+                            <option value="<%= m.id %>"><%= m.nombre %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <!-- Detalles del médico -->
+                <div id="detallesMedico" class="sombra" style="display: none;"> 
+                    <p><strong>Especialidad</strong> <span id="especialidadMedico"></span></p>
+                    <p><strong>Matrícula Provincial</strong> <span id="matriculaMedico"></span></p>
+                    <p><strong>Dirección</strong> <span id="direccionMedico"></span></p>
+                </div>
+
+                <!-- Datos del paciente -->
+
+
+                <div class="receta-datos-paciente sombra">
+                    <p><strong>Paciente</strong> <span id="nombrePaciente"></span></p>
+                    <p><strong>DNI</strong> <span id="dniPaciente"></span></p>
+                    <p><strong>Cobertura</strong> <span id="coberturaPaciente"></span></p>
+                    <p><strong>Nro. Afiliado</strong> <span id="afiliadoPaciente"></span></p>
+                </div>
+                
+
+                <!-- Datos de receta -->
+
+                <div class="form-group">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tratamiento">Tratamiento</label>
+                    <textarea id="tratamiento" name="tratamiento" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="diagnostico">Diagnóstico (opcional)</label>
+                    <textarea id="diagnostico" name="diagnostico"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="indicaciones">Indicaciones (opcional)</label>
+                    <textarea id="indicaciones" name="indicaciones"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="comentarios">Comentarios (opcional)</label>
+                    <textarea id="comentarios" name="comentarios"></textarea>
+                </div>
+
+                <!-- Opciones -->
+                <hr>
+                <div class="form-group">
+                    <label>Opciones de firma:</label><br>
+                    <label><input type="checkbox" name="firma_manuscrita"> Firma manuscrita</label><br>
+                    <label><input type="checkbox" name="firma_digital"> Adjuntar firma digital (opcional)</label>
+                </div>
+
+                <div class="form-group">
+                    <label>Copias:</label><br>
+                    <label><input type="radio" name="copias" value="sin" checked> Sin copia</label>
+                    <label><input type="radio" name="copias" value="duplicado"> Duplicado</label>
+                    <label><input type="radio" name="copias" value="triplicado"> Triplicado</label>
+                </div>
+
+                <div class="form-group">
+                    <label>Tamaño de PDF:</label><br>
+                    <label><input type="radio" name="formato_pdf" value="A4" checked> A4</label>
+                    <label><input type="radio" name="formato_pdf" value="A5"> A5</label>
+                </div>
+
+                <button type="submit" class="btn">Generar Receta</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const modalReceta = document.getElementById("modalReceta");
+            const cerrarModalReceta = document.querySelector(".cerrar-modal-receta");
+
+            const botonesReceta = document.querySelectorAll(".btnAbrirModalReceta");
+            botonesReceta.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const tr = btn.closest("tr");
+
+                    document.getElementById("nombrePaciente").textContent = tr.querySelector("button").dataset.nombre;
+                    document.getElementById("dniPaciente").textContent = tr.querySelector("button").dataset.dni;
+                    document.getElementById("coberturaPaciente").textContent = tr.querySelector("button").dataset.cobertura;
+                    document.getElementById("afiliadoPaciente").textContent = tr.querySelector("button").dataset.nroAfiliado;
+
+                    modalReceta.style.display = "flex";
+                });
+            });
+
+            cerrarModalReceta.addEventListener("click", () => {
+                modalReceta.style.display = "none";
+            });
+        });
+
+        
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const medicos = <%- JSON.stringify(medicos) %>;
+
+            const medicoSelect = document.getElementById('medico');
+            const detallesMedico = document.getElementById('detallesMedico');
+            const especialidad = document.getElementById('especialidadMedico');
+            const matricula = document.getElementById('matriculaMedico');
+            const direccion = document.getElementById('direccionMedico');
+
+            medicoSelect.addEventListener('change', () => {
+                const medicoId = parseInt(medicoSelect.value);
+                const medico = medicos.find(m => m.id === medicoId);
+
+                if (medico) {
+                    especialidad.textContent = medico.especialidad;
+                    matricula.textContent = medico.matricula;
+                    direccion.textContent = medico.direccion;
+                    detallesMedico.style.display = 'flex';
+                } else {
+                    detallesMedico.style.display = 'none';
+                }
+            });
+
+            // Si vas a llenar el paciente con JS (por ejemplo, al hacer clic en un botón de receta)
+            const botonesReceta = document.querySelectorAll("#btnAbrirModalReceta");
+            botonesReceta.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const tr = btn.closest("tr");
+
+                    document.getElementById("nombrePaciente").textContent = tr.querySelector("button").dataset.nombre;
+                    document.getElementById("dniPaciente").textContent = tr.querySelector("button").dataset.dni;
+                    document.getElementById("coberturaPaciente").textContent = tr.querySelector("button").dataset.cobertura;
+                    document.getElementById("afiliadoPaciente").textContent = tr.querySelector("button").dataset.nroAfiliado;
+
+                    document.getElementById("modalReceta").style.display = "flex";
+                });
+            });
+
+            document.querySelector(".cerrar-modal-receta").addEventListener("click", () => {
+                document.getElementById("modalReceta").style.display = "none";
+            });
+        });
+        </script>
 
 
 </body>

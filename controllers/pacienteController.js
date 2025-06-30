@@ -11,43 +11,59 @@ class PacienteController {
 
     //funcion para listar los pacientes
     async listarPacientes (req, res) {
-
-        let {page, limit, id_obrasocial, buscador} = req.query;
+        let { page, limit, id_obrasocial, buscador } = req.query;
         
-        page = parseInt(page) || 1; // Me aseguro de darles un valor por defecto para que no se rompa el código.
+        page = parseInt(page) || 1;
         limit = parseInt(limit) || 10;
-        
         const offset = (page - 1) * limit;
 
         const filtros = {
             id_obrasocial: id_obrasocial || 0,
             buscador: buscador || '',
-        }
+        };
 
-        const obrasSociales = await new Promise((resolve, reject) => {
+        try {
+            const obrasSociales = await new Promise((resolve, reject) => {
                 pacienteModel.obtenerObrasSociales((result) => {
-                    if (!result) reject(new Error("No se encontraron obras sociales"));
+                    if (!result) return reject("No se encontraron obras sociales");
                     resolve(result);
                 });
             });
 
-        pacienteModel.listarPacientes(limit, offset, filtros, (pacientes, total) => {
-            if (!pacientes || pacientes.length === 0) {
-                console.log("No se encontraron pacientes.");
-            } 
+            const medicos = await medicoModel.listarMedicosAsync(); 
 
-            const totalPages = Math.ceil(total / limit);
+            pacienteModel.listarPacientes(limit, offset, filtros, (pacientes, total) => {
+                if (!pacientes) {
+                    return res.render("pacientes/listarPacientes", {
+                        pacientes: [],
+                        currentPage: page,
+                        totalPages: 1,
+                        currentFilters: filtros,
+                        limit,
+                        obrasSociales,
+                        medicos // <- se pasa a la vista
+                    });
+                }
 
-            res.render("../views/pacientes/listarPacientes", {
-                pacientes: pacientes,
-                currentPage: parseInt(page),
-                totalPages: totalPages,
-                currentFilters: filtros,
-                limit: limit,
-                obrasSociales
-            }); //Antes no me funcionaba por no pasar la variable pacientes como parametro en el render
-        });
-    };
+                const totalPages = Math.ceil(total / limit);
+
+                res.render("pacientes/listarPacientes", {
+                    pacientes,
+                    currentPage: page,
+                    totalPages,
+                    currentFilters: filtros,
+                    limit,
+                    obrasSociales,
+                    medicos 
+                });
+            });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Error interno del servidor");
+        }
+    }
+
 
     //funcion para actualizar datos de los pacientes
     async editarPaciente(req, res) {

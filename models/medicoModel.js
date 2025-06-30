@@ -23,7 +23,8 @@ class MedicoModel {
                 medicos.id, 
                 usuarios.nombre AS nombre_medico, 
                 medicos.telefono, 
-                medicos.descripcion, 
+                medicos.descripcion,
+                medicos.matricula, 
                 medicos.foto 
             FROM medicos
             JOIN usuarios ON medicos.id_usuario = usuarios.id
@@ -36,6 +37,26 @@ class MedicoModel {
             callback(results);
         });
     }
+
+    async listarMedicosAsync() {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT 
+                    medicos.id, 
+                    usuarios.nombre AS nombre, 
+                    medicos.telefono, 
+                    medicos.descripcion AS especialidad,
+                    medicos.matricula AS matricula
+                FROM medicos
+                JOIN usuarios ON medicos.id_usuario = usuarios.id
+            `;
+            conx.query(sql, [], (err, results) => {
+                if (err) return reject(err);
+                resolve(results);
+            });
+        });
+    }
+
 
     //para obtener los datos de un médico en específico
     async obtenerMedico(id, callback) {
@@ -76,9 +97,9 @@ class MedicoModel {
 
         //si el id del médico es 0, crea un nuevo médico
         if(datos.id == 0){
-        let sql = `INSERT INTO medicos (id_usuario, telefono, descripcion, foto)`;
-        sql += `VALUES (?, ?, ?, ?)`;
-        conx.query(sql, [datos.id_usuario, datos.telefono, datos.descripcion, datos.foto], async (err, results) => {
+        let sql = `INSERT INTO medicos (id_usuario, telefono, descripcion, matricula, foto)`;
+        sql += `VALUES (?, ?, ?, ?, ?)`;
+        conx.query(sql, [datos.id_usuario, datos.telefono, datos.descripcion, datos.matricula ,datos.foto], async (err, results) => {
             if(err){
                 console.error(err);
                 callback(null);
@@ -88,8 +109,8 @@ class MedicoModel {
         });
 
         }else{ //si no, actualiza datos existentes
-        let sql = `UPDATE medicos SET id_usuario = ?, telefono = ?, descripcion = ?, foto = ? WHERE id = ?`;
-        conx.query(sql, [datos.id_usuario, datos.telefono, datos.descripcion, datos.foto, datos.id], async (err, results) => {
+        let sql = `UPDATE medicos SET id_usuario = ?, telefono = ?, descripcion = ?, matricula = ?, foto = ? WHERE id = ?`;
+        conx.query(sql, [datos.id_usuario, datos.telefono, datos.descripcion, datos.matricula ,datos.foto, datos.id], async (err, results) => {
             if(err){
                 console.error(err);
                 callback(null);
