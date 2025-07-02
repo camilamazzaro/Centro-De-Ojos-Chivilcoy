@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<!--HEAD-->
-<%- include('../commons/head') %>
-<link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">
-<title>Listado turnos</title>
+<head>
+    <link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">
+    <link rel="stylesheet" href="/public/css/turnos.css">
+    <title>Listado turnos</title>
+    <!--HEAD-->
+    <%- include('../commons/head') %>
+</head>
+
 
 <body>
 
@@ -18,13 +22,16 @@
             <div class="container contenedor-listado-turnos mt-5">
                 <h1 class="text-center mb-4">Listado de Turnos</h1>
 
-                <form method="GET" action="/turnos" class="d-flex mb-4 buscar-turno">
-                    <input type="text" name="buscar" placeholder="Buscar por nombre del paciente" class="form-control me-2" value="<%= buscar %>">
-                </form>
-            
-                <div class="mb-3">
-                    <a href="/turnos/agregar/0" class="btn btn-agregar">Agregar Turno</a>
+                <div class="div-superior">
+                    <form method="GET" action="/turnos" class="d-flex mb-4 search-bar">
+                        <input type="text" name="buscar" placeholder="Buscar por nombre del paciente" class="form-control me-2" value="<%= buscar %>">
+                    </form>
+                
+                    <div class="mb-3">
+                        <a href="/turnos/agregar/0" class="btn btn-agregar">Agregar Turno</a>
+                    </div>
                 </div>
+                
                 
                 <!--Para filtrar turnos-->
                 <form id="filtroEstadoForm" class="filtros-turnos">
@@ -57,7 +64,9 @@
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
+                        
                     </thead>
+                    
                     <tbody id="tablaTurnosBody">
                         <% turno.forEach(function(turno) { %>
                             <tr>
@@ -75,10 +84,16 @@
                                     <% } %>
                                 </td>                                
                                 <td>
-                                    <a href="/turnos/editar/<%= turno.turno_id %>" class="btn btn-editar btn-sm">Editar</a>
+
+                                    <a class="btn-editar" href="/turnos/editar/<%= turno.turno_id %>">
+                                            <i class="fa-regular fa-pen-line"></i>
+                                            Editar
+                                    </a>
+
                                     <button class="btn btn-eliminar btn-sm btnEliminar" data-id="<%= turno.turno_id %>">Cancelar</button>
                                 </td>
                             </tr>
+                            
                         <% }); %>
                     </tbody>
                 </table>
