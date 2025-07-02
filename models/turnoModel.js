@@ -9,6 +9,7 @@ class TurnoModel{
             id: 0,
             id_medico: '',
             id_paciente: '',
+            id_practica: '',
             fecha_hora: '',
             id_estadoTurno: ''
         }
@@ -24,21 +25,22 @@ class TurnoModel{
             turnos.id AS turno_id, 
             CONCAT(usuarios.nombre) AS medico_nombre,
             pacientes.nombre AS paciente_nombre, 
+            practicas.nombre AS practica,
             turnos.fecha_hora AS fecha_hora, 
             turnos.id_estadoTurno,
             estado_turno.nombre AS estado_nombre
         FROM turnos 
         LEFT JOIN medicos ON turnos.id_medico = medicos.id 
         LEFT JOIN usuarios ON medicos.id_usuario = usuarios.id 
-        LEFT JOIN especialidades ON medicos.id_especialidad = especialidades.id 
         LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
-        LEFT JOIN obras_sociales ON pacientes.id_obraSocial = obras_sociales.id
+        LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
+        LEFT JOIN practicas ON turnos.id_practica = practicas.id
         JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
         ${filtro}
         ORDER BY 
             CASE 
-                WHEN estado_turno.nombre = 'Confirmado' THEN 0
-                WHEN estado_turno.nombre = 'Reservado' THEN 1
+                WHEN estado_turno.nombre = 'Reservado' THEN 0
+                WHEN estado_turno.nombre = 'Confirmado' THEN 1
                 WHEN estado_turno.nombre = 'Libre' THEN 2
                 ELSE 3
             END,
@@ -51,9 +53,9 @@ class TurnoModel{
             FROM turnos
             LEFT JOIN medicos ON turnos.id_medico = medicos.id 
             LEFT JOIN usuarios ON medicos.id_usuario = usuarios.id 
-            LEFT JOIN especialidades ON medicos.id_especialidad = especialidades.id 
             LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
-            LEFT JOIN obras_sociales ON pacientes.id_obraSocial = obras_sociales.id
+            LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
+            LEFT JOIN practicas ON turnos.id_practica = practicas.id
             JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
             ${filtro};
         `;
@@ -104,31 +106,33 @@ class TurnoModel{
 
     async guardarTurno(datos, callback){
         if(datos.id == 0){
-            let sql = `INSERT INTO turnos (id_medico, id_paciente, fecha_hora, id_estadoTurno)`;
-            sql += `VALUES (?,?,?,?)`;
-            conx.query(sql, [datos.id_medico, datos.id_paciente, datos.fecha_hora, datos.id_estadoTurno], async (err, results)=>{
+            let sql = `INSERT INTO turnos (id_medico, id_paciente, id_practica, fecha_hora, id_estadoTurno)`;
+            sql += `VALUES (?,?,?,?,?)`;
+            conx.query(sql, [datos.id_medico, datos.id_paciente, datos.id_practica, datos.fecha_hora, datos.id_estadoTurno], async (err, results)=>{
                 if (err) {
-                    console.error(err);
+                    console.error("Error en la consulta de guardarTurno:", err);
                     callback(null);
                 } else {
+                    console.log("Resultado de guardarTurno:", results);
                     callback(results);
                 }
         });
         } else {
-            let sql = `UPDATE turnos SET id_medico= ?, id_paciente= ?, fecha_hora= ?, id_estadoTurno= ? WHERE id = ?`;
-            conx.query(sql, [datos.id_medico, datos.id_paciente, datos.fecha_hora, datos.id_estadoTurno, datos.id], async (err, results)=>{
+            let sql = `UPDATE turnos SET id_medico= ?, id_paciente= ?, id_practica=?, fecha_hora= ?, id_estadoTurno= ? WHERE id = ?`;
+            conx.query(sql, [datos.id_medico, datos.id_paciente, datos.id_practica, datos.fecha_hora, datos.id_estadoTurno, datos.id], async (err, results)=>{
                 if (err) {
-                    console.error(err);
+                    console.error("Error en la consulta de guardarTurno:", err);
                     callback(null);
                 } else {
+                    console.log("Resultado de guardarTurno:", results);
                     callback(results);
                 }
         });
         }
     }
 
-    async eliminarTurno(id, callback) {
-        let sql = `DELETE FROM turnos WHERE id = ?`;
+    async cancelarTurno(id, callback) {
+        let sql = `UPDATE turnos SET id_estadoTurno=1, id_paciente=NULL WHERE id = ?`;
         conx.query(sql, [id], (err, results) => {
             if (err) {
                 console.error(err);
@@ -153,12 +157,12 @@ class TurnoModel{
         });
     }
 
-    async reservarTurno(id_turno, id_cliente, callback){
+    async reservarTurno(id_turno, id_cliente, id_practica, callback) { 
         const ID_ESTADO_RESERVADO = 2;
-
-        let sql = `UPDATE turnos SET id_paciente = ?, id_estadoTurno = ? WHERE id = ?`;
-
-        conx.query(sql, [id_cliente, ID_ESTADO_RESERVADO, id_turno], async (err, results)=>{
+    
+        let sql = `UPDATE turnos SET id_paciente = ?, id_estadoTurno = ?, id_practica = ? WHERE id = ?`;
+    
+        conx.query(sql, [id_cliente, ID_ESTADO_RESERVADO, id_practica, id_turno], async (err, results) => {
             if (err) {
                 console.error(err);
                 callback(null);
@@ -188,74 +192,86 @@ class TurnoModel{
         limit = parseInt(limit) || 15;
         offset = parseInt(offset) || 0;
     
-        // Agregar el filtro de ID del médico en la consulta SQL
-        filtro = `WHERE turnos.id_medico = ${medicoId} AND turnos.id_estadoTurno = 3` + (filtro ? ` AND (${filtro})` : '');
-        
-        let sql = `
-            SELECT 
-                turnos.id AS turno_id, 
-                CONCAT(usuarios.nombre) AS medico_nombre,
-                pacientes.nombre AS paciente_nombre, 
-                turnos.fecha_hora AS fecha_hora, 
-                estado_turno.nombre AS estado_nombre
-            FROM turnos 
-            LEFT JOIN medicos ON turnos.id_medico = medicos.id 
-            LEFT JOIN usuarios ON medicos.id_usuario = usuarios.id 
-            LEFT JOIN especialidades ON medicos.id_especialidad = especialidades.id 
-            LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
-            LEFT JOIN obras_sociales ON pacientes.id_obraSocial = obras_sociales.id
-            JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
-            ${filtro}
-            ORDER BY turnos.id
-            LIMIT ? OFFSET ?;
-        `;
-    
-        let sqlCount = `
-            SELECT COUNT(*) AS total
-            FROM turnos
-            LEFT JOIN medicos ON turnos.id_medico = medicos.id 
-            LEFT JOIN usuarios ON medicos.id_usuario = usuarios.id 
-            LEFT JOIN especialidades ON medicos.id_especialidad = especialidades.id 
-            LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
-            LEFT JOIN obras_sociales ON pacientes.id_obraSocial = obras_sociales.id
-            JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
-            ${filtro};
-        `;
-    
-        // Validación de los tipos de datos de limit y offset
-        if (typeof limit !== 'string' && typeof limit !== 'number') {
-            console.log("Tipo de valor no soportado 1:", limit);
-            return;
-        }
-        if (typeof offset !== 'string' && typeof offset !== 'number') {
-            console.log("Tipo de valor no soportado 2:", offset);
-            return;
-        }
-    
-        // Validación para asegurarse de que callback sea una función
-        if (typeof callback !== 'function') {
-            console.error("Error: Acá está el error papu(turnoModel).");
-            return;
-        }
-    
-        // Ejecutar la consulta principal para obtener los turnos
-        conx.query(sql, [limit, offset], (err, results) => {
-            if (err) {
-                console.error(err);
-                return callback([], 0);
-            }
-    
-            // Ejecutar la consulta de conteo para obtener el total de turnos
-            conx.query(sqlCount, [], (errCount, resultCount) => {
-                if (errCount) {
-                    console.error(errCount);
+        // Antes de listar, actualizo los turnos cuya fecha ya pasó y les cambio el estado a "completado"
+        conx.query(
+            `UPDATE turnos SET id_estadoTurno = 4 WHERE fecha_hora <= NOW() AND id_estadoTurno != 4`,
+            (err) => {
+                if (err) {
+                    console.error("Error al actualizar turnos pasados:", err);
                     return callback([], 0);
                 }
-                const total = resultCount[0].total;
-                callback(results, total);
-            });
-        });
+    
+                // Consulta principal para obtener los turnos
+                let sql = `
+                    SELECT 
+                        turnos.id AS turno_id, 
+                        CONCAT(usuarios.nombre) AS medico_nombre,
+                        pacientes.nombre AS paciente_nombre, 
+                        practicas.nombre AS practica,
+                        turnos.fecha_hora AS fecha_hora, 
+                        turnos.id_estadoTurno,
+                        estado_turno.nombre AS estado_nombre
+                    FROM turnos 
+                    LEFT JOIN medicos ON turnos.id_medico = medicos.id 
+                    LEFT JOIN usuarios ON medicos.id_usuario = usuarios.id  
+                    LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
+                    LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
+                    LEFT JOIN practicas ON turnos.id_practica = practicas.id
+                    JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
+                    WHERE turnos.id_medico = ? 
+                    ${filtro ? `AND (${filtro})` : ''}
+                    ORDER BY 
+                        CASE 
+                            WHEN estado_turno.nombre = 'Confirmado' THEN 0
+                            WHEN estado_turno.nombre = 'Reservado' THEN 1
+                            WHEN estado_turno.nombre = 'Libre' THEN 2
+                            ELSE 3
+                        END,
+                        turnos.fecha_hora ASC
+                    LIMIT ? OFFSET ?;
+                `;
+    
+                // Consulta para obtener el conteo total de turnos
+                let sqlCount = `
+                    SELECT COUNT(*) AS total
+                    FROM turnos 
+                    LEFT JOIN medicos ON turnos.id_medico = medicos.id 
+                    LEFT JOIN usuarios ON medicos.id_usuario = usuarios.id 
+                    LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
+                    LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
+                    LEFT JOIN practicas ON turnos.id_practica = practicas.id
+                    JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
+                    WHERE turnos.id_medico = ? 
+                    ${filtro ? `AND (${filtro})` : ''};
+                `;
+    
+                // Validación para asegurarse de que callback sea una función
+                if (typeof callback !== 'function') {
+                    console.error("Error: El parámetro callback no es una función.");
+                    return;
+                }
+    
+                // Ejecutar la consulta principal para obtener los turnos
+                conx.query(sql, [medicoId, limit, offset], (err, results) => {
+                    if (err) {
+                        console.error("Error al obtener los turnos:", err);
+                        return callback([], 0);
+                    }
+    
+                    // Ejecutar la consulta de conteo para obtener el total de turnos
+                    conx.query(sqlCount, [medicoId], (errCount, resultCount) => {
+                        if (errCount) {
+                            console.error("Error al contar los turnos:", errCount);
+                            return callback([], 0);
+                        }
+                        const total = resultCount[0].total;
+                        callback(results, total);
+                    });
+                });
+            }
+        );
     }
+    
 
     //Obtenemos datos de turnos para mostrar en el Calendario de Turnos, tanto de panel secretarias como de médicos
 

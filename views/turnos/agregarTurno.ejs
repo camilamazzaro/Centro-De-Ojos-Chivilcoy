@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<!--HEAD-->
+<%- include('../commons/head') %>
+<link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">
+<title>Agregar turno</title>
+
+<body>
+    <div class="contenedor-flex">
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
+
+        <div class="contenedor-agregar">
+            <div class="container my-5 contenedor-agregar-turno">
+                <div class="contenedor-titulo-boton">
+                    <div class="contenedor-volver-atras">
+                        <a href="/turnos"><i class="fa-solid fa-arrow-left"></i></a>
+                    </div>
+                    <h1 class="text-center mb-4">Agregar Turno</h1>
+                </div>
+                <form>
+                    <table class="table table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Médico</th>
+                                <th>Paciente</th>
+                                <th>Práctica</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-select" id="medico_nombre" name="medico_nombre">
+                                            <option value="" selected>Seleccione un médico</option>
+                                            <% medicos.forEach((medico) => { %>
+                                                <option value="<%= medico.id %>" <%= turno.id_medico == medico.id ? 'selected' : '' %> >
+                                                    <%= medico.nombre_medico %>
+                                                </option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-select" id="paciente_nombre" name="paciente_nombre">
+                                            <% pacientes.forEach((paciente) => { %>
+                                                <option value="<%= paciente.id %>" <%= turno.id_paciente == paciente.id ? 'selected' : '' %> >
+                                                    <%= paciente.nombre %>
+                                                </option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <select class="form-select" id="practica" name="practica">
+                                        <% practicas.forEach((practica) => { %>
+                                            <option value="<%= practica.id %>" <%= turno.id_practica == practica.id ? 'selected' : '' %> >
+                                                <%= practica.nombre %>
+                                            </option>
+                                        <% }) %>
+                                    </select>
+                                </td>
+                                <%let date = new Date(turno.fecha_hora)%>
+                                <td>
+                                    <div class="form-group">
+                                        <input class="form-control" id="fecha" type="date" value="<%= date.getFullYear() %>-<%= (date.getMonth() + 1).toString().padStart(2, '0') %>-<%= date.getDate().toString().padStart(2, '0') %>">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <input class="form-control" id="hora" type="time" value="<%= date.getHours().toString().padStart(2, '0') %>:<%= date.getMinutes().toString().padStart(2, '0') %>">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-select" id="id_estadoTurno" name="estado_turno">
+                                            <% estado_turnos.forEach((estado_turno) => { %>
+                                                <option value="<%= estado_turno.id %>" <%= estado_turno.id == turno.id_estadoTurno ? 'selected' : '' %> >
+                                                    <%= estado_turno.estado_nombre %>
+                                                </option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+                <button type="button" class="btn btn-guardar guardar">Guardar</button>
+                <button type="button" class="btn btn-cancelar"><a href="/turnos" class=" text-decoration-none">Cancelar</a></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const medicoSelect = document.querySelector("#medico_nombre");
+            const practicaSelect = document.querySelector("#practica");
+            const fechaInput = document.querySelector("#fecha");
+            const horaInput = document.querySelector("#hora");
+            const estadoTurnoSelect = document.querySelector("#id_estadoTurno");
+        
+            medicoSelect.addEventListener("change", async () => {
+                const medicoId = medicoSelect.value;
+        
+                // Borrar las prácticas actuales
+                practicaSelect.innerHTML = '<option value="">Seleccione una práctica</option>';
+        
+                if (medicoId) {
+                    if (medicoId == 1) {
+                        const now = new Date();
+        
+                        // Autocompletar los campos de fecha y hora con la fecha y hora actual
+                        fechaInput.value = now.toISOString().split('T')[0]; // Solo la fecha en formato YYYY-MM-DD
+                        horaInput.value = now.toTimeString().split(' ')[0].substring(0, 5); // Solo la hora en formato HH:MM
+                        estadoTurnoSelect.value = 4;
+                    } else {
+                        // Restablecer los campos de fecha, hora y estado si no es Esteban
+                        fechaInput.value = '';
+                        horaInput.value = '';
+                        estadoTurnoSelect.value = '';
+                    }
+        
+                    try {
+                        // Llama al backend para obtener prácticas
+                        const response = await fetch(`/practicas/${medicoId}`);
+                        
+                        // Verifica si la respuesta es correcta
+                        if (response.ok) {
+                            const practicas = await response.json();
+        
+                            // Añadir nuevas opciones basadas en las prácticas recibidas
+                            practicas.forEach(practica => {
+                                const option = document.createElement("option");
+                                option.value = practica.id;
+                                option.textContent = practica.nombre;
+                                practicaSelect.appendChild(option);
+                            });
+                        } else {
+                            console.error("Error en la respuesta al cargar las prácticas");
+                        }
+                    } catch (error) {
+                        console.error("Error al cargar las prácticas:", error);
+                    }
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        const botonGuardar = document.querySelector(".guardar");
+
+        botonGuardar.addEventListener("click", async () => {
+            const turnoMedico = document.querySelector("#medico_nombre").value;
+            const turnoPaciente = document.querySelector("#paciente_nombre").value;
+            const turnoPractica = document.querySelector("#practica").value;
+            const turnoFecha = document.querySelector("#fecha").value;
+            const turnoHora = document.querySelector("#hora").value;
+            const fechaCompleta = `${turnoFecha} ${turnoHora}`;
+            const turnoId_estadoTurno = document.querySelector("#id_estadoTurno").value;
+            
+            if (!turnoMedico || !turnoPaciente || !turnoFecha || !turnoHora || !turnoId_estadoTurno) {
+                alert("Por favor, complete todos los campos.");
+                return;
+            }
+
+            const datos = {
+                id_medico: turnoMedico,
+                id_paciente: turnoPaciente,
+                id_practica: turnoPractica,
+                fecha_hora: fechaCompleta,
+                id_estadoTurno: turnoId_estadoTurno,
+                id: <%= turno.id %>,
+            };
+            
+            const results = await fetch('/turnos/agregar/0', {
+                method: 'POST',
+                body: JSON.stringify(datos),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await results.json();
+            if (data.success === true) {
+                Swal.fire({
+                    title: 'Turno Guardado',
+                    text: 'El turno se guardó exitosamente',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.href = "/turnos";
+                    }
+                });
+            } else {
+                alert("Hubo un problema con los valores");
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<!--HEAD-->
+<%- include('../commons/head') %>
+
+<body>
+    <div class="contenedor-flex">
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
+    
+        <div class="contenedor-editar">
+            <div class="container my-5 contenedor-agregar-turno">
+                <div class="contenedor-titulo-boton">
+                    <div class="contenedor-volver-atras">
+                        <a href="/turnos"><i class="fa-solid fa-arrow-left"></i></a>
+                    </div>
+                    <h1 class="text-center mb-4">Editar Turno</h1>
+                </div>
+                <form>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>Médico</th>
+                                    <th>Paciente</th>
+                                    <th>Práctica</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="form-group">
+                                            <select class="form-select" id="medico_nombre" name="medico_nombre">
+                                                <% medicos.forEach((medico) => { %>
+                                                    <option value="<%= medico.id %>" <%= turno.id_medico == medico.id ? 'selected' : '' %> >
+                                                        <%= medico.nombre_medico %>
+                                                    </option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <select class="form-select" id="paciente_nombre" name="paciente_nombre">
+                                                <% pacientes.forEach((paciente) => { %>
+                                                    <option value="<%= paciente.id %>" <%= turno.id_paciente == paciente.id ? 'selected' : '' %> >
+                                                        <%= paciente.nombre %>
+                                                    </option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select class="form-select" id="practica" name="practica">
+                                            <% practicas.forEach((practica) => { %>
+                                                <option value="<%= practica.id %>" <%= turno.id_practica == practica.id ? 'selected' : '' %> >
+                                                    <%= practica.nombre %>
+                                                </option>
+                                            <% }) %>
+                                        </select>
+                                    </td>
+                                    <% let date = new Date(turno.fecha_hora) %>
+                                    <td>
+                                        <div class="form-group">
+                                            <input class="form-control" type="date" id="fecha" value="<%= date.getFullYear() %>-<%= (date.getMonth()+1).toString().padStart(2, '0') %>-<%= date.getDate().toString().padStart(2, '0') %>">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <input class="form-control" type="time" id="hora" value="<%= date.getHours().toString().padStart(2, '0') %>:<%= date.getMinutes().toString().padStart(2, '0') %>">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <select class="form-select" id="id_estadoTurno" name="estado_turno">
+                                                <% estado_turnos.forEach((estado_turno) => { %>
+                                                    <option value="<%= estado_turno.id %>" <%= estado_turno.id == turno.id_estadoTurno ? 'selected' : '' %> >
+                                                        <%= estado_turno.estado_nombre %>
+                                                    </option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-guardar guardar">Guardar</button>
+                        <a href="/turnos" class="btn btn-cancelar">Cancelar</a>
+                    </div>
+                </form>
+        
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        const botonGuardar = document.querySelector(".guardar");
+
+        botonGuardar.addEventListener("click", async () => {
+            const turnoMedico = document.querySelector("#medico_nombre").value;
+            const turnoPaciente = document.querySelector("#paciente_nombre").value;
+            const turnoPractica = document.querySelector("#practica").value;
+            const turnoFecha = document.querySelector("#fecha").value;
+            const turnoHora = document.querySelector("#hora").value;
+            const fechaCompleta = `${turnoFecha} ${turnoHora}`;
+            const turnoId_estadoTurno = document.querySelector("#id_estadoTurno").value;
+
+            // Verificar si algún campo obligatorio está vacío
+            if (!turnoMedico || !turnoPaciente || !turnoFecha || !turnoHora || !turnoId_estadoTurno ) {
+                alert("Por favor, complete todos los campos.");
+                return;
+            }
+
+            const datos = {
+                id: <%= turno.id %>,
+                id_medico: turnoMedico,
+                id_paciente: turnoPaciente,
+                id_practica: turnoPractica,
+                fecha_hora: fechaCompleta,
+                id_estadoTurno: turnoId_estadoTurno,
+            };
+
+            const results = await fetch('/turnos/editar/<%= turno.id %>', {
+                method: 'POST',
+                body: JSON.stringify(datos),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await results.json();
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Turno guardado con éxito',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    location.href = "/turnos";
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hubo un problema con los datos',
+                    text: 'Verifica la información ingresada'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

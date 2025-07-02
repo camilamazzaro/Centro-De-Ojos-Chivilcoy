@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<!--HEAD-->
+<%- include('../commons/head') %>
+<link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">
+<title>Listado turnos</title>
+
+<body>
+
+    <div class="contenedor-flex">
+        <div class="contenedor-barra-lateral">
+            <!-- Mostrar el menú correspondiente basado en el idCategoriaUsuario -->
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
+    
+        <div class="contenedor-listado">
+            <div class="container contenedor-listado-turnos mt-5">
+                <h1 class="text-center mb-4">Listado de Turnos</h1>
+
+                <form method="GET" action="/turnos" class="d-flex mb-4 buscar-turno">
+                    <input type="text" name="buscar" placeholder="Buscar por nombre del paciente" class="form-control me-2" value="<%= buscar %>">
+                </form>
+            
+                <div class="mb-3">
+                    <a href="/turnos/agregar/0" class="btn btn-agregar">Agregar Turno</a>
+                </div>
+                
+                <!--Para filtrar turnos-->
+                <form id="filtroEstadoForm" class="filtros-turnos">
+                    <label>
+                        <input type="radio" name="estado" value="todos" checked> Todos
+                    </label>
+                    <label>
+                        <input type="radio" name="estado" value="1"> Disponibles
+                    </label>
+                    <label class="estado-reservado">
+                        <input type="radio" name="estado" value="2"> Reservados
+                    </label>
+                    <label class="estado-confirmado">
+                        <input type="radio" name="estado" value="3"> Confirmados
+                    </label>
+                    <label>
+                        <input type="radio" name="estado" value="4"> Cancelados
+                    </label>
+                </form>
+            
+                <table class="table table-striped tabla-turnos">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Médico</th>
+                            <th>Paciente</th>
+                            <th>Práctica</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaTurnosBody">
+                        <% turno.forEach(function(turno) { %>
+                            <tr>
+                                <td><%= turno.turno_id %></td>
+                                <td><%= turno.medico_nombre %></td>
+                                <td><%= turno.paciente_nombre ? turno.paciente_nombre : 'Sin asignar'  %></td>
+                                <td><%= turno.practica ? turno.practica : 'Sin seleccionar'  %></td>
+                                <% let date = new Date(turno.fecha_hora) %>
+                                <td><%= date.getDate() %>/<%= date.getMonth()+1 %>/<%= date.getFullYear() %></td>
+                                <td><%= date.getHours() %>:<%= date.getMinutes() %></td>
+                                <td class="<%= turno.id_estadoTurno === 3 ? 'estado-confirmado' : '' %>">
+                                    <%= turno.estado_nombre %>
+                                    <% if (turno.id_estadoTurno === 2) { %>
+                                        <span class="fas fa-check-circle" style="color: green; cursor: pointer;" onclick="confirmarTurno('<%= turno.turno_id %>')"></span>
+                                    <% } %>
+                                </td>                                
+                                <td>
+                                    <a href="/turnos/editar/<%= turno.turno_id %>" class="btn btn-editar btn-sm">Editar</a>
+                                    <button class="btn btn-eliminar btn-sm btnEliminar" data-id="<%= turno.turno_id %>">Cancelar</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+
+                <form method="GET" action="/turnos" class="d-flex mb-4 buscar-turno align-items-center">
+                    <!-- Etiqueta informativa -->
+                    <label for="limit" class="me-2">Cantidad de registros por página:</label>
+                    
+                    <!-- Seleccionar el límite de registros por página -->
+                    <select name="limit" id="limit" onchange="this.form.submit()" class="form-select w-auto" aria-label="Cantidad de registros por página">
+                        <option value="5" <%= limit == 5 ? 'selected' : '' %>>5</option>
+                        <option value="10" <%= limit == 10 ? 'selected' : '' %>>10</option>
+                        <option value="15" <%= limit == 15 ? 'selected' : '' %>>15</option>
+                        <option value="20" <%= limit == 20 ? 'selected' : '' %>>20</option>
+                    </select>
+                </form>               
+
+                <!-- Paginador -->
+                <div class="paginator">
+                    <div class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>&buscar=<%= buscar %>" class="page-link">Anterior</a>
+                        <% } %>
+                
+                        <!-- Páginas iniciales -->
+                        <% if (currentPage > 2) { %>
+                            <a href="?page=1&limit=<%= limit %>&buscar=<%= buscar %>" class="page-link">1</a>
+                            <% if (currentPage > 3) { %>
+                                <span>...</span>
+                            <% } %>
+                        <% } %>
+                
+                        <!-- Páginas cercanas a la actual -->
+                        <% for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) { %>
+                            <% if (i === currentPage) { %>
+                                <span class="current-page"><%= i %></span>
+                            <% } else { %>
+                                <a href="?page=<%= i %>&limit=<%= limit %>&buscar=<%= buscar %>" class="page-link"><%= i %></a>
+                            <% } %>
+                        <% } %>
+                
+                        <!-- Páginas finales -->
+                        <% if (currentPage < totalPages - 1) { %>
+                            <% if (currentPage < totalPages - 2) { %>
+                                <span>...</span>
+                            <% } %>
+                            <a href="?page=<%= totalPages %>&limit=<%= limit %>&buscar=<%= buscar %>" class="page-link"><%= totalPages %></a>
+                        <% } %>
+                
+                        <% if (currentPage < totalPages) { %>
+                            <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>&buscar=<%= buscar %>" class="page-link">Siguiente</a>
+                        <% } %>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    
+    
+    <script>
+        document.querySelectorAll('.btnEliminar').forEach(button => {
+            button.addEventListener('click', async () => {
+                const turnoId = button.getAttribute('data-id');
+                
+                // Usar SweetAlert para la confirmación de la cancelación
+                const result = await Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: 'No podrás revertir esta acción.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, cancelar',
+                    cancelButtonText: 'Cancelar'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        // Realizar la solicitud para cancelar el turno
+                        const response = await fetch(`/turnos/cancelar/${turnoId}`, {
+                            method: 'POST'
+                        });
+                        if (response.ok) {
+                            Swal.fire({
+                                title: 'Turno Cancelado',
+                                text: 'El turno ha sido cancelado exitosamente.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                location.reload();  // Recargar la página para actualizar el listado
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Hubo un problema al cancelar el turno. Intenta nuevamente.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error al cancelar el turno.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        async function confirmarTurno(idTurno) {
+            const confirmacion = confirm("¿Confirmar este turno?");
+            if (confirmacion) {
+                try {
+                    const response = await fetch(`/turnos/confirmar/${idTurno}`, {
+                        method: 'POST',
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        Swal.fire({
+                            title: 'Turno Confirmado',
+                            text: 'El turno se confirmó exitosamente',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.href = "/turnos";
+                            }
+                        });
+                    } else {
+                        alert(result.mensaje || "Hubo un error al confirmar el turno");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("Ocurrió un error al confirmar el turno");
+                }
+            }
+        }
+    </script>
+
+    <script>
+        //Filtros para los turnos según los nombres de los estados (no los id)
+        document.addEventListener("DOMContentLoaded", function () {
+            const filtroEstadoForm = document.getElementById('filtroEstadoForm');
+            const tablaTurnosBody = document.getElementById('tablaTurnosBody');
+    
+            //para detectar cambios en los filtros
+            filtroEstadoForm.addEventListener('change', function () {
+                //Obtener el valor del estado seleccionado
+                const estadoSeleccionado = document.querySelector('input[name="estado"]:checked').value;
+    
+                //Filtrar las filas de la tabla
+                const filas = tablaTurnosBody.querySelectorAll('tr');
+                filas.forEach(fila => {
+                    //Obtener el estado de la fila actual (columna "Estado")
+                    const estadoFila = fila.querySelector('td:nth-child(7)').textContent.trim().toLowerCase(); //Convertimos el texto a minúsculas
+    
+                    // Mostrar u ocultar la fila según el filtro seleccionado
+                    if (
+                        estadoSeleccionado === 'todos' || 
+                        (estadoSeleccionado === '1' && estadoFila === 'libre') ||  // Comparar con "libre"
+                        (estadoSeleccionado === '2' && estadoFila === 'reservado') ||  // Comparar con "reservado"
+                        (estadoSeleccionado === '3' && estadoFila === 'confirmado') ||  // Comparar con "confirmado"
+                        (estadoSeleccionado === '4' && estadoFila === 'cancelado')  // Comparar con "cancelado"
+                    ) {
+                        fila.style.display = '';
+                    } else {
+                        fila.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+    
+    
+</body>
+</html>

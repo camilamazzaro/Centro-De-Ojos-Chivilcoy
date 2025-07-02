@@ -183,6 +183,40 @@ class MedicoModel {
         });
     }
 
+    // Obtener prácticas de un médico específico
+    async obtenerPracticasPorMedico(idMedico, callback) {
+        let sql = `
+            SELECT practicas.id, practicas.nombre 
+            FROM medicos_practicas 
+            JOIN practicas ON medicos_practicas.id_practicas = practicas.id 
+            WHERE medicos_practicas.id_medico = ?
+        `;
+
+        conx.query(sql, [idMedico], (err, results) => {
+            if (err) {
+                console.error('Error al obtener las prácticas del médico:', err);
+                return callback([]);
+            }
+            callback(results);
+        });
+    }
+
+    async listarPracticas (callback){
+        let sql = `
+            SELECT 
+                practicas.id, 
+                practicas.nombre AS practica  
+            FROM practicas
+        `;
+        conx.query(sql, [], (err, results) => {
+            if (err) {
+                console.error(err);
+                return callback([]);
+            }
+            callback(results);
+        });
+    }
+
 }
 
 module.exports = MedicoModel;

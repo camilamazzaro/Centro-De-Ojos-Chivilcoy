@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const TurnoController = require('../controllers/turnoController'); //importo el controller para poder utilizar sus funciones
 const turnoController = new TurnoController();
-const TurnoModel = require('../models/turnoModel');
-const turnoModel = new TurnoModel();
 
 // const autenticar = require('../middleware/autenticacion')([3, 2]);
 
@@ -18,13 +16,16 @@ router.get('/turnos/agregar/0', turnoController.agregarTurno);
 router.post('/turnos/agregar/0', turnoController.guardarTurno);
 
 //Ruta para eliminar turnos
-router.delete('/turnos/eliminar/:id', turnoController.eliminarTurno);
+router.post('/turnos/cancelar/:id', turnoController.cancelarTurno);
 
 router.post('/turnos/confirmar/:id', turnoController.confirmarTurno);
 
 router.get('/turnos/desdeHorarios', turnoController.crearTurnosDesdeHorarios);
 
-module.exports = router; //exporto el módulo para que pueda ser incorporado en app.js
-
 //Ruta para listar los turnos de los médicos 
 router.get('/turnos/turnosMedico/:idMedico', turnoController.listarTurnosMedico);
+
+//Ruta para listar las practicas de los médicos
+router.get('/practicas/:id_medico', turnoController.obtenerPracticasPorMedico);
+
+module.exports = router; //exporto el módulo para que pueda ser incorporado en app.js

@@ -13,8 +13,8 @@ const pacienteModel = new PacienteModel();
 const MedicoModel = require('../models/medicoModel');
 const medicoModel = new MedicoModel();
 
-// const EstadoTurnoModel = require('../models/estadoTurnoModel');
-// const estadoTurnoModel = new EstadoTurnoModel();
+const EstadoTurnoModel = require('../models/estadoTurnoModel');
+const estadoTurnoModel = new EstadoTurnoModel();
 
 const diasSpanish = {
     "Monday": 'lunes',
@@ -28,12 +28,12 @@ const diasSpanish = {
 
 class TurnoController {
     //funcion para listar los turnos
-    async listarTurnos (req, res) {
+    async listarTurnos(req, res) {
         let { buscar, page = 1, limit = 15 } = req.query;
-        
-        page = parseInt(page) || 1; // Me aseguro de darles un valor por defecto para que no se rompa el código.
-        limit = parseInt(limit) || 15;
-        
+    
+        page = parseInt(page) || 1; 
+        limit = parseInt(limit) || 15; 
+    
         const offset = (page - 1) * limit;
         let filtro = '';
         
@@ -44,22 +44,23 @@ class TurnoController {
                 OR pacientes.dni LIKE '%${buscar}%'
             `;
         }
-
+    
         turnoModel.listarTurnos(filtro, limit, offset, (turnos, total) => {
             if (!turnos || turnos.length === 0) {
                 console.log("No se encontraron turnos.");
             }
-
+    
             const totalPages = Math.ceil(total / limit);
-
+    
             res.render("../views/turnos/listarTurnos", {
                 turno: turnos,
                 currentPage: parseInt(page),
                 totalPages: totalPages,
                 buscar: buscar || '',
-            }); //Antes no me funcionaba por no pasar la variable turnos como parametro en el render
+                limit: limit // Pasamos el límite seleccionado a la vista para mantenerlo en el select
+            });
         });
-    };
+    }    
 
     //funcion para editar los turnos
     async editarTurno(req, res){
@@ -88,14 +89,21 @@ class TurnoController {
                 estadoTurnoModel.listarEstadoTurno((estado_turnos) => {
                     resolve(estado_turnos);
                 });
+            }),
+            new Promise((resolve, reject) => {
+                const idMedico = turno.id_medico;
+                medicoModel.obtenerPracticasPorMedico(idMedico, (practicas) => {
+                    resolve(practicas);
+                });
             })
         ])
-        .then(([pacientes, medicos, estado_turnos]) => {
-            res.render("../views/turnos/editarTurnos", {
+        .then(([pacientes, medicos, estado_turnos, practicas]) => {
+            res.render("../views/turnos/editarTurno", {
                 turno: turno,
                 pacientes: pacientes,
                 medicos: medicos,
-                estado_turnos: estado_turnos
+                estado_turnos: estado_turnos,
+                practicas: practicas
             });
         })
         .catch(err => {
@@ -114,10 +122,20 @@ class TurnoController {
                 "success": true,
             });
         });
+        console.log("Datos recibidos:", datos);
+
     }
 
     //Funcion para agregar el nuevo turno
     async agregarTurno(req, res) {
+        let turno = {
+            id_medico: '',
+            id_paciente: '',
+            id_practica: '',
+            fecha_hora: '',
+            id_estadoTurno: ''
+        };
+        
         //para obtener los médicos y pacientes
         Promise.all([
             new Promise((resolve, reject) => {
@@ -136,14 +154,31 @@ class TurnoController {
                 estadoTurnoModel.listarEstadoTurno((estado_turnos) => {
                     resolve(estado_turnos);
                 });
+            }),
+            new Promise((resolve, reject) => {
+                if(turno.id_medico) {
+                    medicoModel.obtenerPracticasPorMedico(turno.id_medico, (practicas) => {
+                        resolve(practicas);
+                    });
+                } else {
+                    resolve([]);  // Si no hay id_medico, devolvemos un array vacío
+                }
             })
         ])
-        .then(([pacientes, medicos, estado_turnos]) => {
-            res.render("../views/turnos/agregarTurnos", {
-                turno: { id: 0 }, // Turno vacío
+        .then(([pacientes, medicos, estado_turnos, practicas]) => {
+            res.render("../views/turnos/agregarTurno", {
+                turno: {
+                    id: 0,
+                    id_medico: '',
+                    id_paciente: '',
+                    id_practica: '',
+                    fecha_hora: '',
+                    id_estadoTurno: ''
+                }, 
                 pacientes: pacientes,
                 medicos: medicos,
-                estado_turnos: estado_turnos
+                estado_turnos: estado_turnos,
+                practicas: practicas
             });
         })
         .catch(err => {
@@ -152,14 +187,14 @@ class TurnoController {
         });
     }
     
-    //funcion para eliminar turnos
-    async eliminarTurno(req, res) {
+    //funcion para cancelar turnos
+    async cancelarTurno(req, res) {
         const id = req.params.id;
-        turnoModel.eliminarTurno(id, (result) => {
+        turnoModel.cancelarTurno(id, (result) => {
             if (!result) {
-                return res.status(500).send("Error al eliminar el turno.");
+                return res.status(500).send("Error al cancelar el turno.");
             } else {
-            res.redirect('/turnos'); // Redirige a la lista de turnos tras eliminar
+            res.redirect('/turnos'); // Redirige a la lista de turnos tras cancelar el turno
             }
         });
     }   
@@ -184,7 +219,13 @@ class TurnoController {
 
 
     async reservarTurno(req, res) {
-        const { id_turno, id_obra_social, nombre, apellido, dni, telefono, correo } = req.body;
+        const { id_turno, id_obra_social, nombre, apellido, dni, telefono, correo, id_practica } = req.body;
+        console.log(req.body);
+
+        //let id_practica = req.body.id_practica;
+
+        console.log('linea 221 TurnoController: ', id_practica);
+
         // Primer paso, validar si el turno realmente puede cambiar de estado a confirmado
         turnoModel.obtenerTurno(id_turno, (turno) => {
 
@@ -215,21 +256,18 @@ class TurnoController {
                     // Si el paciente ya existia, usamos el id existente, si no, el id que acabamos de ingresar
                     const idClienteActualizado = pacienteObjeto.id || datos.insertId;
 
-                    turnoModel.reservarTurno(id_turno, idClienteActualizado, (resultado) => {
-
+                    turnoModel.reservarTurno(id_turno, idClienteActualizado, id_practica, (resultado) => {
                         if (resultado === null) {
                             res.json({
                                 "mensaje": "Hubo un error confirmado el turno. Contactese con un administrador"
                             });
                         }
-
                         res.json({
                             "success": true
                         });
-                    })
+                    });
                 })
             })
-
         });
     }
 
@@ -295,6 +333,11 @@ class TurnoController {
             const horarios = await horarioModel.obtenerHorariosPorDia(nombreDiaSpanish);
             // Recorremos todos los horarios disponibles que haya en ese dia: ej Lunes hay horario de 10:00 a 13:00
             for (let horario of horarios) {
+
+                // Excluir el id_medico = 1(esteban que trabaja por orden de llegada)
+                if (horario.id_medico === 1) {
+                    continue; // Salta la iteración al siguiente horario si el id_medico es 1
+                }
 
                 let horarioDeInicio = moment(`${diaDelAnio} ${horario.hora_inicio}`);
                 let horarioDeFin = moment(`${diaDelAnio} ${horario.hora_fin}`);
@@ -376,11 +419,22 @@ class TurnoController {
                 currentPage: page,
                 totalPages: totalPages,
                 buscar: buscar || '',
-                medicoId: medicoId // Pasamos el ID del médico a la vista en caso de que sea necesario
+                medicoId: medicoId, // Pasamos el ID del médico a la vista en caso de que sea necesario
+                limit: limit 
             });
         });
     }
-    
+
+    async obtenerPracticasPorMedico(req, res) {
+        const id_medico = req.params.id_medico;
+        medicoModel.obtenerPracticasPorMedico(id_medico, (practicas) => {
+            if (practicas.length > 0) {
+                res.json(practicas); // Envía las prácticas como respuesta JSON
+            } else {
+                res.status(404).json({ error: "No se encontraron prácticas para este médico" });
+            }
+        });
+    }
     
 };
 
