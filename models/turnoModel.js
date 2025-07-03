@@ -28,20 +28,20 @@ class TurnoModel{
             practicas.nombre AS practica,
             turnos.fecha_hora AS fecha_hora, 
             turnos.id_estado_turno,
-            estado_turno.nombre AS estado_nombre
+            turno_estados.nombre AS estado_nombre
         FROM turnos 
         LEFT JOIN medicos ON turnos.id_medico = medicos.id 
         LEFT JOIN usuarios ON medicos.id_usuario = usuarios.id 
         LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
         LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
         LEFT JOIN practicas ON turnos.id_practica = practicas.id
-        JOIN estado_turno ON turnos.id_estado_turno = estado_turno.id
+        JOIN turno_estados ON turnos.id_estado_turno = turno_estados.id
         ${filtro}
         ORDER BY 
             CASE 
-                WHEN estado_turno.nombre = 'Reservado' THEN 0
-                WHEN estado_turno.nombre = 'Confirmado' THEN 1
-                WHEN estado_turno.nombre = 'Libre' THEN 2
+                WHEN turno_estados.nombre = 'Reservado' THEN 0
+                WHEN turno_estados.nombre = 'Confirmado' THEN 1
+                WHEN turno_estados.nombre = 'Libre' THEN 2
                 ELSE 3
             END,
             turnos.fecha_hora ASC
@@ -56,7 +56,7 @@ class TurnoModel{
             LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
             LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
             LEFT JOIN practicas ON turnos.id_practica = practicas.id
-            JOIN estado_turno ON turnos.id_estado_turno = estado_turno.id
+            JOIN turno_estados ON turnos.id_estado_turno = turno_estados.id
             ${filtro};
         `;
 
@@ -210,21 +210,21 @@ class TurnoModel{
                         practicas.nombre AS practica,
                         turnos.fecha_hora AS fecha_hora, 
                         turnos.id_estado_turno,
-                        estado_turno.nombre AS estado_nombre
+                        turno_estados.nombre AS estado_nombre
                     FROM turnos 
                     LEFT JOIN medicos ON turnos.id_medico = medicos.id 
                     LEFT JOIN usuarios ON medicos.id_usuario = usuarios.id  
                     LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
                     LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
                     LEFT JOIN practicas ON turnos.id_practica = practicas.id
-                    JOIN estado_turno ON turnos.id_estado_turno = estado_turno.id
+                    JOIN turno_estados ON turnos.id_estado_turno = turno_estados.id
                     WHERE turnos.id_medico = ? 
                     ${filtro ? `AND (${filtro})` : ''}
                     ORDER BY 
                         CASE 
-                            WHEN estado_turno.nombre = 'Confirmado' THEN 0
-                            WHEN estado_turno.nombre = 'Reservado' THEN 1
-                            WHEN estado_turno.nombre = 'Libre' THEN 2
+                            WHEN turno_estados.nombre = 'Confirmado' THEN 0
+                            WHEN turno_estados.nombre = 'Reservado' THEN 1
+                            WHEN turno_estados.nombre = 'Libre' THEN 2
                             ELSE 3
                         END,
                         turnos.fecha_hora ASC
@@ -240,7 +240,7 @@ class TurnoModel{
                     LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
                     LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
                     LEFT JOIN practicas ON turnos.id_practica = practicas.id
-                    JOIN estado_turno ON turnos.id_estado_turno = estado_turno.id
+                    JOIN turno_estados ON turnos.id_estado_turno = turno_estados.id
                     WHERE turnos.id_medico = ? 
                     ${filtro ? `AND (${filtro})` : ''};
                 `;
@@ -275,7 +275,7 @@ class TurnoModel{
 
     //Obtenemos datos de turnos para mostrar en el Calendario de Turnos, tanto de panel secretarias como de médicos
 
-    seleccionarTurnosCalendario(idUsuario, categoriaUsuario, medicos, estado, fechaInicio, fechaFin, callback) {
+    seleccionarTurnosCalendario(medicos, estado, fechaInicio, fechaFin, callback) { //idUsuario, categoriaUsuario, 
         // Base de la consulta SQL
         let sql = `
         SELECT 
@@ -291,10 +291,10 @@ class TurnoModel{
         let parametros = [fechaInicio, fechaFin];
 
         //para que un médico vea su propio calendario
-        if (categoriaUsuario != 3) {
-            sql += " AND T.id_medico = ?";
-            parametros.push(idUsuario);
-        }
+        // if (categoriaUsuario != 3) {
+        //     sql += " AND T.id_medico = ?";
+        //     parametros.push(idUsuario);
+        // }
 
         //filtrar por calendarios por médicos
         if (medicos.length > 0) {
@@ -357,7 +357,7 @@ class TurnoModel{
                     end: moment(elemento.fecha_hora).add(15, 'minutes').format("YYYY-MM-DD HH:mm:ss"),
                     extendedProps: {
                         pacienteNombre: nombrePaciente,
-                        estadoTurno: elemento.id_estadoTurno,
+                        estadoTurno: elemento.id_estado_turno,
                         nombreMedico: nombreMedico
                     }
                 };

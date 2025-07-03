@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../commons/head') %>
+    <title>Calendario de Turnos</title>
+    <link rel="stylesheet" href="/public/css/panel_admin.css">
+
+
+    <!-- FullCalendar CSS y JS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+
+    <!--Sweet Alert-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</head>
+
+<body>
+    
+    <div class="contenedor-flex">
+
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
+
+        <div class="contenedor-calendario">
+            <form id="filtroMedicosForm" class="filtros-calendarios sombra">
+                <label>
+                    <input type="checkbox" id="checkTodos" name="medico" value="todos" checked> Todos
+                </label>
+                <% medicos.forEach(function(medico) { %>
+                    <label>
+                        <input type="checkbox" class="filtro-medico" name="medico" value="<%= medico.id %>"> 
+                        <%= medico.nombre_medico.split(' ').slice(-1)[0] %> <!-- Esto toma la última palabra, para usar el apellido del médico -->
+                    </label>
+                <% }); %>
+            </form>
+            
+            <!-- Filtro de eventos por estado -->
+            <form id="filtroEstadoForm" class="filtros-turnos sombra">
+                <label>
+                    <input type="radio" name="estado" value="todos" checked> Todos
+                </label>
+                <label>
+                    <input type="radio" name="estado" value="1"> Disponibles
+                </label>
+                <label>
+                    <input type="radio" name="estado" value="2"> Reservados
+                </label>
+                <label>
+                    <input type="radio" name="estado" value="3"> Confirmados
+                </label>
+                <label>
+                    <input type="radio" name="estado" value="4"> Cancelados
+                </label>
+            </form>
+
+            <!-- Contenedor del calendario -->
+            <div id="calendar"></div>
+        </div>
+        
+    </div>
+
+    <!-- JavaScript para manejar los filtros -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const filtroMedicosForm = document.getElementById('filtroMedicosForm');
+            const filtroEstadoForm = document.getElementById('filtroEstadoForm');
+        
+            let selectedMedicos = [];
+            let selectedEstado = 'todos'; //mostrar todos los turnos por defecto
+        
+            // Manejar el cambio en el filtro de médicos
+            filtroMedicosForm.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.filtro-medico');
+                selectedMedicos = [];
+        
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedMedicos.push(checkbox.value);
+                    }
+                });
+        
+                // Si el checkbox de "Todos" está marcado, limpiar los filtros
+                if (document.getElementById('checkTodos').checked) {
+                    selectedMedicos = [];
+                }
+        
+                // Refrescar los eventos del calendario
+                calendar.refetchEvents();
+            });
+        
+            // Manejar el cambio en el filtro de estados
+            filtroEstadoForm.addEventListener('change', function() {
+                const radioButtons = document.querySelectorAll('input[name="estado"]');
+                radioButtons.forEach(radio => {
+                    if (radio.checked) {
+                        selectedEstado = radio.value;
+                    }
+                });
+        
+                // Refrescar los eventos del calendario
+                calendar.refetchEvents();
+            });
+        
+            // Inicializar el calendario
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                locale: 'es',
+                events: function(info, successCallback, failureCallback) {
+                    const url = '/calendario/obtener-turnos';
+                    const params = new URLSearchParams({
+                        start: info.startStr,
+                        end: info.endStr,
+                        medicos: selectedMedicos.join(','),
+                        estado: selectedEstado //estado como parámetro
+                    });
+        
+                    fetch(`${url}?${params}`)
+                        .then(response => response.json())
+                        .then(data => successCallback(data))
+                        .catch(err => failureCallback(err));
+                },
+                hiddenDays: [0, 6],
+                slotMinTime: '08:00:00',
+                slotMaxTime: '20:00:00',
+                slotDuration: '00:15:00',
+                slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false },
+                buttonText: { //para que el texto de los botones esté en español
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día'
+                },
+                allDaySlot: false,
+                height: 'auto',
+                expandRows: true,
+                editable: true,
+                selectable: true,
+                // acá mostramos los datos en detalle del evento cuando le hacemos clic, que los conseguimos de TurnoModel
+                eventClick: function(info) {
+                    const pacienteNombre = info.event.extendedProps.pacienteNombre || 'No especificado';
+                    const estadoTurno = info.event.extendedProps.estadoTurno;
+                    const nombreMedico = info.event.extendedProps.nombreMedico || 'No especificado';
+                
+                    let estadoTexto;
+                    switch (estadoTurno) {
+                        case 1: estadoTexto = 'Disponible'; break;
+                        case 2: estadoTexto = 'Reservado'; break;
+                        case 3: estadoTexto = 'Confirmado'; break;
+                        case 4: estadoTexto = 'Cancelado'; break;
+                        default: estadoTexto = 'Desconocido'; break;
+                    }
+                
+                    // Configuración de SweetAlert 
+                    const swalConfig = {
+                        title: `Turno de ${info.event.title}`, 
+                        html: `
+                            <br>
+                            <p><strong>Médico:</strong> ${nombreMedico}</p>
+                            <p><strong>Paciente:</strong> ${pacienteNombre}</p>
+                            <p><strong>Estado:</strong> ${estadoTexto}</p>
+                            <p><strong>Fecha y hora:</strong> ${info.event.start.toLocaleString()}</p>
+                        `,
+                        icon: 'info',
+                        confirmButtonText: 'Cerrar'
+                    };
+
+                    //solo agregar el botón "Agendar Turno" si el estado es "Disponible", para direccionarte al formulario de insertar turno
+                    if (estadoTurno === 1) { // si el turno está disponible
+                        swalConfig.showCancelButton = true;
+                        swalConfig.cancelButtonText = 'Agendar Turno';
+                        swalConfig.focusCancel = true; 
+                        swalConfig.cancelButtonClass = 'swal2-confirm'; //color verde 
+                    } else if (estadoTurno === 2) { // si el turno está reservado, se agrega el botón de "confirmar turno"
+                        swalConfig.showCancelButton = true;
+                        swalConfig.cancelButtonText = 'Confirmar Turno';
+                        swalConfig.focusCancel = true;
+                        swalConfig.cancelButtonClass = 'swal2-cancel'; //color verde
+                    }
+
+                    // color para el botón cancelar
+                    swalConfig.showConfirmButton = true;
+                    swalConfig.confirmButtonText = 'Cancelar';
+                    swalConfig.confirmButtonClass = 'swal2-cancel-button';
+
+                    Swal.fire(swalConfig).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            if (estadoTurno === 1) {
+                                // Redirigir a la página de agendar turno solo si es "Disponible"
+                                window.location.href = '/turnos/agregar/0';
+                            } else if (estadoTurno === 2) {
+                                // Redirigir a la página de turnos para confirmar el turno
+                                window.location.href = '/turnos';
+                            }
+                        }
+                    });
+                }
+            });
+        
+            calendar.render();
+        
+        });
+    </script>
+</body>
+</html>

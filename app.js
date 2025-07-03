@@ -10,6 +10,7 @@ const rutasMedicos = require('./routes/medicosRoute');
 const rutasTurnos = require('./routes/turnosRoute'); 
 const rutasPacientes = require('./routes/pacientesRoute');
 const rutasHorarios = require('./routes/horariosRoute');
+const rutasPanelAdmin = require('./routes/panelAdminRoute');
 
 // Middleware
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use('/', rutasMedicos);
 app.use('/', rutasTurnos);
 app.use('/', rutasPacientes);
 app.use('/', rutasHorarios);
+app.use('/', rutasPanelAdmin);
 
 //muestra el puerto que escucha el server
 app.listen(port, () => { 
