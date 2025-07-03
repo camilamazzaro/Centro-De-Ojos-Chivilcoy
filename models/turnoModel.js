@@ -27,7 +27,7 @@ class TurnoModel{
             pacientes.nombre AS paciente_nombre, 
             practicas.nombre AS practica,
             turnos.fecha_hora AS fecha_hora, 
-            turnos.id_estadoTurno,
+            turnos.id_estado_turno,
             estado_turno.nombre AS estado_nombre
         FROM turnos 
         LEFT JOIN medicos ON turnos.id_medico = medicos.id 
@@ -35,7 +35,7 @@ class TurnoModel{
         LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
         LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
         LEFT JOIN practicas ON turnos.id_practica = practicas.id
-        JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
+        JOIN estado_turno ON turnos.id_estado_turno = estado_turno.id
         ${filtro}
         ORDER BY 
             CASE 
@@ -56,7 +56,7 @@ class TurnoModel{
             LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
             LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
             LEFT JOIN practicas ON turnos.id_practica = practicas.id
-            JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
+            JOIN estado_turno ON turnos.id_estado_turno = estado_turno.id
             ${filtro};
         `;
 
@@ -106,9 +106,9 @@ class TurnoModel{
 
     async guardarTurno(datos, callback){
         if(datos.id == 0){
-            let sql = `INSERT INTO turnos (id_medico, id_paciente, id_practica, fecha_hora, id_estadoTurno)`;
-            sql += `VALUES (?,?,?,?,?)`;
-            conx.query(sql, [datos.id_medico, datos.id_paciente, datos.id_practica, datos.fecha_hora, datos.id_estadoTurno], async (err, results)=>{
+            let sql = `INSERT INTO turnos (id_medico, id_paciente, id_practica, fecha_hora, id_estado_turno)`;
+            sql += `VALUES (?,?,?,?,3)`;
+            conx.query(sql, [datos.id_medico, datos.id_paciente, datos.id_practica, datos.fecha_hora], async (err, results)=>{
                 if (err) {
                     console.error("Error en la consulta de guardarTurno:", err);
                     callback(null);
@@ -118,7 +118,7 @@ class TurnoModel{
                 }
         });
         } else {
-            let sql = `UPDATE turnos SET id_medico= ?, id_paciente= ?, id_practica=?, fecha_hora= ?, id_estadoTurno= ? WHERE id = ?`;
+            let sql = `UPDATE turnos SET id_medico= ?, id_paciente= ?, id_practica=?, fecha_hora= ?, id_estado_turno= ? WHERE id = ?`;
             conx.query(sql, [datos.id_medico, datos.id_paciente, datos.id_practica, datos.fecha_hora, datos.id_estadoTurno, datos.id], async (err, results)=>{
                 if (err) {
                     console.error("Error en la consulta de guardarTurno:", err);
@@ -132,7 +132,7 @@ class TurnoModel{
     }
 
     async cancelarTurno(id, callback) {
-        let sql = `UPDATE turnos SET id_estadoTurno=1, id_paciente=NULL WHERE id = ?`;
+        let sql = `UPDATE turnos SET id_estado_turno=1, id_paciente=NULL WHERE id = ?`;
         conx.query(sql, [id], (err, results) => {
             if (err) {
                 console.error(err);
@@ -160,7 +160,7 @@ class TurnoModel{
     async reservarTurno(id_turno, id_cliente, id_practica, callback) { 
         const ID_ESTADO_RESERVADO = 2;
     
-        let sql = `UPDATE turnos SET id_paciente = ?, id_estadoTurno = ?, id_practica = ? WHERE id = ?`;
+        let sql = `UPDATE turnos SET id_paciente = ?, id_estado_turno = ?, id_practica = ? WHERE id = ?`;
     
         conx.query(sql, [id_cliente, ID_ESTADO_RESERVADO, id_practica, id_turno], async (err, results) => {
             if (err) {
@@ -175,7 +175,7 @@ class TurnoModel{
     async confirmarTurno(id_turno, callback){
         const ID_ESTADO_CONFIRMADO = 3;
 
-        let sql = `UPDATE turnos SET id_estadoTurno = ? WHERE id = ?`;
+        let sql = `UPDATE turnos SET id_estado_turno = ? WHERE id = ?`;
 
         conx.query(sql, [ID_ESTADO_CONFIRMADO, id_turno], async (err, results)=>{
             if (err) {
@@ -194,7 +194,7 @@ class TurnoModel{
     
         // Antes de listar, actualizo los turnos cuya fecha ya pasó y les cambio el estado a "completado"
         conx.query(
-            `UPDATE turnos SET id_estadoTurno = 4 WHERE fecha_hora <= NOW() AND id_estadoTurno != 4`,
+            `UPDATE turnos SET id_estado_turno = 4 WHERE fecha_hora <= NOW() AND id_estado_turno != 4`,
             (err) => {
                 if (err) {
                     console.error("Error al actualizar turnos pasados:", err);
@@ -209,7 +209,7 @@ class TurnoModel{
                         pacientes.nombre AS paciente_nombre, 
                         practicas.nombre AS practica,
                         turnos.fecha_hora AS fecha_hora, 
-                        turnos.id_estadoTurno,
+                        turnos.id_estado_turno,
                         estado_turno.nombre AS estado_nombre
                     FROM turnos 
                     LEFT JOIN medicos ON turnos.id_medico = medicos.id 
@@ -217,7 +217,7 @@ class TurnoModel{
                     LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
                     LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
                     LEFT JOIN practicas ON turnos.id_practica = practicas.id
-                    JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
+                    JOIN estado_turno ON turnos.id_estado_turno = estado_turno.id
                     WHERE turnos.id_medico = ? 
                     ${filtro ? `AND (${filtro})` : ''}
                     ORDER BY 
@@ -240,7 +240,7 @@ class TurnoModel{
                     LEFT JOIN pacientes ON turnos.id_paciente = pacientes.id
                     LEFT JOIN obras_sociales ON pacientes.id_obra_social = obras_sociales.id
                     LEFT JOIN practicas ON turnos.id_practica = practicas.id
-                    JOIN estado_turno ON turnos.id_estadoTurno = estado_turno.id
+                    JOIN estado_turno ON turnos.id_estado_turno = estado_turno.id
                     WHERE turnos.id_medico = ? 
                     ${filtro ? `AND (${filtro})` : ''};
                 `;
@@ -305,7 +305,7 @@ class TurnoModel{
 
         //filtrar por estado si se ha seleccionado un estado específico
         if (estado !== 'todos') {
-            sql += " AND T.id_estadoTurno = ?";
+            sql += " AND T.id_estado_turno = ?";
             parametros.push(estado);
         }
 

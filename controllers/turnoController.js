@@ -139,7 +139,7 @@ class TurnoController {
         //para obtener los médicos y pacientes
         Promise.all([
             new Promise((resolve, reject) => {
-                const limit = req.query.limit || 10; // Por ejemplo, puedes definir un límite predeterminado
+                const limit = req.query.limit || 10; 
                 const offset = req.query.offset || 0;
                 pacienteModel.listarPacientes(limit, offset, {}, (pacientes, total) => {
                     resolve(pacientes);

@@ -196,6 +196,7 @@ h2{
     font-weight: 500;
     margin-right: 2em;
     font-size: 18px;
+    border: 2px solid var(--COLOR_SECUNDARIO_3);
 }
 
 .container .btn-guardar:hover{
@@ -209,10 +210,11 @@ h2{
     background-color: white;
     color: var(--COLOR_PRINCIPAL);
     font-weight: 500;
-    font-size: 18px;
-    width: 150px;
+    font-size: 16px;
     text-align: center;
     text-decoration: none;
+    padding: 8px 16px;
+    height: max-content;
 }
 
 .container .btn-cancelar:hover{
@@ -680,6 +682,7 @@ select{
     display: flex;
     justify-content: center;
     gap: 1em;
+    align-items: center;
 }
 .botones .btn-cancelar{
     background-color: white;

@@ -79,3 +79,56 @@
 .tabla-turnos td{
     border-bottom: 1px solid #eee;
 }
+
+#limit{
+    width: 100px;
+}
+
+/* ---------------------- AGREGAR TURNOS ----------------- */
+
+.formulario-agregar-turno, .formulario-editar-turno {
+    background-color: #fff;               
+    padding: 2rem;                         
+    border-radius: 12px;                   
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin: 0 auto;
+    max-width: 90%;
+}
+
+.formulario-agregar-turno .form-label {
+    font-weight: 600;                      
+    color: #333;                          
+    margin-bottom: 0.5rem;
+}
+
+.formulario-agregar-turno .row + .row {
+    margin-top: 1rem;                     
+}
+
+.d-flex.gap-2.mt-3 {
+    margin-top: 2rem !important;
+}
+
+#fecha, #hora{
+    width: 100% !important;
+    height: 50px;
+    border: 2px solid #ccc; 
+    border-radius: 4px;
+    padding: 13px 12px; 
+    font-size: 14px;
+}
+
+.contenedor-agregar-turno .btn-volver{
+    margin-top: 2em;
+}
+
+.contenedor-agregar-turno h1{
+    text-align: center;
+}
+
+.formulario-agregar-turno .row,
+.formulario-editar-turno .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;   
+}
