@@ -64,14 +64,18 @@
 
                     <div class="row mb-3">
                         <% let date = new Date(turno.fecha_hora) %>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="fecha" class="form-label">Fecha</label>
                             <input class="form-control" id="fecha" type="date" value="<%= date.getFullYear() %>-<%= (date.getMonth() + 1).toString().padStart(2, '0') %>-<%= date.getDate().toString().padStart(2, '0') %>">
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="hora" class="form-label">Hora</label>
                             <input class="form-control" id="hora" type="time" value="<%= date.getHours().toString().padStart(2, '0') %>:<%= date.getMinutes().toString().padStart(2, '0') %>">
+                        </div>
+
+                        <div class="col-md-3">
+                            <input type="hidden" id="id_estadoTurno" name="estado_turno" value="3">
                         </div>
 
                     </div>
@@ -155,6 +159,7 @@
             const turnoFecha = document.querySelector("#fecha").value;
             const turnoHora = document.querySelector("#hora").value;
             const fechaCompleta = `${turnoFecha} ${turnoHora}`;
+            const turnoId_estadoTurno = document.querySelector("#id_estadoTurno").value;
             
             if (!turnoMedico || !turnoPaciente || !turnoFecha || !turnoHora) {
                 alert("Por favor, complete todos los campos.");
@@ -166,6 +171,7 @@
                 id_paciente: turnoPaciente,
                 id_practica: turnoPractica,
                 fecha_hora: fechaCompleta,
+                id_estadoTurno: turnoId_estadoTurno,
                 id: <%= turno.id %>,
             };
             

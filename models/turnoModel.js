@@ -107,8 +107,8 @@ class TurnoModel{
     async guardarTurno(datos, callback){
         if(datos.id == 0){
             let sql = `INSERT INTO turnos (id_medico, id_paciente, id_practica, fecha_hora, id_estado_turno)`;
-            sql += `VALUES (?,?,?,?,3)`;
-            conx.query(sql, [datos.id_medico, datos.id_paciente, datos.id_practica, datos.fecha_hora], async (err, results)=>{
+            sql += `VALUES (?,?,?,?,?)`;
+            conx.query(sql, [datos.id_medico, datos.id_paciente, datos.id_practica, datos.fecha_hora, datos.id_estadoTurno], async (err, results)=>{
                 if (err) {
                     console.error("Error en la consulta de guardarTurno:", err);
                     callback(null);

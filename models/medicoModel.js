@@ -78,9 +78,9 @@ class MedicoModel {
         const query = `
             SELECT medicos.*, usuarios.nombre AS nombre_medico
             FROM medicos
-            JOIN medicos_obrassociales ON medicos.id = medicos_obrassociales.id_medico
+            JOIN medico_obrassociales ON medicos.id = medico_obrassociales.id_medico
             JOIN usuarios ON medicos.id_usuario = usuarios.id
-            WHERE medicos_obrassociales.id_obraSocial = ?`;
+            WHERE medico_obrassociales.id_obraSocial = ?`;
 
         conx.query(query, [obraSocialId], (error, results) => {
             if (error) {

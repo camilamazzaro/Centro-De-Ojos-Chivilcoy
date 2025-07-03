@@ -25,4 +25,7 @@ router.post('/medico/editar/:id', upload.single('foto'), medicoController.guarda
 // Ruta para eliminar un médico (por ID)
 router.delete('/medicos/eliminar/:medicoId', medicoController.eliminarMedico);
 
+//Obtener médicos por obra social
+router.get('/medicos/por-obra-social/:obraSocialId', medicoController.obtenerMedicosPorObraSocial);
+
 module.exports = router;

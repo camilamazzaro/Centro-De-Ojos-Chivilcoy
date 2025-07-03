@@ -6,7 +6,7 @@ const panelAdminController = new PanelAdminController();
 // const autenticar = require('../middleware/autenticacion')([3]); 
 
 //rutas redirección a home
-// router.get('/panelAdmin', autenticar, panelSecretariaController.mostrarPanelGeneral);
+router.get('/panelAdmin', panelAdminController.mostrarPanelGeneral);
 
 router.get('/panelAdmin/calendario-turnos', panelAdminController.mostrarCalendario);
 

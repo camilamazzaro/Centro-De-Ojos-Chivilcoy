@@ -335,9 +335,9 @@ class TurnoController {
             for (let horario of horarios) {
 
                 // Excluir el id_medico = 1(esteban que trabaja por orden de llegada)
-                if (horario.id_medico === 1) {
-                    continue; // Salta la iteración al siguiente horario si el id_medico es 1
-                }
+                // if (horario.id_medico === 1) {
+                //     continue; // Salta la iteración al siguiente horario si el id_medico es 1
+                // }
 
                 let horarioDeInicio = moment(`${diaDelAnio} ${horario.hora_inicio}`);
                 let horarioDeFin = moment(`${diaDelAnio} ${horario.hora_fin}`);
