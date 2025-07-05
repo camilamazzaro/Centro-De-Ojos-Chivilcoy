@@ -1,0 +1,69 @@
+<head>
+    <!--Iconos de Font Awesome-->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css">
+</head>
+
+<header>
+    <div class="icon-menu">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+
+    <a href="/"><div class="logo"></div></a>
+
+    <nav class="menu-responsive">
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/nosotros">Nosotros</a></li>
+            <li><a href="/profesionales">Profesionales</a></li>
+            <li><a href="/coberturas">Coberturas</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+        </ul>
+    </nav> 
+
+    <!-- Botón para pedir turno -->
+    <div class="acciones-header">
+        <a href="/pedirTurno" class="menu-pedir-turno btn">Pedir Turno</a>
+        <a href="/panelPacientes" class="ingreso-pacientes"><i class="fa-solid fa-circle-user"></i> Ingresar</a>
+    </div>
+    
+
+</header>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuHamburguesa = document.querySelector(".icon-menu");
+        const menu = document.querySelector(".menu-responsive");
+    
+        menuHamburguesa.addEventListener("click", function () {
+            menu.classList.toggle("mostrar");
+        });
+    });    
+</script>
+
+<!--Para que la página active quede subrayada-->
+<script>
+    // Obtener la URL actual
+    const currentLocation = window.location.pathname;
+
+    // Obtener todos los enlaces
+    const navLinks = document.querySelectorAll('header nav ul li a');
+
+    navLinks.forEach(link => {
+        // Comprobar si el href del enlace coincide con la URL actual
+        if (link.getAttribute('href') === currentLocation || 
+            (currentLocation === '/' && link.getAttribute('href') === '/home.html')) { // Para manejar el caso del home
+            link.classList.add('active'); // Agregar clase active al enlace actual
+        }
+    });
+
+    // Este script le suma la clase cuando el scroll pasa cierta altura (ej. 50px)
+
+        const header = document.querySelector('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+</script>

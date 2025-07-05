@@ -1,0 +1,203 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+/* Tipografía importada */
+@font-face {
+    font-family: 'Isadora';
+    src: url('../fuentes/IsidoraSans-Medium.ttf') format('truetype');
+}  
+
+/* VARIABLES DE COLOR */
+
+:root { 
+    --COLOR_PRINCIPAL: #005b6f;
+    --COLOR_OSCURO: #0a3749;
+    --COLOR_SECUNDARIO_1: #457d84;
+    --COLOR_SECUNDARIO_2: #c0d8db;
+    --COLOR_SECUNDARIO_3: #38b5a9;
+    /* --DEGRADADO: linear-gradient(90deg, var(--VERDE_AGUA), var(--AZUL_CLARO));
+    --DEGRADADOREVES: linear-gradient(90deg, var(--AZUL_CLARO), var(--VERDE_AGUA)); */
+    --COLOR-MENU-HOVER:  #e6e6e6;
+    --COLOR-MENU-TEXTO-HOVER: #272727;
+    --COLOR-BARRA-LATERAL: #fff;
+    --COLOR-BARRA-INFO: #0a3768;
+    --COLOR-FONDO-BOTON: #38b5a9;
+    --COLOR-SWITCH-BASE:#d7d7d7; 
+    --COLOR-SWITCH-CIRCULO: #fff;
+    --COLOR-FONDO-USUARIO: #d7d7d7;
+    --COLOR-ICONO-USUARIO: #656565;
+    --TEXTOS-BARRA-LATERAL: #0a3768;
+    --COLOR-TEXTO-LOGOUT: #38b5a9;
+    --COLOR-FONDO-LOGOUT: #0a3768;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background-color: var(--COLOR_PRINCIPAL);
+    border: none;
+    border-radius: 10px;
+    text-decoration: none; 
+    transition: all .3s ease;
+    align-content: center;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: var(--COLOR_SECUNDARIO_2);
+    color: var(--COLOR_PRINCIPAL);
+    cursor: pointer;
+}
+
+.sombra{
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin: 2% 0 4% 0;
+    color: var(--COLOR_PRINCIPAL);
+    font-weight: 650;
+    text-align: left;
+    width: 100%;
+}
+
+h2{
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.btn-sombreado{
+    color: var(--COLOR_OSCURO);
+    font-weight: 500;
+    padding: 0.7em 1.7em;
+    font-size: 16px;
+    border-radius: 0.5em;
+    background: #e8e8e8;
+    cursor: pointer;
+    border: 1px solid #e8e8e8;
+    transition: all 0.3s;
+    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+    margin-right: 1em;
+}
+
+.btn-sombreado:active{
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
+.btn-sombreado:hover{
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
+
+/* Botón efecto onda */
+.btn-wave {
+    display: inline-block;
+    transition: all 0.2s ease-in;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    color: #090909;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 0.5em;
+    border: 1px solid var(--COLOR_PRINCIPAL);
+    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+    margin-top: 2em;
+    text-decoration: none;
+    font-weight: 500;
+    color: white;
+    background-color:  #009087 !important;
+  }
+
+  .btn-wave a:hover{
+    color: white
+  } 
+  .btn-wave:active {
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+  }
+  
+  .btn-wave:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) scaleY(1) scaleX(1.25);
+    top: 100%;
+    width: 140%;
+    height: 180%;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: block;
+    transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+    z-index: -1;
+  }
+  
+  .btn-wave:after {
+    content: "";
+    position: absolute;
+    left: 55%;
+    transform: translateX(-50%) scaleY(1) scaleX(1.45);
+    top: 100%;
+    width: 160%;
+    height: 190%;
+    background-color: transparent;
+    border-radius: 50%;
+    display: block;
+    transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+    z-index: -1;
+  }
+  
+  .btn-wave:hover {
+    color: #ffffff;
+    border: 1px solid #009087;
+  }
+  
+  .btn-wave:hover:before {
+    top: -35%;
+    background-color: #009087;
+    transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+  }
+  
+  .btn-wave:hover:after {
+    top: -45%;
+    background-color: #009087;
+    transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+  }
+
+.btn-wave:before,
+.btn-wave:after {
+  pointer-events: none !important;
+  will-change: transform !important;
+}
+
+
+/* WAVE SVG */
+
+.wave {
+    position: absolute;
+    bottom: -70px;
+    left: 0;
+    width: 100% !important;
+    height: 100px;
+    z-index: 0;
+    transform: rotate(180deg); 
+}
+
+.wave-superior {
+    position: absolute;
+    top: -1px; 
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 0;
+    pointer-events: none;
+}

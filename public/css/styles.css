@@ -68,6 +68,7 @@
     text-decoration: none; 
     transition: all .3s ease;
     align-content: center;
+    text-align: center;
 }
 
 .btn:hover {
@@ -596,7 +597,6 @@ select{
 }
 
 
-/* From Uiverse.io by shah1345 */ 
 .btn-wave {
     display: inline-block;
     transition: all 0.2s ease-in;
@@ -611,6 +611,7 @@ select{
     border: 1px solid #e8e8e8;
     box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
     margin-top: 2em;
+    text-decoration: none;
   }
 
   .btn-wave a{

@@ -1,0 +1,708 @@
+:root { 
+    --COLOR_PRINCIPAL: #005b6f;
+    --COLOR_OSCURO: #0a3749;
+    --COLOR_SECUNDARIO_1: #457d84;
+    --COLOR_SECUNDARIO_2: #c0d8db;
+    --COLOR_SECUNDARIO_3: #38b5a9;
+}
+
+h3{
+    font-size: 2.5em;
+    color: var(--COLOR_PRINCIPAL);
+    margin-bottom: 0;
+}
+
+/* botón efecto subir */
+.btn-subir {
+    display: inline-block; /* así el a se comporta como botón y puedo aplicar los estilos de animación */
+    padding: 13px 20px;
+    font-size: 20px !important;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #000;
+    background-color: #fff;
+    border: 2px solid var(--COLOR_SECUNDARIO_3);
+    border-radius: 10px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-subir:hover {
+    background-color: var(--COLOR_PRINCIPAL);
+    box-shadow: 0px 13px 20px var(--COLOR_SECUNDARIO_3);
+    color: #fff;
+    transform: translateY(-7px);
+    border: none;
+}
+
+.btn-subir:active {
+    transform: translateY(-1px);
+}
+
+
+/* Header - menu de navegación */
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10%;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: transparent; 
+    box-sizing: border-box;
+    transition: top 0.3s;
+    overflow: hidden;
+}
+
+header.scrolled {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+header.scrolled .logo {
+    background-image: url('/public/img/logo-oscuro-coch.png');
+}
+
+header.scrolled nav ul li a{
+    color: var(--COLOR_PRINCIPAL);
+}
+
+/*ocultar el header */
+.hidden {
+    top: -100px; 
+}
+
+header .logo {
+    width: 400px;
+    height: 60px;
+    background-image: url('/public/img/logo-claro-coch.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+header nav {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+}
+
+header nav ul{
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    gap: 2em;
+    width: 100%;
+}
+
+header nav ul li a {
+    width: 3%;
+    position: relative;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out; /* Para suavizar la transición del color */
+    color: white;
+}
+
+header nav ul li a.active::after {
+    width: 100%; /* Mantiene la línea activa al ancho del enlace */
+}
+
+header nav ul li a.active {
+    color: var(--COLOR_SECUNDARIO_3); /* Cambia el color del enlace activo */
+}
+
+header nav ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: .1em;
+    background-color: var(--COLOR_SECUNDARIO_3);
+    transition: width 0.3s ease-in-out; 
+}
+
+header nav ul li a:hover::after {
+    width: 100%; /* Expande el subrayado de izquierda a derecha */
+}
+
+header nav ul li a:hover {
+    color: white;
+}
+
+header.scrolled nav ul li a:hover{
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.menu-pedir-turno {
+    color: white;
+    margin-right: 50px;
+    min-width: 100px;
+    background: var(--COLOR_PRINCIPAL); 
+    transition: all .3s ease; 
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+header .menu-pedir-turno:hover {
+    background: var(--COLOR_SECUNDARIO_3); 
+}
+
+header .icon-menu{
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--AZUL_CLARO);
+}
+
+.acciones-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.acciones-header i{
+    font-size: 30px;
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.acciones-header i:hover{
+    color: var(--COLOR_SECUNDARIO_3);
+}
+.ingreso-pacientes:hover{
+    color: var(--COLOR_SECUNDARIO_3);
+}
+
+.ingreso-pacientes{
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.ingreso-pacientes i{
+    color: white;
+    transition: all .3s ease;
+}
+
+header.scrolled .ingreso-pacientes i{
+    color: var(--COLOR_PRINCIPAL);
+}
+
+header.scrolled .ingreso-pacientes{
+    text-decoration: none;
+    color: var(--COLOR_PRINCIPAL);
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+
+/* ------------------------------------------------- CARRUSEL DE BIENVENIDA -------------------------------------------------  */
+
+.bienvenida {
+    height: 800px;
+    background: var(--COLOR_PRINCIPAL); /* Color de fondo para que se note la forma */
+    position: relative;
+    border-radius: 0 0 100% 100% / 0 0 100px 100px;
+}
+
+.carrusel-bienvenida {
+    height: 100%;
+}
+
+.carrusel-bienvenida .swiper-wrapper {
+    height: 100%;
+    width: 100%;
+    align-items: center;
+}
+
+.carrusel-bienvenida .swiper-wrapper .slide-img img{
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+
+/* propiedades para la primer slide */
+.carrusel-bienvenida .swiper-wrapper .slide-texto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-image: url('/public/img/carrousel_bienvenida_1.jpg'); 
+    background-size: cover;   
+    background-position: center; 
+    background-repeat: no-repeat;
+    overflow: hidden;
+    padding-left: 6em;
+}
+
+.blur-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            rgba(1, 78, 109, 0.4), 
+            rgba(0, 90, 128, 0.4)
+        ),
+        url('/public/img/carrousel_bienvenida_1.jpg') center/cover no-repeat;
+
+    filter: blur(30px);
+    z-index: 1;
+    mask-image: linear-gradient(to right, black 0%, transparent 70%);
+    -webkit-mask-image: linear-gradient(to right, black 0%, transparent 70%);
+    pointer-events: none; /* para que el overlay no interfiera con el texto o botones */
+}
+
+.carrusel-bienvenida .swiper-wrapper .slide-texto .carrusel-bienvenida-texto {
+    width: 50%;
+    height: 100%;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+    height: 100%;
+    position: relative; 
+    z-index: 2;
+}
+
+
+/* para mostrar el texto solo en la primera imagen al cargar */
+.swiper-slide-active .carrusel-bienvenida-texto {
+    display: block;
+    margin: 0 !important;
+}
+
+.carrusel-bienvenida .carrusel-bienvenida-texto h2 {
+    font-size: 40px;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1em;
+    color: white;
+}
+
+.carrusel-bienvenida .carrusel-bienvenida-texto .horario-atencion { /*para que el ícono del reloj quede al lado del texto de horarios*/
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.carrusel-bienvenida .carrusel-bienvenida-texto .bienvenida-encontranos{
+    margin-bottom: 8px;
+}
+.carrusel-bienvenida .carrusel-bienvenida-texto .horario-atencion p{
+    margin: 0;
+}
+
+.carrusel-bienvenida .carrusel-bienvenida-texto a{
+    background: white;
+    color: var(--COLOR_PRINCIPAL);
+    width: max-content;
+    margin-top: 10%;
+    transition: all .5s;
+    font-size: 27px;
+}
+
+.carrusel-bienvenida .carrusel-bienvenida-texto a:hover{
+    background-color: var(--COLOR_PRINCIPAL);
+    color: white;
+}
+
+
+/*cambio el color de las flechas de paginación del swiper*/
+.swiper-button-next, .swiper-button-prev{
+    color: white  !important;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+    margin: 0 20px;
+}
+
+.swiper-button-next:hover, .swiper-button-prev:hover{
+    color: var(--COLOR_PRINCIPAL)  !important;
+}
+
+
+/* ---------------------------- NOSOTROS ---------------*/
+
+.seccion-nosotros{
+    margin: 0 auto;
+    padding: 60px 0;
+    display: flex;
+    justify-content: center;
+    gap: 4em;
+    align-items: center;
+    width: 80%;
+}
+
+.seccion-nosotros .nosotros-foto{
+    background-image: url('/public/img/home_nosotros.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 50%;
+    height: 600px;
+}
+
+.seccion-nosotros .nosotros-textos{
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    width: 35%;
+}
+
+.seccion-nosotros .nosotros-textos h3{
+    margin-bottom: .3em;
+}
+
+.seccion-nosotros .nosotros-textos a{
+    background: var(--COLOR_PRINCIPAL);
+    color: white;
+    width: 160px;
+    margin-top: 35px;
+    transition: all .5s;
+}
+
+.seccion-nosotros .nosotros-textos a:hover{
+    background: var(--COLOR_PRINCIPAL);
+}
+
+
+/* --------------------- SERVICIOS DESTACADOS ---------------*/
+
+.seccion-servicios {
+    color: white;
+    position: relative;
+    padding: 20px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    height: 600px;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 1em;
+}
+
+.seccion-servicios h2{
+    color: white;
+    margin-bottom: 1em;
+}
+
+.seccion-servicios .contenido {
+    background-color: var(--COLOR_PRINCIPAL);
+    text-align: center;
+    position: relative;
+    width: 100%;
+    z-index: 1;
+    height: 30%;
+    top: 0;
+    gap: 2em;
+    margin-top: 8em;
+    padding-top: 2em;
+}
+
+.seccion-servicios .servicios-carousel {
+    overflow: hidden;
+    position: relative;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.seccion-servicios .servicios-track {
+    display: flex;
+    gap: 20px; 
+    transition: transform 0.5s ease-in-out;
+    z-index: 2;
+    margin-top: 1.5em;
+}
+
+.seccion-servicios .servicio-card {
+    flex: 0 0 calc(20% - 20px); 
+    text-align: center;
+    padding: 10px;
+    border: 2px solid var(--COLOR_SECUNDARIO_3);
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    transition: background-color 0.5s ease;
+}
+
+.seccion-servicios .servicio-card a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    font-size: 16px;
+    display: block;
+}
+
+/*para animación de relleno de servicios*/
+.servicio-card.animate-bg {
+    animation: llenarFondo 0.5s forwards; 
+}
+
+.servicio-card.reset-bg {
+    background-color: transparent !important;
+}
+
+
+@keyframes llenarFondo {
+    from {
+        background-color: transparent;
+    }
+    to {
+        background-color: var(--COLOR_SECUNDARIO_3); 
+    }
+}
+
+
+/* --------------------------- SECCIÓN PROFESIONALES -------------------------------- */
+
+.seccion-profesionales {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px;
+    height: auto;
+    align-items: center;
+}
+
+.seccion-profesionales h3 {
+    color: var(--COLOR_PRINCIPAL);
+    font-weight: 600;
+}
+
+.carrusel-medicos {
+    width: 90%; 
+    height: 610px;
+}
+
+.carrusel-medicos .swiper-wrapper {
+    display: flex; 
+    align-items: center;
+}
+
+.carrusel-medicos .swiper-slide {
+    display: flex;
+    justify-content: center;
+    margin: 0 5px; 
+}
+
+.medico-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 550px; 
+    width: 400px;
+}
+
+.medico-card .contenedor-img {
+    width: 95%;
+    height: 75%; 
+    margin-bottom: 15px;
+    border: 4px solid var(--COLOR_SECUNDARIO_3);
+    border-radius: 2em 0;
+}
+
+.medico-card .contenedor-img img {
+    object-fit: contain; 
+    width: 95%; 
+    height: 100%; 
+}
+
+.medico-card h4 {
+    font-size: 1.8em; 
+    margin: 4px 0;
+    color: var(--COLOR_PRINCIPAL);
+    font-weight: 600;
+}
+
+.medico-card p {
+    font-size: 1em;
+    color: var(--COLOR_PRINCIPAL);
+    margin: 0 0 20px 0; 
+}
+
+.medico-card a{
+    background-color: var(--COLOR_SECUNDARIO_3);
+}
+
+/* Estilos para las tarjetas laterales */
+.swiper-slide:not(.swiper-slide-active) .medico-card {
+    transform: scale(0.8);
+    filter: blur(2px);
+    opacity: 0.6;
+}
+
+
+.carrusel-medicos .swiper-button-next,
+.carrusel-medicos .swiper-button-prev {
+    color: #007bff;
+}
+
+.carrusel-medicos .swiper-pagination {
+    bottom: 10px !important;
+}
+
+.swiper-pagination-bullet {
+    background: #007bff;
+    opacity: 0.7;
+}
+
+.swiper-pagination-bullet-active {
+    background: #0056b3;
+    opacity: 1;
+}
+
+
+/* --------------- RESEÑAS ---------------------- */
+.container-review {
+    width: 100% !important;
+    gap: 20px;
+    margin-bottom: 80px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    height: 900px;
+    overflow: hidden;
+}
+
+.review{
+    position: absolute;
+    background: var(--COLOR_PRINCIPAL);
+    margin-top: 9em;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    z-index: 99;
+}
+
+.container-review a{
+    background: var(--COLOR_SECUNDARIO_3);
+}
+
+.container-review .container-review-contenido{
+    width: 90%;
+}
+
+.review-invite {
+    text-align: center;
+    width: 80%;
+    margin-bottom: 15px;
+    margin-top: 3em;
+}
+
+.review-invite h2 {
+    color: white;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.review-invite p {
+    color: white;
+    font-size: 20px;
+    margin-bottom: 20px;
+    width: 90%;
+}
+
+.review-button:hover {
+    background: var(--COLOR_PRINCIPAL);
+}
+
+.review-images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    width: 90%;
+    margin-bottom: 3em;
+}
+
+.review-images img {
+    width: 30%;
+    height: 85%;
+    object-fit: cover;
+}
+
+
+/* NOTICIAS */
+
+.noticias {
+    background-color: var(--COLOR_PRINCIPAL);
+    padding: 50px 20px;
+}
+
+.noticias h2 {
+    text-align: center;
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 30px;
+}
+
+.noticias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+.noticia-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.noticia-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.noticia-card h3 {
+    font-size: 22px;
+    color: #444;
+    margin-bottom: 15px;
+}
+
+.noticia-card p {
+    font-size: 16px;
+    color: #666;
+}
+
+.noticia-card img {
+    width: 100%; 
+    height: auto;
+    max-height: 200px; 
+    object-fit: cover; 
+    border-radius: 8px;
+    display: block; 
+}

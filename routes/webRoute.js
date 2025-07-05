@@ -1,0 +1,47 @@
+const express = require('express');
+const router = express.Router();
+
+const WebController = require('../controllers/webController');
+const webController = new WebController();
+
+const MedicoController = require('../controllers/medicoController');
+const medicoController = new MedicoController();
+
+const TurnoController = require('../controllers/turnoController'); //importo el controller para poder utilizar sus funciones
+const turnoController = new TurnoController();
+
+
+//rutas redirección a home
+router.get('/',webController.mostrarHome);
+
+//ruta a nosotros
+router.get('/nosotros', webController.mostrarNosotros);
+
+//ruta a profesionales
+router.get('/profesionales', webController.mostrarProfesionales);
+
+//ruta a ver más desde profesionales 
+router.get('/profesionales/infoMedico/:medicoId', webController.mostrarInfoMedico);
+
+//ruta a coberturas
+router.get('/coberturas', webController.mostrarCoberturas);
+
+//ruta a contacto
+router.get('/contacto', webController.mostrarContacto);
+
+//ruta a Pedir Turno
+router.get('/pedirTurno', webController.mostrarPedirTurno);
+
+//ruta a reservar turno
+router.post('/turnos/reservar', turnoController.reservarTurno);
+
+//ruta a Pedir Turno
+router.post('/obtenerDatosDeTurnosPorFiltros', webController.cargarDatosTurno);
+
+//Obtener médicos por obra social
+router.get('/medicos/por-obra-social/:obraSocialId', medicoController.obtenerMedicosPorObraSocial);
+
+// Ruta al diagrama de ayuda desde "Pedir Turno"
+router.get('/pedirTurno/diagramaAyuda', webController.mostrarDiagramaAyuda);
+
+module.exports = router;

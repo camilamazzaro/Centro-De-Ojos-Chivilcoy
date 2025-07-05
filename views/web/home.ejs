@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--HEAD-->
+    <%- include('../commons/head-web') %>
+    <link rel="stylesheet" href="/public/css/web/home.css">
+</head>
+    
+<body>
+    
+    <!-- Menú de navegación -->
+    <%- include('../commons/menu-web') %>
+
+    <section class="bienvenida">
+
+        <div class="swiper carrusel-bienvenida">
+            <!-- Contenedor de las imágenes -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+    
+                <!--Primera imagen con el texto superpuesto-->
+                <div class="swiper-slide slide-texto">
+
+                    <div class="blur-overlay"></div>
+                    
+                    <!--contenedor del texto que aparece sobre la primer imagen-->
+                    <div class="carrusel-bienvenida-texto">
+                        <h2>Bienvenidos al<br>Centro de Ojos Chivilcoy</h2>
+                        <p class="bienvenida-encontranos">Encontranos en Av. Sarmiento 171, Chivilcoy (Bs. As.)</p>
+    
+                        <div class="horario-atencion">
+                            <i class="fa-regular fa-clock-nine"></i><!--icono reloj-->
+                            <p>Horario: Lunes a Viernes de 8 a 20hs. / Sábados: 9 a 12hs.</p>
+                        </div>
+
+                        <a href="#" class="btn-subir">Agendar Turno</a>
+
+                    </div>
+    
+                </div>
+    
+                <!--Segunda imagen del swiper-->
+                <div class="swiper-slide slide-img">
+                    <img src="/public/img/carrousel_bienvenida_1.jpg" alt="">
+                </div>
+    
+                <!--Tercera imagen del swiper-->
+                <div class="swiper-slide slide-img">
+                    <img src="/public/img/carrousel_bienvenida_1.jpg" alt="">
+                </div>
+            </div>
+    
+            <!-- Paginación -->
+            <div class="swiper-pagination"></div>
+    
+            <!-- Controles de navegación -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+    
+        </div>
+    </section>
+
+
+    <!--SECCIÓN NOSOTROS ----------------------------------------------------->
+
+    <section class="seccion-nosotros">
+
+        <div class="nosotros-foto"></div>
+
+        <div class="nosotros-textos">
+            <h3>Quienes Somos</h3>
+            <p>Somos un <strong>Centro Médico</strong> que se encuentra en la ciudad de Chivilcoy, desde el año 2009. <br><br> Desde entonces, brindamos la atención médica de máxima calidad de la zona, equipados de profesionales médicos <strong>100% dedicados</strong> a la salud de sus pacientes.</p>
+            <a class="btn-wave" href="/nosotros">Conocé Más</a>
+        </div>
+
+    </section>
+
+    <!--SECCIÓN SERVICIOS ----------------------------------->
+
+    <section class="seccion-servicios">
+
+
+        <div class="wave-superior">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 180 1440 120" 
+                preserveAspectRatio="none"
+            > <!--Para recortar el espacio transparente de la wave-->
+                <path
+                fill="#005b6f"
+                fill-opacity="1"
+                d="M0,192L80,213.3C160,235,320,277,480,282.7C640,288,800,256,960,234.7C1120,213,1280,203,1360,197.3L1440,192L1440,320L0,320Z"
+                ></path>
+            </svg>
+        </div>
+
+        <div class="contenido">
+
+            <h2>Nuestros Servicios</h2>
+            <div class="servicios-carousel">
+                <div class="servicios-track">
+
+                        <div class="servicio-card">
+                            <a href="">Consulta Médica</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Topografía</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Paquimetría</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Campo Visual Computarizado</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Recuento de Células Endoteriales</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">HRT</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">OCT</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Angiografía Dual</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">IOL Master</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Ecografía Modo A/B</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Ecometría</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Tonometría Digital</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Fotocoagulación Láser Argón</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">Fotocoagulación Yag Láser</a>
+                        </div>
+
+                        <div class="servicio-card">
+                            <a href="">SLT</a>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wave">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 300"><path fill="#005b6f" fill-opacity="1" d="M0,160L120,170.7C240,181,480,203,720,202.7C960,203,1200,181,1320,170.7L1440,160L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
+        </div>
+        
+
+    </section>
+
+
+    <!--SECCIÓN PROFESIONALES-->
+
+    <section class="seccion-profesionales">
+        <h3>Profesionales</h3>
+        <div class="swiper carrusel-medicos">
+            <div class="swiper-wrapper">
+                <!-- Renderizo los médicos desde la base de datos -->
+                <% if (medicos && medicos.length > 0) { %>
+                    <% medicos.forEach(function(medico) { %>
+                        <div class="swiper-slide">
+                            <div class="medico-card">
+                                <div class="contenedor-img sombra">
+                                    <img src="<%= medico.foto %>" alt="Foto de <%= medico.nombre_medico %>">
+                                </div>
+                        
+                                <h4><%= medico.nombre_medico %></h4>
+                                <p><%= medico.nombre_especialidad %></p>
+                                <a href="#" class="btn">Pedir Turno</a>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No hay médicos disponibles en este momento.</p>
+                <% } %>
+            </div>
+        
+            <!-- Paginación -->
+            <div class="swiper-pagination"></div>
+    
+            <!-- Controles de navegación -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+
+    <!-- RESEÑAS -->
+
+    <div class="container-review">
+
+        <div class="wave-superior">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 180 1440 120" 
+                preserveAspectRatio="none"
+            > <!--Para recortar el espacio transparente de la wave-->
+                <path
+                fill="#005b6f"
+                fill-opacity="1"
+                d="M0,192L80,213.3C160,235,320,277,480,282.7C640,288,800,256,960,234.7C1120,213,1280,203,1360,197.3L1440,192L1440,320L0,320Z"
+                ></path>
+            </svg>
+        </div>
+        
+        <div class="review">
+            <div class="review-invite">
+                <h2>¡Dejanos tu reseña!</h2>
+                <p>Tu opinión es importante para nosotros. Si visitaste nuestro Centro, hacé click en el botón de abajo para contarnos tu experiencia y ayudarnos a mejorar.</p>
+                <a href="https://www.google.com/search?client=opera-gx&q=centro+de+ojos+chivilcoy&sourceid=opera&ie=UTF-8&oe=UTF-8#lrd=0x95bea531284aefc3:0x6ab313380de2118b,3,,,," 
+                    target="_blank" rel="noopener noreferrer" class="btn">Dejar una reseña en Google</a>
+            </div>
+            <div class="review-images">
+                <img src="/public/img/reseña_1.png" alt="Reseña 1">
+                <img src="/public/img/reseña_2.png" alt="Reseña 2">
+                <img src="/public/img/reseña_3.png" alt="Reseña 3">
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- PREVIEW TURNOS - A DESARROLLAR -->
+    <section class="seccion-preview-turno" style="height: 500px;">
+        <p>ACÁ HARÍA UNA PREVIEW DE TURNOS</p>
+    </section>
+
+
+    <!--NOVEDADES-->
+    <section class="noticias">
+        <h2>Novedades</h2>
+        <div class="noticias-grid">
+            <div class="noticia-card">
+                <img src="/public/img/noticias_1.jpg" alt="Descripción de la imagen 1">
+                <div class="contenido-noticia">
+                    <p class="fecha">Fecha: 06/01/2025</p>
+                    <h3>Consultorio en Alquiler</h3>
+                    <p>Consultorio con mobiliario completo, moderno, luminoso, apto para uso profesional. Comunicarse al siguiente tel.: 2346 68-7444</p>
+                </div>
+            </div>
+            <div class="noticia-card">
+                <img src="/public/img/noticias_1.jpg" alt="Descripción de la imagen 2">
+                <div class="contenido-noticia">
+                    <p class="fecha">Fecha: 30/09/2024</p>
+                    <h3>Guardias Oftalmológicas</h3>
+                    <p>Realizamos guardias oftalmológicas 24hs. Dr. Esteban Mazzaro, teléfono: 2346 65-6140.</p>
+                </div>
+            </div>
+            <div class="noticia-card">
+                <img src="/public/img/noticias_1.jpg" alt="Descripción de la imagen 3">
+                <div class="contenido-noticia">
+                    <p class="fecha">Fecha: 08/03/2024</p>
+                    <h3>Nueva Ubicación</h3>
+                    <p>¡Nos mudamos! Renovamos nuestro espacio para brindar una atención de mejor calidad. Ahora, encontranos en Lamadrid 29. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!--FOOTER-->
+    <%- include('../commons/footer-web') %>
+
+
+    <!--Incluimos librería de JS llamada Swiper, para carruseles-->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!--Activamos librería Swiper-->
+    <script>
+        var swiper = new Swiper('.swiper', {
+            // Activo la navegación
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            // Activo la paginación
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            // Hago un evento para ocultar el texto al pasar a la siguiente imagen
+            on: {
+                slideChange: function () { //evento que se dispara cuando cambiamos de diapo
+                    const slides = document.querySelectorAll('.swiper-slide'); //seleccionamos todos los elementos con la clase swiper-slide
+                    slides.forEach(slide => { //itera sobre cada una de las slides
+                        const textoSuperpuesto = slide.querySelector('.texto-superpuesto'); //busca el elemento de texto superpuesto dentro de la diapositiva
+                        if (textoSuperpuesto) { //si encuentra un texto superpuesto dentro de la diapositiva, hace lo que sigue
+                            if (slide.classList.contains('swiper-slide-active')) { //primero verifica si esta diapositiva es la activa (visible actualmente)
+                                textoSuperpuesto.style.display = 'block'; //si es la activa, muestra el texto superpuesto
+                            } else {
+                                textoSuperpuesto.style.display = 'none'; //si no es la activa, oculta el texto superpuesto
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        // Configuración del carrusel de médicos
+        var swiperMedicos = new Swiper('.carrusel-medicos', {
+            slidesPerView: 3, // Mostrar 3 diapositivas en cada página
+            centeredSlides: true,
+            spaceBetween: 10,
+            loop: false, // No permitir desplazamiento infinito
+            pagination: {
+                el: '.carrusel-medicos .swiper-pagination',
+                clickable: true,
+            },
+            watchOverflow: true,
+            navigation: {
+                nextEl: '.carrusel-medicos .swiper-button-next',
+                prevEl: '.carrusel-medicos .swiper-button-prev',
+            },
+            breakpoints: {
+                // Ajustes responsive
+                320: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                },
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                },
+            },
+            on: {
+                slideChange: function () {
+                    let lastIndex = this.slides.length - 1;
+                    // Si es el último slide, se asegura de mostrar la foto anterior y la actual en el medio
+                    if (this.activeIndex === lastIndex) {
+                        this.slides[lastIndex - 1].classList.add('swiper-slide-duplicate');
+                        this.slides[lastIndex].classList.add('swiper-slide-duplicate');
+                    } else {
+                        this.slides[lastIndex - 1].classList.remove('swiper-slide-duplicate');
+                        this.slides[lastIndex].classList.remove('swiper-slide-duplicate');
+                    }
+                }
+            }
+
+            
+        });
+
+        // Función para mostrar el botón de WhatsApp al hacer scroll, en este caso al bajar 100 px aparece el elemento.
+        window.addEventListener('scroll', function() {
+            const boton = document.getElementById('botonFlotante');
+            if (window.scrollY > 100) { 
+                boton.style.display = 'block';
+            } else {
+                boton.style.display = 'none';
+            }
+        });
+
+        // Para generar el movimiento de sección servicios 
+        const track = document.querySelector('.servicios-track');
+        const servicios = document.querySelectorAll('.servicio-card');
+        const serviciosPorVista = 4;
+        const totalServicios = servicios.length;
+        const totalGrupos = Math.ceil(totalServicios / serviciosPorVista);
+
+        let grupoActual = 0;
+
+        const moverCarousel = () => {
+            // Si el siguiente grupo excede la cantidad de servicios, reiniciar
+            if ((grupoActual + 1) * serviciosPorVista > totalServicios) {
+                grupoActual = 0;
+                animarServicios();
+            } else {
+                grupoActual++;
+            }
+
+            const offset = grupoActual * -100;
+            track.style.transform = `translateX(${offset}%)`;
+
+        };
+
+        // efecto animado de relleno de color
+        function animarServicios() {
+            const cards = document.querySelectorAll('.servicio-card');
+
+            // remuevo animación y fuerzo fondo transparente
+            cards.forEach(card => {
+                card.classList.remove('animate-bg');
+                card.style.removeProperty('animation');
+                card.style.backgroundColor = 'transparent';
+            });
+
+            // fuerzo el reseteo de la animación
+            void track.offsetWidth;
+
+            // Luego aplico la animación uno por uno
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-bg');
+                }, index * 1000);
+            });
+        }
+
+        animarServicios();
+        // Mueve el carousel automáticamente cada 5 segundos
+        setInterval(moverCarousel, 5000);
+
+        
+
+    </script>
+
+
+</body>
+</html>
