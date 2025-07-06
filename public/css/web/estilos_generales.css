@@ -184,12 +184,18 @@ h2{
 
 .wave {
     position: absolute;
-    bottom: -70px;
+    bottom: -20%;
     left: 0;
     width: 100% !important;
     height: 100px;
     z-index: 0;
     transform: rotate(180deg); 
+}
+
+.wave svg {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .wave-superior {

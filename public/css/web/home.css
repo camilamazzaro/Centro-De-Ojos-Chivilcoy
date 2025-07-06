@@ -50,16 +50,15 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
-    padding: 15px 20px;
+    padding: 15px 30px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 10%;
+    background: rgba(32, 65, 62, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    background: transparent; 
     box-sizing: border-box;
-    transition: top 0.3s;
+    transition: top 0.3s, all .3s ease;
     overflow: hidden;
 }
 
@@ -401,7 +400,7 @@ header.scrolled .ingreso-pacientes{
     justify-content: space-between;
     align-items: center;
     align-content: center;
-    height: 600px;
+    height: 500px;
     overflow: hidden;
     width: 100%;
     margin-top: 1em;
@@ -421,8 +420,12 @@ header.scrolled .ingreso-pacientes{
     height: 30%;
     top: 0;
     gap: 2em;
-    margin-top: 8em;
+    margin-top: 6%;
     padding-top: 2em;
+}
+
+.seccion-servicios .wave{
+    bottom: 24%;
 }
 
 .seccion-servicios .servicios-carousel {
@@ -449,6 +452,7 @@ header.scrolled .ingreso-pacientes{
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     background-color: transparent;
     transition: background-color 0.5s ease;
+    align-content: center;
 }
 
 .seccion-servicios .servicio-card a {
@@ -597,7 +601,7 @@ header.scrolled .ingreso-pacientes{
 .review{
     position: absolute;
     background: var(--COLOR_PRINCIPAL);
-    margin-top: 9em;
+    margin-top: 8%;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -656,8 +660,15 @@ header.scrolled .ingreso-pacientes{
 /* NOTICIAS */
 
 .noticias {
+    padding: 50px 0 0 0;
+    position: relative;
+}
+
+.noticias-container{
     background-color: var(--COLOR_PRINCIPAL);
-    padding: 50px 20px;
+    padding: 2em;
+    margin-bottom: 16%;
+    z-index: 99;
 }
 
 .noticias h2 {
@@ -676,10 +687,13 @@ header.scrolled .ingreso-pacientes{
 
 .noticia-card {
     background: #ffffff;
-    padding: 20px;
+    padding: 30px 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    white-space: normal;
+    word-wrap: break-word;
+    z-index: 99;
 }
 
 .noticia-card:hover {
@@ -705,4 +719,135 @@ header.scrolled .ingreso-pacientes{
     object-fit: cover; 
     border-radius: 8px;
     display: block; 
+}
+
+.noticia-card .fecha{
+    margin-top: 1em;
+}
+
+.container-noticias{
+    position: absolute;
+}
+
+
+/* ----- EQUIPOS MÉDICOS ------- */
+
+.grid-imagenes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 80%;
+    margin: 0 auto;
+    gap: 40px;
+    height: 700px;
+    margin-top: 100px;
+}
+
+.grid-imagenes .img1, .img2, .img3, .img4 {
+    height: 50%;
+}
+
+.grid-imagenes .img1, .img4 {
+    width: 55%;
+}
+
+.grid-imagenes .img2, .img3 {
+    width: 30%;
+}
+
+.grid-imagenes img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    transition: transform 0.4s ease;
+}
+
+.grid-imagenes .imagen-hover {
+    position: relative;        
+    overflow: hidden;          
+    cursor: pointer;           
+}
+
+.grid-imagenes .imagen-hover:hover img{
+    transform: scale(1.05);
+}
+
+.imagen-hover .texto {
+    position: absolute;
+    inset: 0;                           
+    background: rgba(32, 65, 62, 0.6);     
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;                          
+    transition: opacity 0.4s ease;
+    font-size: 1.2em;
+    text-align: center;
+    padding: 1em;
+    height: 100%;
+}
+
+.imagen-hover .texto a{
+    background-color: var(--COLOR_SECUNDARIO_3);
+}
+.imagen-hover .texto a:hover{
+    background-color: var(--COLOR_PRINCIPAL);
+    color: white;
+}
+
+.imagen-hover:hover .texto {
+    opacity: 1;                         
+}
+
+
+/*Icónos resúmen*/
+.seccion-iconos-resumen{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10em;
+    margin-top: 5em;
+    padding: 5em 20px;
+}
+.seccion-iconos-resumen article{
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+.seccion-iconos-resumen article h4{
+    margin-bottom: 0;
+    margin-top: 20px;
+    font-size: 25px;
+}
+
+.seccion-iconos-resumen article p{
+    font-size: 18px;
+}
+
+.icono-resumen{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: var(--COLOR_PRINCIPAL);
+    text-align: center;
+    align-content: center;
+    transition: all .3s ease-in-out;
+}
+
+.icono-resumen:hover{
+    transform: scale(1.2);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.4);
+}
+
+.icono-resumen i{
+    color: white;
+    font-size: 40px;
 }
