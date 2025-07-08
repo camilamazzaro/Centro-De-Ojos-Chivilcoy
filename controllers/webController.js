@@ -68,7 +68,7 @@ class WebController{
         // Sin ningun dato, e ir cargandolo de a poco a medida de que el usuario seleccione datos
 
         pacienteModel.obtenerObrasSociales((obrasSociales) => {
-            res.render('web/pedirTurno', {
+            res.render('web/pedir-turno', {
                 title: 'Pedir Turno',
                 obras_sociales: obrasSociales
             });

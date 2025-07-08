@@ -1,0 +1,400 @@
+:root { 
+    --COLOR_PRINCIPAL: #005b6f;
+    --COLOR_OSCURO: #0a3749;
+    --COLOR_SECUNDARIO_1: #457d84;
+    --COLOR_SECUNDARIO_2: #c0d8db;
+    --COLOR_SECUNDARIO_3: #38b5a9;
+}
+
+
+.boton-ayuda {
+    position: fixed;
+    bottom: 3%; 
+    right: 3%; 
+    background-color: var(--COLOR_PRINCIPAL); 
+    opacity: .7;
+    color: white; 
+    padding: 10px 15px; 
+    border-radius: 20px 0 20px 0; 
+    font-size: 13px; 
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 10; 
+}
+
+.boton-ayuda:hover {
+    background-color: var(--COLOR_PRINCIPAL);
+    opacity: 1;
+}
+
+.boton-ayuda i{
+    margin-right: 3px;
+    height: 100%;
+}
+
+.pedirTurno{
+    background-color: var(--COLOR_SECUNDARIO_2);
+    padding-top: 3em;
+    padding-bottom: 3em !important;
+    height: max-content;
+}
+
+
+.container-pasoUno {
+    padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+    background-color: white; 
+    width: 85%;
+    margin: 0 auto;
+    margin-bottom: 60px;
+    margin-top: 100px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+    border-radius: 10px;
+}
+
+.container-pasoUno h1 {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 700;
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.diagrama-proceso {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    gap: 2em;
+}
+
+.paso {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.circulo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+}
+
+.circulo.verde {
+    background-color: #1abc9c;
+}
+
+.flecha {
+    width: 30px;
+    height: 2px;
+    background-color: gray;
+    margin: 0 -5px; /* Para acercar las flechas a los círculos */
+}
+
+.flecha:before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 5px solid gray;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    position: absolute;
+    left: -5px; 
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.selects {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.filtros {
+    width: 23%;
+}
+
+.filtros:last-child {
+    margin-right: 0; /* Sin margen derecho en el último select */
+}
+
+.filtros label {
+    font-weight: 600;
+    font-size: 15px;
+    color: #2c3e50;
+    margin-bottom: 5px; 
+    display: block; 
+}
+
+.filtros select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background-color: white;
+    width: 100%;
+}
+
+.filtros input[type="date"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background-color: white;
+    width: 90%;
+    cursor: pointer;
+}
+
+input[type="date" i] {
+    font-family: monospace;
+    padding-inline-start: 1px;
+    cursor: pointer;
+}
+
+.medico {
+    display: flex;
+    align-items: center;
+    margin: 2em 0;
+    gap: 4em;
+}
+
+.medico .info-medico-turnos {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    width: 30%;
+}
+
+.medico .info-medico-turnos .foto-medico {
+    width: 100px; 
+    height: 100px;
+    border-radius: 50%; 
+    margin-right: 15px; 
+}
+
+.detalles h3 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.detalles p {
+    margin: 5px 0;
+    color: #7f8c8d; 
+}
+
+.medico .turnos-disponibles {
+    display: flex;
+    flex-wrap: wrap; 
+    margin-left: 20px; 
+    width: 50%;
+}
+
+.medico hr{
+    width: 100%;
+    background-color: #a1a1a1;
+    border: none;
+    height: 2px;
+}
+
+/*cuadraditos individuales*/
+.turno {
+    width: 60px; 
+    height: 60px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: white; 
+}
+
+.disponible {
+    background-color: var(--COLOR_SECUNDARIO_2);
+    transition: all .3s ease;
+}
+.disponible:hover {
+    background-color: #2e9288;
+}
+
+.turno[data-idturno].selected {box-shadow: 0px 0px 5px 1px black;}
+
+.turno[data-idturno]:hover{
+    cursor: pointer;
+}
+
+.no-disponible {
+    background-color: gray; 
+    text-decoration: line-through; /* Tachar el texto */
+}
+
+.boton-siguiente {
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 2px solid var(--COLOR_PRINCIPAL);
+    border-radius: 25px 0 25px 0;
+    background:white;
+    color: var(--COLOR_PRINCIPAL);
+    font-weight: bold;
+    cursor: pointer;
+    display: block; 
+    margin: 20px auto 0; 
+    transition: background-color 0.3s; 
+    width: 200px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.boton-siguiente:hover {
+    background-color: #16a085; 
+    color: white;
+}
+
+/* PASO DOS*/
+.container-pasoDos {
+    padding: 20px 40px;
+    font-family: 'Montserrat', sans-serif;
+    background-color: white;
+    width: 85%;
+    margin: 0 auto;
+    margin-top: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin-bottom: 60px;
+}
+
+.container-pasoDos h1 {
+    color: var(--COLOR_PRINCIPAL);
+    text-align: center;
+}
+
+.contenedor-detalle-formulario {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.columna-izquierda {
+    flex: 1;
+    margin-right: 30px;
+}
+
+.detalle-medico {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detalle-medico h2 {
+    color: var(--COLOR_PRINCIPAL);
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.detalle-medico p {
+    color: black;
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.modificar-fecha {
+    background-color: var(--COLOR_SECUNDARIO_2);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.info-medico {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.info-medico p{
+    color: #7f8c8d ;
+}
+
+.foto-medico {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.detalles-medico {
+    color: black;
+}
+
+.detalles-medico h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.columna-derecha {
+    flex: 1.5;
+}
+
+.formulario-grupo {
+    margin-bottom: 15px;
+    padding-right:20px;
+}
+
+.formulario-grupo label {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--COLOR_PRINCIPAL);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.formulario-grupo input{
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+
+}
+
+.formulario-grupo select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.boton-confirmar {
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 2px solid var(--COLOR_PRINCIPAL);
+    border-radius: 25px 0 25px 0;
+    background:white;
+    color: var(--COLOR_PRINCIPAL);
+    font-weight: bold;
+    cursor: pointer;
+    display: block; 
+    margin: 20px auto 0; 
+    transition: background-color 0.3s; 
+    width: 200px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.boton-confirmar:hover {
+    background-color: var(--COLOR_SECUNDARIO_2);
+    color: white;
+}

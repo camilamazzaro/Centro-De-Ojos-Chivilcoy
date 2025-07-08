@@ -157,7 +157,7 @@ class MedicoModel {
         let sql = `
             SELECT 
                 medicos.*, 
-                usuarios.nombre AS nombre_medico, 
+                usuarios.nombre AS nombre_medico
             FROM medicos
             JOIN usuarios ON medicos.id_usuario = usuarios.id
             WHERE EXISTS(SELECT T.* FROM turnos T WHERE fecha_hora LIKE ?)

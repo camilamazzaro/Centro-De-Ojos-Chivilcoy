@@ -207,3 +207,184 @@ h2{
     z-index: 0;
     pointer-events: none;
 }
+
+
+
+/* ------------------------ HEADER ------------------------- */
+
+/* Header - menu de navegación */
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(32, 65, 62, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-sizing: border-box;
+    transition: top 0.3s, all .3s ease;
+    overflow: hidden;
+}
+
+header.scrolled {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+header.scrolled .logo {
+    background-image: url('/public/img/logo-oscuro-coch.png');
+}
+
+header.scrolled nav ul li a{
+    color: var(--COLOR_PRINCIPAL);
+}
+
+/*ocultar el header */
+.hidden {
+    top: -100px; 
+}
+
+header .logo {
+    width: 400px;
+    height: 60px;
+    background-image: url('/public/img/logo-claro-coch.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+header nav {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+}
+
+header nav ul{
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    gap: 2em;
+    width: 100%;
+}
+
+header nav ul li a {
+    width: 3%;
+    position: relative;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out; /* Para suavizar la transición del color */
+    color: white;
+}
+
+header nav ul li a.active::after {
+    width: 100%; /* Mantiene la línea activa al ancho del enlace */
+}
+
+header nav ul li a.active {
+    color: var(--COLOR_SECUNDARIO_3); /* Cambia el color del enlace activo */
+}
+
+header nav ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: .1em;
+    background-color: var(--COLOR_SECUNDARIO_3);
+    transition: width 0.3s ease-in-out; 
+}
+
+header nav ul li a:hover::after {
+    width: 100%; /* Expande el subrayado de izquierda a derecha */
+}
+
+header nav ul li a:hover {
+    color: white;
+}
+
+header.scrolled nav ul li a:hover{
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.menu-pedir-turno {
+    color: white;
+    margin-right: 50px;
+    min-width: 100px;
+    background: var(--COLOR_PRINCIPAL); 
+    transition: all .3s ease; 
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+header .menu-pedir-turno:hover {
+    background: var(--COLOR_SECUNDARIO_3); 
+}
+
+header .icon-menu{
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--AZUL_CLARO);
+}
+
+.acciones-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.acciones-header i{
+    font-size: 30px;
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.acciones-header i:hover{
+    color: var(--COLOR_SECUNDARIO_3);
+}
+.ingreso-pacientes:hover{
+    color: var(--COLOR_SECUNDARIO_3);
+}
+
+.ingreso-pacientes{
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.ingreso-pacientes i{
+    color: white;
+    transition: all .3s ease;
+}
+
+header.scrolled .ingreso-pacientes i{
+    color: var(--COLOR_PRINCIPAL);
+}
+
+header.scrolled .ingreso-pacientes{
+    text-decoration: none;
+    color: var(--COLOR_PRINCIPAL);
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all .3s ease;
+}
