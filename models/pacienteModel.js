@@ -112,7 +112,7 @@ class PacienteModel{
     async obtenerPacientePorDNI(dni, callback){
         let sql = `SELECT * FROM pacientes WHERE dni = ?`;
         conx.query(sql, [dni], async (err, results) => {
-            console.log(err);
+            console.log("Error en obtener paciente por dni", err);
             console.log(results);
             if (results.length === 0) {
                 callback(null);
@@ -130,7 +130,7 @@ class PacienteModel{
         `;
 
         const params = [
-            datos.nombre,
+            datos.nombre_apellido,
             datos.dni,
             datos.fecha_nacimiento,
             datos.genero,

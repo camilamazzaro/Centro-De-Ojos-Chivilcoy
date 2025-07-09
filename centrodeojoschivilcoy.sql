@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-06-2025 a las 16:33:56
+-- Tiempo de generación: 09-07-2025 a las 00:12:35
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -36,6 +36,28 @@ CREATE TABLE `ciudades` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `estado_turno`
+--
+
+CREATE TABLE `estado_turno` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `estado_turno`
+--
+
+INSERT INTO `estado_turno` (`id`, `nombre`) VALUES
+(1, 'libre'),
+(2, 'reservado'),
+(3, 'confirmado'),
+(4, 'completado'),
+(5, 'cancelado');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `historias_clinicas`
 --
 
@@ -56,7 +78,13 @@ CREATE TABLE `historias_clinicas` (
 --
 
 INSERT INTO `historias_clinicas` (`id`, `fecha`, `id_paciente`, `motivo`, `antecedentes_personales`, `medicacion_actual`, `examen_clinico`, `diagnostico`, `tratamiento`) VALUES
-(1, '2025-06-20 11:28:58', 5, 'Consulta', 'Miopía y astigmatismo.', 'Ninguna.', 'Examen del paciente.', 'Diagnóstico del paciente.', 'Tratamiento del paciente.');
+(1, '2025-06-20 11:28:58', 5, 'Consulta actualizada', 'Miopía y astigmatismo.', 'Ninguna.', 'Examen del paciente.', 'Diagnóstico del paciente.', 'Tratamiento del paciente.'),
+(2, '2025-06-24 14:47:36', 5, 'dsfsfs', 'fsfsfs', 'fsfsfs', 'fsfsfs', 'fs', 'fse'),
+(3, '2025-06-24 14:52:56', 5, 'fsfs', 'fsfs', 'fsf', 'sfsf', 'sfsf', 'sfsf'),
+(4, '2025-06-24 20:26:32', 5, 'dfdf', 'dfdf', 'dfd', 'dfdf', 'dfdf', 'dfdf'),
+(5, '2025-06-24 20:26:40', 5, 'dfdfd', 'df', 'dfd', 'fd', 'fdf', 'dfdf'),
+(6, '2025-06-24 20:26:49', 5, 'dfd', 'ff', 'df', 'df', 'dfdff', 'df'),
+(7, '2025-06-24 20:29:01', 5, 'sfs', 'sfs', 'fsf', 'sfs', 'fsf', 'sfsf');
 
 -- --------------------------------------------------------
 
@@ -79,7 +107,14 @@ CREATE TABLE `horarios` (
 INSERT INTO `horarios` (`id`, `id_medico`, `dia_semana`, `hora_inicio`, `hora_fin`) VALUES
 (1, 1, 'lunes', '06:00:00', '15:00:00'),
 (3, 1, 'lunes', '16:39:00', '21:35:00'),
-(4, 1, 'martes', '10:00:00', '12:00:00');
+(4, 1, 'martes', '10:00:00', '12:00:00'),
+(5, 1, 'miercoles', '16:31:00', '20:35:00'),
+(6, 1, 'miercoles', '10:00:00', '12:00:00'),
+(7, 5, 'lunes', '16:51:00', '20:55:00'),
+(8, 5, 'miercoles', '16:51:00', '20:55:00'),
+(9, 1, 'jueves', '08:30:00', '12:30:00'),
+(10, 1, 'viernes', '16:30:00', '20:30:00'),
+(11, 1, 'sabado', '08:30:00', '10:30:00');
 
 -- --------------------------------------------------------
 
@@ -92,16 +127,39 @@ CREATE TABLE `medicos` (
   `id_usuario` int(11) NOT NULL,
   `telefono` varchar(255) NOT NULL,
   `foto` varchar(255) NOT NULL,
-  `descripcion` varchar(255) NOT NULL
+  `descripcion` varchar(255) NOT NULL,
+  `matricula` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `medicos`
 --
 
-INSERT INTO `medicos` (`id`, `id_usuario`, `telefono`, `foto`, `descripcion`) VALUES
-(1, 8, '3444', '/public\\uploads\\1746729677147.jpeg', 'Actualizada'),
-(5, 8, '2222222', '/public\\uploads\\1746818581613.png', 'Hola');
+INSERT INTO `medicos` (`id`, `id_usuario`, `telefono`, `foto`, `descripcion`, `matricula`) VALUES
+(1, 8, '3444', '/public\\uploads\\1751571096661.png', 'Actualizada', '111856'),
+(5, 10, '2222222', '/public\\uploads\\1746818581613.png', 'Hola', '34422'),
+(7, 11, '2346554433', '/public\\uploads\\1751668729292.png', 'fdfdfdf', '234345');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `medicos_practicas`
+--
+
+CREATE TABLE `medicos_practicas` (
+  `id` int(11) NOT NULL,
+  `id_medico` int(11) NOT NULL,
+  `id_practica` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `medicos_practicas`
+--
+
+INSERT INTO `medicos_practicas` (`id`, `id_medico`, `id_practica`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -129,17 +187,14 @@ CREATE TABLE `medico_obrassociales` (
   `id_obraSocial` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Estructura de tabla para la tabla `medico_practicas`
+-- Volcado de datos para la tabla `medico_obrassociales`
 --
 
-CREATE TABLE `medico_practicas` (
-  `id` int(11) NOT NULL,
-  `id_medico` int(11) NOT NULL,
-  `id_practica` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `medico_obrassociales` (`id`, `id_medico`, `id_obraSocial`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -211,17 +266,156 @@ INSERT INTO `pacientes` (`id`, `nombre`, `dni`, `fecha_nacimiento`, `genero`, `d
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `practicas`
+--
+
+CREATE TABLE `practicas` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `practicas`
+--
+
+INSERT INTO `practicas` (`id`, `nombre`) VALUES
+(1, 'consulta'),
+(2, 'yag láser'),
+(3, 'fondo de ojo');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `turnos`
 --
 
 CREATE TABLE `turnos` (
   `id` int(11) NOT NULL,
   `id_medico` int(11) NOT NULL,
-  `id_paciente` int(11) NOT NULL,
-  `id_practica` int(11) NOT NULL,
+  `id_paciente` int(11) DEFAULT NULL,
+  `id_practica` int(11) DEFAULT NULL,
   `fecha_hora` datetime NOT NULL,
-  `id_estadoTurno` int(11) NOT NULL
+  `id_estado_turno` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `turnos`
+--
+
+INSERT INTO `turnos` (`id`, `id_medico`, `id_paciente`, `id_practica`, `fecha_hora`, `id_estado_turno`) VALUES
+(1, 1, 0, 1, '2025-07-02 13:20:00', 1),
+(2, 1, 8, 1, '2025-07-03 18:00:00', 1),
+(3, 1, 12, 2, '2025-07-03 13:01:00', 3),
+(4, 1, 10, 1, '2025-07-03 14:41:00', 3),
+(5, 1, 6, 3, '2025-07-03 17:44:00', 3),
+(6, 1, 12, 1, '2025-07-03 14:41:00', 3),
+(7, 1, 7, 1, '2025-07-03 16:44:00', 3),
+(8, 1, NULL, NULL, '2025-07-03 08:30:00', 1),
+(9, 1, NULL, NULL, '2025-07-03 08:45:00', 1),
+(10, 1, NULL, NULL, '2025-07-03 09:00:00', 1),
+(11, 1, NULL, NULL, '2025-07-03 09:15:00', 1),
+(12, 1, NULL, NULL, '2025-07-03 09:30:00', 1),
+(13, 1, NULL, NULL, '2025-07-03 09:45:00', 1),
+(14, 1, NULL, NULL, '2025-07-03 10:00:00', 1),
+(15, 1, NULL, NULL, '2025-07-03 10:15:00', 1),
+(16, 1, NULL, NULL, '2025-07-03 10:30:00', 1),
+(17, 1, NULL, NULL, '2025-07-03 10:45:00', 1),
+(18, 1, NULL, NULL, '2025-07-03 11:00:00', 1),
+(19, 1, NULL, NULL, '2025-07-03 11:15:00', 1),
+(20, 1, NULL, NULL, '2025-07-03 11:30:00', 1),
+(21, 1, NULL, NULL, '2025-07-03 11:45:00', 1),
+(22, 1, NULL, NULL, '2025-07-03 12:00:00', 1),
+(23, 1, NULL, NULL, '2025-07-03 12:15:00', 1),
+(24, 1, NULL, NULL, '2025-07-04 16:30:00', 1),
+(25, 1, NULL, NULL, '2025-07-04 16:45:00', 1),
+(26, 1, NULL, NULL, '2025-07-04 17:00:00', 1),
+(27, 1, NULL, NULL, '2025-07-04 17:15:00', 1),
+(28, 1, NULL, NULL, '2025-07-04 17:30:00', 1),
+(29, 1, NULL, NULL, '2025-07-04 17:45:00', 1),
+(30, 1, NULL, NULL, '2025-07-04 18:00:00', 1),
+(31, 1, NULL, NULL, '2025-07-04 18:15:00', 1),
+(32, 1, NULL, NULL, '2025-07-04 18:30:00', 1),
+(33, 1, NULL, NULL, '2025-07-04 18:45:00', 1),
+(34, 1, NULL, NULL, '2025-07-04 19:00:00', 1),
+(35, 1, NULL, NULL, '2025-07-04 19:15:00', 1),
+(36, 1, NULL, NULL, '2025-07-04 19:30:00', 1),
+(37, 1, NULL, NULL, '2025-07-04 19:45:00', 1),
+(38, 1, NULL, NULL, '2025-07-04 20:00:00', 1),
+(39, 1, NULL, NULL, '2025-07-04 20:15:00', 1),
+(40, 1, NULL, NULL, '2025-07-05 08:30:00', 1),
+(41, 1, NULL, NULL, '2025-07-05 08:45:00', 1),
+(42, 1, NULL, NULL, '2025-07-05 09:00:00', 1),
+(43, 1, NULL, NULL, '2025-07-05 09:15:00', 1),
+(44, 1, NULL, NULL, '2025-07-05 09:30:00', 1),
+(45, 1, NULL, NULL, '2025-07-05 09:45:00', 1),
+(46, 1, NULL, NULL, '2025-07-05 10:00:00', 1),
+(47, 1, NULL, NULL, '2025-07-05 10:15:00', 1),
+(48, 1, NULL, NULL, '2025-07-08 10:00:00', 1),
+(49, 1, NULL, NULL, '2025-07-08 10:15:00', 1),
+(50, 1, NULL, NULL, '2025-07-08 10:30:00', 1),
+(51, 1, NULL, NULL, '2025-07-08 10:45:00', 1),
+(52, 1, NULL, NULL, '2025-07-08 11:00:00', 1),
+(53, 1, NULL, NULL, '2025-07-08 11:15:00', 1),
+(54, 1, NULL, NULL, '2025-07-08 11:30:00', 1),
+(55, 1, NULL, NULL, '2025-07-08 11:45:00', 1),
+(56, 1, NULL, NULL, '2025-07-09 16:31:00', 1),
+(57, 1, NULL, NULL, '2025-07-09 16:46:00', 1),
+(58, 1, NULL, NULL, '2025-07-09 17:01:00', 1),
+(59, 1, NULL, NULL, '2025-07-09 17:16:00', 1),
+(60, 1, NULL, NULL, '2025-07-09 17:31:00', 1),
+(61, 1, NULL, NULL, '2025-07-09 17:46:00', 1),
+(62, 1, NULL, NULL, '2025-07-09 18:01:00', 1),
+(63, 1, NULL, NULL, '2025-07-09 18:16:00', 1),
+(64, 1, NULL, NULL, '2025-07-09 18:31:00', 1),
+(65, 1, NULL, NULL, '2025-07-09 18:46:00', 1),
+(66, 1, NULL, NULL, '2025-07-09 19:01:00', 1),
+(67, 1, NULL, NULL, '2025-07-09 19:16:00', 1),
+(68, 1, NULL, NULL, '2025-07-09 19:31:00', 1),
+(69, 1, NULL, NULL, '2025-07-09 19:46:00', 1),
+(70, 1, NULL, NULL, '2025-07-09 20:01:00', 1),
+(71, 1, NULL, NULL, '2025-07-09 20:16:00', 1),
+(72, 1, NULL, NULL, '2025-07-09 20:31:00', 1),
+(73, 1, NULL, NULL, '2025-07-09 10:00:00', 1),
+(74, 1, NULL, NULL, '2025-07-09 10:15:00', 1),
+(75, 1, NULL, NULL, '2025-07-09 10:30:00', 1),
+(76, 1, NULL, NULL, '2025-07-09 10:45:00', 1),
+(77, 1, NULL, NULL, '2025-07-09 11:00:00', 1),
+(78, 1, NULL, NULL, '2025-07-09 11:15:00', 1),
+(79, 1, NULL, NULL, '2025-07-09 11:30:00', 1),
+(80, 1, NULL, NULL, '2025-07-09 11:45:00', 1),
+(81, 5, NULL, NULL, '2025-07-09 16:51:00', 1),
+(82, 5, NULL, NULL, '2025-07-09 17:06:00', 1),
+(83, 5, NULL, NULL, '2025-07-09 17:21:00', 1),
+(84, 5, NULL, NULL, '2025-07-09 17:36:00', 1),
+(85, 5, NULL, NULL, '2025-07-09 17:51:00', 1),
+(86, 5, NULL, NULL, '2025-07-09 18:06:00', 1),
+(87, 5, NULL, NULL, '2025-07-09 18:21:00', 1),
+(88, 5, NULL, NULL, '2025-07-09 18:36:00', 1),
+(89, 5, NULL, NULL, '2025-07-09 18:51:00', 1),
+(90, 5, NULL, NULL, '2025-07-09 19:06:00', 1),
+(91, 5, NULL, NULL, '2025-07-09 19:21:00', 1),
+(92, 5, NULL, NULL, '2025-07-09 19:36:00', 1),
+(93, 5, NULL, NULL, '2025-07-09 19:51:00', 1),
+(94, 5, NULL, NULL, '2025-07-09 20:06:00', 1),
+(95, 5, NULL, NULL, '2025-07-09 20:21:00', 1),
+(96, 5, NULL, NULL, '2025-07-09 20:36:00', 1),
+(97, 5, NULL, NULL, '2025-07-09 20:51:00', 1),
+(98, 1, NULL, NULL, '2025-07-10 08:30:00', 1),
+(99, 1, NULL, NULL, '2025-07-10 08:45:00', 1),
+(100, 1, NULL, NULL, '2025-07-10 09:00:00', 1),
+(101, 1, NULL, NULL, '2025-07-10 09:15:00', 1),
+(102, 1, NULL, NULL, '2025-07-10 09:30:00', 1),
+(103, 1, NULL, NULL, '2025-07-10 09:45:00', 1),
+(104, 1, NULL, NULL, '2025-07-10 10:00:00', 1),
+(105, 1, NULL, NULL, '2025-07-10 10:15:00', 1),
+(106, 1, NULL, NULL, '2025-07-10 10:30:00', 1),
+(107, 1, NULL, NULL, '2025-07-10 10:45:00', 1),
+(108, 1, NULL, NULL, '2025-07-10 11:00:00', 1),
+(109, 1, NULL, NULL, '2025-07-10 11:15:00', 1),
+(110, 1, NULL, NULL, '2025-07-10 11:30:00', 1),
+(111, 1, NULL, NULL, '2025-07-10 11:45:00', 1),
+(112, 1, NULL, NULL, '2025-07-10 12:00:00', 1),
+(113, 1, NULL, NULL, '2025-07-10 12:15:00', 1);
 
 -- --------------------------------------------------------
 
@@ -231,8 +425,19 @@ CREATE TABLE `turnos` (
 
 CREATE TABLE `turno_estados` (
   `id` int(11) NOT NULL,
-  `estado` varchar(255) NOT NULL
+  `nombre` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `turno_estados`
+--
+
+INSERT INTO `turno_estados` (`id`, `nombre`) VALUES
+(1, 'libre'),
+(2, 'reservado'),
+(3, 'confirmado'),
+(4, 'completado'),
+(5, 'cancelado');
 
 -- --------------------------------------------------------
 
@@ -255,7 +460,9 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `id_categoriaUsuario`) VALUES
 (2, 'Camila Mazzaro', 'camilamazzaro90@gmail.com', '*******', 1),
 (8, 'Esteban Mazzaro', 'estebanmazzaro@gmail.com', 'Camila123', 2),
-(9, 'Bruno Mazzaro', 'camilamazzaro90@gmail.com', 'Camila123', 2);
+(9, 'Bruno Mazzaro', 'camilamazzaro90@gmail.com', 'Camila123', 2),
+(10, 'Mariano Mengide', 'mariano@gmail.com', 'Camila123', 2),
+(11, 'Hernán Ghersi', 'hernan@gmail.com', 'Camila123', 2);
 
 -- --------------------------------------------------------
 
@@ -288,6 +495,12 @@ ALTER TABLE `ciudades`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `estado_turno`
+--
+ALTER TABLE `estado_turno`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `historias_clinicas`
 --
 ALTER TABLE `historias_clinicas`
@@ -306,6 +519,12 @@ ALTER TABLE `medicos`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `medicos_practicas`
+--
+ALTER TABLE `medicos_practicas`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `medico_horarios`
 --
 ALTER TABLE `medico_horarios`
@@ -318,12 +537,6 @@ ALTER TABLE `medico_obrassociales`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `medico_practicas`
---
-ALTER TABLE `medico_practicas`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indices de la tabla `obras_sociales`
 --
 ALTER TABLE `obras_sociales`
@@ -333,6 +546,12 @@ ALTER TABLE `obras_sociales`
 -- Indices de la tabla `pacientes`
 --
 ALTER TABLE `pacientes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `practicas`
+--
+ALTER TABLE `practicas`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -370,22 +589,34 @@ ALTER TABLE `ciudades`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `estado_turno`
+--
+ALTER TABLE `estado_turno`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT de la tabla `historias_clinicas`
 --
 ALTER TABLE `historias_clinicas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `horarios`
 --
 ALTER TABLE `horarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `medicos`
 --
 ALTER TABLE `medicos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de la tabla `medicos_practicas`
+--
+ALTER TABLE `medicos_practicas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `medico_horarios`
@@ -397,13 +628,7 @@ ALTER TABLE `medico_horarios`
 -- AUTO_INCREMENT de la tabla `medico_obrassociales`
 --
 ALTER TABLE `medico_obrassociales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `medico_practicas`
---
-ALTER TABLE `medico_practicas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `obras_sociales`
@@ -418,22 +643,28 @@ ALTER TABLE `pacientes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
+-- AUTO_INCREMENT de la tabla `practicas`
+--
+ALTER TABLE `practicas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `turnos`
 --
 ALTER TABLE `turnos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT de la tabla `turno_estados`
 --
 ALTER TABLE `turno_estados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_categorias`

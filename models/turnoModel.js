@@ -157,12 +157,13 @@ class TurnoModel{
         });
     }
 
-    async reservarTurno(id_turno, id_cliente, id_practica, callback) { 
+    async reservarTurno(id_turno, id_paciente, id_practica, callback) { 
+        console.log("Datos recibidos en el model para reservar el turno: ", id_turno, id_paciente, id_practica)
         const ID_ESTADO_RESERVADO = 2;
     
         let sql = `UPDATE turnos SET id_paciente = ?, id_estado_turno = ?, id_practica = ? WHERE id = ?`;
     
-        conx.query(sql, [id_cliente, ID_ESTADO_RESERVADO, id_practica, id_turno], async (err, results) => {
+        conx.query(sql, [id_paciente, ID_ESTADO_RESERVADO, id_practica, id_turno], async (err, results) => {
             if (err) {
                 console.error(err);
                 callback(null);

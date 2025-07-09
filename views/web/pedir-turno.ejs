@@ -16,7 +16,7 @@
 
     <a href="/pedirTurno/diagramaAyuda" target="_blank" class="boton-ayuda">
       <i class="fa-light fa-circle-question"></i>
-      <span>¿Cómo sacar un turno?</span>
+      <span>¿Cómo pedir un turno?</span>
     </a>
     
     <!--primer paso-->
@@ -35,26 +35,26 @@
           </div>
       </div>
       
-      <div class="selects">
+      <div class="row">
 
-        <div class="filtros">
+        <div class="form-group col-md-3">
           <label for="fecha">Fecha del turno:</label>
           <input type="date" id="fecha">
         </div>
         <!--
-        <div class="filtros">
+        <div class=">
           <label for="obra-social">Selecciona una Obra Social:</label>
           <select id="obra-social" name="obra-social">
           </select>
         </div>-->
 
-        <div class="filtros">
+        <div class="form-group col-md-3">
             <label for="medico">Seleccionar Médico:</label>
             <select id="medico" name="medico">
             </select>
         </div>
 
-        <div class="filtros">
+        <div class="form-group col-md-3">
           <label for="practica">Seleccionar Servicio:</label>
           <select id="practica" name="practica" required>
             <option value="0">Seleccione</option>
@@ -109,40 +109,63 @@
         <!-- datos del cliente -->
         <div class="columna-derecha">
           <div>
-            <div class="formulario-grupo">
-              <label for="obra-social">Selecciona una Obra Social:</label>
-              <select id="obra-social" name="obra-social">
-                <option value="0">Seleccione</option>
-                <% obras_sociales.forEach((obra) => { %>
-                  <option value="<%= obra.id %>"><%= obra.nombre %></option>
-                <% }) %>
-              </select>
+
+            <div class="row">
+              <div class="form-group col-md-12">
+                <label for="obra-social">Selecciona una Obra Social</label>
+                <select id="obra-social" name="obra-social">
+                  <option value="0">Seleccione</option>
+                  <% obras_sociales.forEach((obra) => { %>
+                    <option value="<%= obra.id %>"><%= obra.nombre %></option>
+                  <% }) %>
+                </select>
+              </div>
             </div>
 
-            <div class="formulario-grupo">
-              <label for="nombre">Nombre:</label>
-              <input type="text" id="nombre" name="nombre" required>
+            <div class="row">
+              <div class="form-group col-md-12">
+                <label for="nro-afiliado">Número de Afiliado</label>
+                <input type="text" id="nro-afiliado" name="nro-afiliado" required>
+              </div>
             </div>
 
-            <div class="formulario-grupo">
-              <label for="apellido">Apellido:</label>
-              <input type="text" id="apellido" name="apellido" required>
-            </div>
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required>
+              </div>
 
-            <div class="formulario-grupo">
-              <label for="dni">DNI:</label>
-              <input type="text" id="dni" name="dni" required>
+              <div class="form-group col-md-6">
+                <label for="apellido">Apellido</label>
+                <input type="text" id="apellido" name="apellido" required>
+              </div>
             </div>
+            
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label for="dni">DNI</label>
+                <input type="text" id="dni" name="dni" required>
+              </div>
 
-            <div class="formulario-grupo">
-              <label for="telefono">Teléfono:</label>
-              <input type="tel" id="telefono" name="telefono" required>
+              <div class="form-group col-md-6">
+                <label for="dni">Fecha de Nacimiento</label>
+                <input type="date" id="fecha-nacimiento" name="fecha-nacimiento" required>
+              </div>
             </div>
+            
 
-            <div class="formulario-grupo">
-              <label for="correo">Correo electrónico:</label>
-              <input type="email" id="correo" name="correo" required>
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" name="telefono" required>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo" name="correo" required>
+              </div>
             </div>
+            
 
             <button class="boton-confirmar">Confirmar Turno</button>
           </div>
@@ -427,8 +450,10 @@
         const nombreValor = capitalizarNombre(document.querySelector("#nombre").value); 
         const apellidoValor = capitalizarNombre(document.querySelector("#apellido").value);
         const dniValor = document.querySelector("#dni").value;
+        const fechaNacimientoValor = document.querySelector("#fecha-nacimiento").value;
         const telefonoValor = document.querySelector("#telefono").value;
         const correoValor = document.querySelector("#correo").value;
+        const nroAfiliadoValor = document.querySelector("#nro-afiliado").value;
 
         if (obraSocialValor == "") obraSocialValor = null;
 
@@ -453,6 +478,13 @@
           return false;
         }
 
+        if (fechaNacimientoValor === "") {
+          alert ("Por favor ingrese su fecha de nacimiento");
+          // Si hay un error, el usuario tiene que poder hacer click en el boton
+          window.estaEnviandoTurno = 0;
+          return false;
+        }
+
         if (telefonoValor === "") {
           alert ("Por favor ingrese su telefono");
           // Si hay un error, el usuario tiene que poder hacer click en el boton
@@ -467,6 +499,13 @@
           return false;
         }
 
+        if (nroAfiliadoValor === "") {
+          alert ("Por favor ingrese su número de afiliado");
+          // Si hay un error, el usuario tiene que poder hacer click en el boton
+          window.estaEnviandoTurno = 0;
+          return false;
+        }
+
         const resultado = await fetch('/turnos/reservar', {
           method: "POST",
           headers: {
@@ -474,12 +513,13 @@
           },
           body: JSON.stringify({
             "id_turno": id_turno,
-            "id_obra_social": obraSocialValor,
-            "nombre": nombreValor + " " + apellidoValor,
-            "apellido": apellidoValor,
+            "cobertura": obraSocialValor,
+            "nombre_apellido": nombreValor + " " + apellidoValor,
             "dni": dniValor,
+            "fecha_nacimiento": fechaNacimientoValor,
             "telefono": telefonoValor,
             "correo": correoValor,
+            "nro_afiliado": nroAfiliadoValor,
             "id_practica": practicaValor
           })
         });
@@ -487,12 +527,22 @@
         const data = await resultado.json();
 
         if (data.success) {
-          alert ("Su turno se ha confirmado correctamente");
-          location.reload();
-        } else {
-          // Si hay un error, el usuario tiene que poder hacer click en el boton
+          Swal.fire({
+            icon: 'success',
+            title: '¡Turno confirmado!',
+            text: 'Su turno fue reservado correctamente.',
+            confirmButtonText: 'Aceptar'
+          }).then(() => {
+            location.reload(); 
+          });
+        }else {
           window.estaEnviandoTurno = 0;
-          alert(data.mensaje);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al confirmar el turno',
+            text: data.mensaje || 'Ocurrió un error inesperado. Intente nuevamente más tarde.',
+            confirmButtonText: 'Aceptar'
+          });
         }
       }
     </script>

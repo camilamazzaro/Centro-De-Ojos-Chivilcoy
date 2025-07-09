@@ -76,8 +76,8 @@ class WebController{
     }
 
     mostrarDiagramaAyuda(req, res) {
-        res.render('web/diagrama-ayuda', {
-            title: 'Diagrama de Ayuda'
+        res.render('web/ayuda-pedir-turno', {
+            title: 'Cómo pedir un turno'
         });
     }
 

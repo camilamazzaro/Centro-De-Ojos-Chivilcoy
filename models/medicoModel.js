@@ -160,11 +160,8 @@ class MedicoModel {
                 usuarios.nombre AS nombre_medico
             FROM medicos
             JOIN usuarios ON medicos.id_usuario = usuarios.id
-            WHERE EXISTS(SELECT T.* FROM turnos T WHERE fecha_hora LIKE ?)
+            WHERE EXISTS(SELECT T.* FROM turnos T WHERE T.id_medico = medicos.id AND fecha_hora LIKE ?)
         `;
-
-        // Con el WHERE EXISTS nos aseguramos de que realmente el medico tenga un turno en esa fecha
-        // Cuestion de directamente no mostrar medicos que no atienden...
 
         let paramsSql = [`%${filtros.fecha}%`];
 
@@ -174,21 +171,30 @@ class MedicoModel {
                 return callback([]);
             }
 
-            // Ademas de devolver el medico, también devolvemos todos los turnos de ese medico
+            // Agregamos los turnos y las prácticas a cada médico
             for (const medico of results) {
                 medico.turnos = await turnoModel.obtenerTurnoPorMedicoYFecha(medico.id, filtros.fecha);
+
+                // ACA SE LLAMA A obtenerPracticasPorMedico Y SE GUARDA EN medico.practicas
+                await new Promise((resolve) => {
+                    this.obtenerPracticasPorMedico(medico.id, (practicas) => {
+                        medico.practicas = practicas;
+                        resolve();
+                    });
+                });
             }
 
             callback(results);
         });
     }
 
+
     // Obtener prácticas de un médico específico
     async obtenerPracticasPorMedico(idMedico, callback) {
         let sql = `
             SELECT practicas.id, practicas.nombre 
             FROM medicos_practicas 
-            JOIN practicas ON medicos_practicas.id_practicas = practicas.id 
+            JOIN practicas ON medicos_practicas.id_practica = practicas.id 
             WHERE medicos_practicas.id_medico = ?
         `;
 
