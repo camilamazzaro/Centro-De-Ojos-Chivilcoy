@@ -104,15 +104,7 @@ class WebController{
                     else reject('Error al obtener el médico');
                 });
             });
-    
-            // Obtener especialidad del médico
-            const especialidades = await new Promise((resolve, reject) => {
-                medicoModel.obtenerEspecialidad(medicoId, (result) => {
-                    if (result) resolve(result);
-                    else reject('Error al obtener especialidad');
-                });
-            });
-    
+
             // Obtener horarios del médico
             const horariosMedico = await new Promise((resolve, reject) => {
                 horarioModel.listarHorarios(medicoId, (result) => {
@@ -138,10 +130,9 @@ class WebController{
             });
     
             // Renderizar la vista con todos los datos
-            res.render('web/infoMedico', {
+            res.render('web/info-medico', {
                 title: 'Información del médico',
                 medico: medico,
-                especialidades: especialidades,
                 horarios: horariosMedico,
                 practicas: practicasMedico,
                 coberturas: coberturasMedico

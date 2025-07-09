@@ -84,14 +84,15 @@ h3{
 }
 
 .blur-overlay {
+    width: 100%;
     position: absolute;
     inset: 0;
     background:
         linear-gradient(
-            rgba(1, 78, 109, 0.4), 
-            rgba(0, 90, 128, 0.4)
+            rgba(0, 91, 111, 1), 
+            rgba(0, 91, 111, 0.4)
         ),
-        url('/public/img/carrousel_bienvenida_1.jpg') center/cover no-repeat;
+        url('/public/img/carrousel_bienvenida_1.jpg') left/cover no-repeat;
 
     filter: blur(30px);
     z-index: 1;

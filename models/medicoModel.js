@@ -92,6 +92,24 @@ class MedicoModel {
         });
     }
 
+    async obtenerObrasSocialesPorMedico(idMedico, callback) {
+        const sql = `
+            SELECT os.id, os.nombre
+            FROM medico_obrassociales mo
+            INNER JOIN obras_sociales os ON mo.id_obraSocial = os.id
+            WHERE mo.id_medico = ?;
+        `;
+    
+        conx.query(sql, [idMedico], (err, results) => {
+            if (err) {
+                console.error('Error al obtener obras sociales del médico:', err);
+                return callback([]);
+            }
+            callback(results);
+        });
+    }
+
+
     //guardar un nuevo médico en la base de datos, o guardar datos actualizados en el formulario de editar médico
     async guardarMedico(datos, callback) {
 

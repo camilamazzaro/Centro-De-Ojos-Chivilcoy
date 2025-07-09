@@ -224,7 +224,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(32, 65, 62, 0.7);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-sizing: border-box;
@@ -233,18 +233,10 @@ header {
 }
 
 header.scrolled {
-    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
 }
 
-header.scrolled .logo {
-    background-image: url('/public/img/logo-oscuro-coch.png');
-}
-
-header.scrolled nav ul li a{
-    color: var(--COLOR_PRINCIPAL);
-}
 
 /*ocultar el header */
 .hidden {
@@ -254,7 +246,7 @@ header.scrolled nav ul li a{
 header .logo {
     width: 400px;
     height: 60px;
-    background-image: url('/public/img/logo-claro-coch.png');
+    background-image: url('/public/img/logo-oscuro-coch.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -281,16 +273,16 @@ header nav ul li a {
     font-size: 1em;
     font-weight: 600;
     cursor: pointer;
-    transition: color 0.3s ease-in-out; /* Para suavizar la transición del color */
-    color: white;
+    transition: color 0.3s ease-in-out; 
+    color: var(--COLOR_PRINCIPAL);
 }
 
 header nav ul li a.active::after {
-    width: 100%; /* Mantiene la línea activa al ancho del enlace */
+    width: 100%; 
 }
 
 header nav ul li a.active {
-    color: var(--COLOR_SECUNDARIO_3); /* Cambia el color del enlace activo */
+    color: var(--COLOR_SECUNDARIO_3); /
 }
 
 header nav ul li a::after {
@@ -309,11 +301,7 @@ header nav ul li a:hover::after {
 }
 
 header nav ul li a:hover {
-    color: white;
-}
-
-header.scrolled nav ul li a:hover{
-    color: var(--COLOR_PRINCIPAL);
+    color: var(--COLOR_SECUNDARIO_3);
 }
 
 .menu-pedir-turno {
@@ -357,7 +345,7 @@ header .icon-menu{
 }
 
 .ingreso-pacientes{
-    color: white;
+    color: var(--COLOR_PRINCIPAL);
     text-decoration: none;
     font-weight: 500;
     display: flex;
@@ -369,26 +357,9 @@ header .icon-menu{
 }
 
 .ingreso-pacientes i{
-    color: white;
+    color: var(--COLOR_PRINCIPAL);
     transition: all .3s ease;
 }
-
-header.scrolled .ingreso-pacientes i{
-    color: var(--COLOR_PRINCIPAL);
-}
-
-header.scrolled .ingreso-pacientes{
-    text-decoration: none;
-    color: var(--COLOR_PRINCIPAL);
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: all .3s ease;
-}
-
 
 /* FORMULARIOS */
 select{

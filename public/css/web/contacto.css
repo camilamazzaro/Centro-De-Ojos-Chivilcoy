@@ -1,0 +1,156 @@
+:root { 
+    --COLOR_PRINCIPAL: #005b6f;
+    --COLOR_OSCURO: #0a3749;
+    --COLOR_SECUNDARIO_1: #457d84;
+    --COLOR_SECUNDARIO_2: #c0d8db;
+    --COLOR_SECUNDARIO_3: #38b5a9;
+}
+
+
+.carrusel-contacto {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; 
+    justify-content: space-between;
+    padding: 20px; 
+    width: 100%;
+    height: 700px; 
+    box-sizing: border-box;
+    margin-bottom: 50px; 
+    margin-top: 30px;
+    background: url('/public/img/carrousel_bienvenida_1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 70%;
+}
+
+.carrusel-contacto h1, .carrusel-contacto p {
+    position: relative; 
+    z-index: 2; /*le ponemos un index mayor al de la img para que quede arriba*/ 
+    color: var(--COLOR_PRINCIPAL); 
+}
+
+.carrusel-contacto img {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+    z-index: 1; 
+}
+
+
+/*segundo container*/
+
+.form-turno {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5em; 
+    margin-bottom: 40px;
+    margin: 0 auto;
+    height: 200px; 
+    width: 85%;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    gap: 2em;
+}
+
+.container-reserva {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    gap: 10px; 
+    margin-top: 30px;
+    width: 50%;
+    border: 2px solid var(--COLOR_PRINCIPAL);
+    border-radius: 10px;
+    height: 150px;
+    padding: 20px;
+}
+
+.container-reserva h2 {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 500;
+    color: var(--COLOR_PRINCIPAL);
+    
+}
+
+.boton-turno {
+    margin-top: 20px;
+    padding: 15px 30px;
+    background-color: var(--COLOR_SECUNDARIO_3);
+    border: none;
+    border-radius: 25px 0 25px 0;
+    cursor: pointer;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+}
+
+.boton-turno:hover {
+    background-color: var(--COLOR_PRINCIPAL);
+}
+
+.container-turno {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    border: 2px solid var(--COLOR_PRINCIPAL);
+    border-radius: 10px;
+    height:150px;
+    width: 400px;
+    margin-top: 30px;
+    padding: 20px;
+    
+}
+
+.container-turno h3 {
+    font-size: 25px;
+    font-weight: 500;
+    margin-right: 0px;
+    margin-top: 0px;
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.iconos-redes-contacto {
+    display: flex;
+    flex-direction: column; 
+    gap: 10px; 
+    margin-top: 10px;
+}
+
+
+.iconos-container {
+    display: flex;
+    gap: 30px; 
+    margin-top: 15px;
+}
+
+.icono-red-contacto {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    border-radius: 25px 0 25px 0;
+    background: var(--COLOR_PRINCIPAL);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+}
+
+
+.icono-red-contacto:hover {
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.icono-red-contacto i {
+    font-size: 25px;
+}

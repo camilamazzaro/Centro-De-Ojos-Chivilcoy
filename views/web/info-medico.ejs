@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../commons/head-web') %>
+    <title>Información médico</title>
+    <link rel="stylesheet" href="/public/css/web/profesionales.css">
+</head>
+
+
+<body>
+
+    <!-- Menú de navegación -->
+    <%- include('../commons/menu-web') %>
+
+    
+    <a href="/profesionales" class="boton-regresar"> ← Regresar a Profesionales</a>
+
+    <!--traemos la info de los medicos de la bd-->
+    <div class="container-info-medico">
+        <div class="medico-info">
+            <img class="medicofoto-ver-mas" src="<%= medico.foto %>" alt="Foto de <%= medico.nombre_medico %>">
+            <div class="medico-detalles">
+                <h2><%= medico.nombre_medico %></h2>
+                <hr>
+                <p><%= medico.descripcion %></p>
+                <div class="practicas-medico">
+                    <ul>
+                        <% if (practicas && practicas.length > 0) { %>
+                            <% practicas.forEach(practica => { %>
+                                <li><i class="fa-solid fa-circle-check"></i>  <%= practica.nombre %></li>
+                            <% }) %>
+                        <% } else { %>
+                            <li>No hay prácticas disponibles para este médico.</li>
+                        <% } %>
+                    </ul>
+                </div>
+                <div class="horarios-coberturas">
+                    <a href="javascript:void(0);" onclick="mostrarModal()" class="medico-ver-horarios">
+                        <i class="fa-regular fa-clock-nine"></i>
+                        Ver Horarios</a>
+                    <!--Obras sociales del médico-->
+                    <div class="medico-coberturas">
+                        <% if (coberturas.length > 0) { %>
+                            <select id="obrasSocialesSelect" class="styled-select">
+                                <option value="" disabled selected>Ver Obras Sociales</option>
+                                <% coberturas.forEach(cobertura => { %>
+                                    <option value="<%= cobertura.id %>"><%= cobertura.nombre %></option>
+                                <% }); %>
+                            </select>
+                        <% } else { %>
+                            <p>Este médico no trabaja con obras sociales.</p>
+                        <% } %>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para mostrar horarios -->
+    <div id="modal-horarios" class="modal-horarios">
+        <div class="modal-horarios-contenido">
+            <span class="close" onclick="cerrarModal()">&times;</span> <!--Para poder apretar una cruz y cerrar el formulario-->
+            <h5>Horarios Disponibles</h5>
+            <div>
+                <ul>
+                    <% if (horarios && horarios.length > 0) { 
+                        const diasSemana = {
+                            "Lunes": "Lunes",
+                            "Martes": "Martes",
+                            "Miércoles": "Miércoles",
+                            "Jueves": "Jueves",
+                            "Viernes": "Viernes",
+                            "Sábado": "Sábado",
+                            "Domingo": "Domingo"
+                        };
+                        const horariosPorDia = {};
+
+                        horarios.forEach(horario => {
+                            const dia = diasSemana[horario.dia_semana];
+                            const horaInicio = new Date('1970-01-01T' + horario.hora_inicio);
+                            const horaFin = new Date('1970-01-01T' + horario.hora_fin);
+
+                            const formatoHora = hora => hora.getMinutes() === 0 
+                                ? hora.getHours() 
+                                : hora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+                            const horaInicioFormateada = formatoHora(horaInicio);
+                            const horaFinFormateada = formatoHora(horaFin);
+
+                            if (!horariosPorDia[dia]) {
+                                horariosPorDia[dia] = [];
+                            }
+                            horariosPorDia[dia].push(`de ${horaInicioFormateada} a ${horaFinFormateada}hs`);
+                        });
+
+                        Object.keys(horariosPorDia).forEach(dia => { %>
+                            <li><strong class="dia-semana"><%= dia %>:</strong> <%= horariosPorDia[dia].join(' / ') %></li>
+                        <% });
+                    } else { %>
+                        <p>No tiene horarios asignados</p>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!--FOOTER-->
+    <%- include('../commons/footer-web') %>
+
+    <script type="text/javascript">
+
+        //mostrar horarios del médico
+        function mostrarModal() {
+            document.getElementById("modal-horarios").style.display = "block";
+        }
+        
+        //cerrar lo de arriba
+        function cerrarModal() {
+            document.getElementById("modal-horarios").style.display = "none";
+        }
+
+        //cambia la visibilidad de los horarios
+        function toggleCambiarPasswordForm(){
+            if(CambiarPassForm.style.display === "none") {
+                CambiarPassForm.style.display = "block";
+            } else {
+                CambiarPassForm.style.display = "none";
+            }
+        }
+
+    </script>
+
+</body>
+</html>
