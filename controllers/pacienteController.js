@@ -1,11 +1,17 @@
 //importo el model para poder acceder a las funciones que interactuan con la bbdd
 const PacienteModel = require('../models/pacienteModel');
 const pacienteModel = new PacienteModel();
+
 const MedicoModel = require('../models/medicoModel');
 const medicoModel = new MedicoModel();
+
 const TurnoModel = require('../models/turnoModel');
 const turnoModel = new TurnoModel();
 
+const UsuarioModel = require('../models/usuariosModel');
+const usuarioModel = new UsuarioModel();
+
+const bcrypt = require('bcrypt');
 
 class PacienteController {
 
@@ -124,12 +130,29 @@ class PacienteController {
     }
 
     // Crear paciente
-    async crearPaciente(req, res){
-        try{
-            const { nombre_apellido, dni, fecha_nacimiento, genero, direccion, telefono, email, cobertura, nro_afiliado } = req.body;
+
+    async crearPaciente(req, res) {
+        try {
+            const {
+            nombre_apellido,
+            dni,
+            fecha_nacimiento,
+            genero,
+            direccion,
+            telefono,
+            email,
+            cobertura,
+            nro_afiliado,
+            password       // viene sólo en el registro de paciente web
+            } = req.body;
 
 
-            const nuevoPaciente = {
+            // Verificar si paciente ya existe por DNI
+            let paciente = await pacienteModel.buscarPacientePorDni(dni);
+
+            if (paciente) {
+            // Actualizar paciente existente (si es necesario)
+            await pacienteModel.editarPaciente(paciente.id, {
                 nombre_apellido,
                 dni,
                 fecha_nacimiento,
@@ -139,16 +162,44 @@ class PacienteController {
                 email,
                 cobertura,
                 nro_afiliado,
-            };
+            });
+            } else {
+            // Crear nuevo paciente
+            paciente = await pacienteModel.crearPaciente({
+                nombre_apellido,
+                dni,
+                fecha_nacimiento,
+                genero,
+                direccion,
+                telefono,
+                email,
+                cobertura,
+                nro_afiliado,
+            });
+            }
 
-            const pacienteCreado = await pacienteModel.crearPaciente(nuevoPaciente);
+            // Si viene password => crear usuario para paciente
+            if (password) {
+            // Hashear password
+            const hashedPassword = await bcrypt.hash(password, 10);
 
-            return res.status(201).json({error: 0, message: "Paciente registrado exitosamente.", pacienteCreado});
-        }catch(err){
-            console.error("Error al registrar al paciente:", err);
-            return res.status(500).json({error: 1, message: "Error al registrar al paciente."});
+            // Crear usuario con id_paciente vinculado
+            await usuarioModel.registrarUsuario({
+                nombre: nombre_apellido,
+                email,
+                password: hashedPassword,
+                categoria: 4, 
+                id_paciente: paciente.id,
+            });
+            }
+
+            return res.status(201).json({ error: 0, message: 'Paciente registrado exitosamente.', paciente });
+        } catch (err) {
+            console.error('Error al registrar al paciente:', err);
+            return res.status(500).json({ error: 1, message: 'Error al registrar al paciente.' });
         }
     }
+
 
     //funcion para eliminar pacientes
     async eliminarPaciente(req, res) {

@@ -44,4 +44,9 @@ router.get('/medicos/por-obra-social/:obraSocialId', medicoController.obtenerMed
 // Ruta al diagrama de ayuda desde "Pedir Turno"
 router.get('/pedirTurno/diagramaAyuda', webController.mostrarDiagramaAyuda);
 
+// Rutas de PANEL PACIENTES
+router.get('/registroPacientes', webController.mostrarRegistroPacientes);
+router.get('/loginPacientes', webController.mostrarLoginPacientes);
+router.post('/loginPacientes', webController.loginPaciente);
+
 module.exports = router;

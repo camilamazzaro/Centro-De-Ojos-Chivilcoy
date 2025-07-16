@@ -1,8 +1,23 @@
 const express = require('express');
-const session = require('express-session');  // <-- Importar express-session
+const session = require('express-session'); 
 const app = express();
 const port = 3000; 
 
+//importo middleware para guardar los datos de inicio de sesión
+const sessionData = require('./middleware/sessionData');
+
+// Sesión
+app.use(session({
+    "secret": 'Emilia', //se va a configurar una cookie en el navegador para q no se metan en el programa
+    "resave": true,
+    "saveUninitialized": true,
+    "rolling": true, //renovar expiración
+    "cookie": {
+        maxAge: 1000 * 60 * 30 //expira después de 30 minutos
+    }
+}));
+
+app.use(sessionData);
 
 // Rutas y middleware de la aplicación
 const rutasUsuarios = require('./routes/usuariosRoute.js');

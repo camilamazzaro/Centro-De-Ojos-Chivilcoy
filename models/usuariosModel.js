@@ -52,19 +52,25 @@ class usuariosModel{
     }
 
     // Registrar nuevo usuario
-    registrarUsuario(datos, callback) {
-        const sql = 
-        `
-        INSERT INTO usuarios (nombre, email, password, id_categoriaUsuario)
-        VALUES (?, ?, ?, ?)
-        `;
+    registrarUsuario(datos) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                INSERT INTO usuarios (nombre, email, password, id_categoriaUsuario, id_paciente)
+                VALUES (?, ?, ?, ?, ?)
+            `;
 
-        conx.query(sql, [datos.nombre, datos.email, datos.password, datos.categoria], (err, results) => {
-            if (err) {
-                console.log(err);
-                return callback(err, null);
-            }
-            callback(null, results);
+            conx.query(sql, [
+                datos.nombre,
+                datos.email,
+                datos.password,
+                datos.categoria,
+                datos.id_paciente || null
+            ], (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(results);
+            });
         });
     }
 
@@ -117,6 +123,17 @@ class usuariosModel{
             }
         });
     }
+
+    buscarPorEmail(email){
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT * FROM usuarios WHERE email = ?";
+            conx.query(sql, [email], (err, results) => {
+                if (err) return reject(err);
+                resolve(results[0] || null);
+            });
+        });
+    }
+
 }
 
 module.exports = usuariosModel;

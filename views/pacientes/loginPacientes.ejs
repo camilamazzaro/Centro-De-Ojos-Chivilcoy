@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Pacientes</title>
+    <link rel="stylesheet" href="/public/css/pacientes.css">
+    <%- include('../commons/head') %>
+</head>
+
+<body>
+    <div class="contenedor-login">
+        <div class="login-box">
+            <h1>Ingreso al Panel de Pacientes</h1>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" name="email" id="email" required placeholder="ejemplo@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" name="password" id="password" required placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn btn-primario">Ingresar</button>
+            </form>
+
+            <div id="mensaje" style="color: red; margin-top: 10px;"></div>
+
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const mensaje = document.getElementById('mensaje');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = form.email.value;
+            const password = form.password.value;
+
+            try {
+                const response = await fetch('/loginPacientes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.error === 0) {
+                    // Login exitoso, redirige al panel del paciente
+                    window.location.href = '/panelPacientes';
+                } else {
+                    // Mostrar mensaje de error
+                    mensaje.textContent = data.message;
+                }
+
+            } catch (err) {
+                mensaje.textContent = 'Error de conexión.';
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+
+</html>
