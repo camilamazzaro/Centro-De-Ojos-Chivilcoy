@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-07-2025 a las 00:12:35
+-- Tiempo de generación: 16-07-2025 a las 21:07:13
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -242,10 +242,8 @@ CREATE TABLE `pacientes` (
 --
 
 INSERT INTO `pacientes` (`id`, `nombre`, `dni`, `fecha_nacimiento`, `genero`, `direccion`, `email`, `telefono`, `id_obra_social`, `nro_afiliado`) VALUES
-(5, 'Camila Ana Mazzaro', 44488835, '2002-09-24', 'femenino', 'Biedma 123', 'camilamazzaro90@gmail.com', '2346654466', 4, '12366655'),
-(6, 'Camila Mazzaro', 44488835, '2025-06-14', 'femenino', 'Las Heras 122', 'camilamazzaro90@gmail.com', '2346665555', 1, '123'),
-(7, 'Camila Mazzaro', 44488835, '2025-06-21', 'femenino', 'Las Heras 122', 'camilamazzaro90@gmail.com', '2346665555', 1, '123'),
-(8, 'Juan Perez', 23333444, '1988-09-23', 'masculino', 'Junín 35', 'juanperez@gmail.com', '2344332225', 1, '23444555'),
+(7, 'Camila Mazzaro', 44488835, '2002-09-24', 'femenino', 'Biedma 529', 'camilamazzaro90@gmail.com', '2346691870', 1, '1234'),
+(8, 'Juan Carlos Pérez', 23333444, '1978-03-23', 'masculino', 'Las Heras 122', 'juanperez@gmail.com', '2346691870', 2, '23455'),
 (9, 'Esteban Gómez', 21322438, '1975-05-22', 'masculino', 'Junín 35', 'estebangomez@gmail.com', '2346554433', 2, '67999888'),
 (10, 'Sofía Rodríguez', 30654321, '1985-07-20', 'femenino', 'Calle 25 de Mayo 678', 'sofia.rodriguez@gmail.com', '1122334455', 1, '101'),
 (11, 'Juan Pérez', 30543210, '1990-05-14', 'masculino', 'Av. Rivadavia 1234', 'juan.perez@gmail.com', '1133445566', 2, '102'),
@@ -261,7 +259,8 @@ INSERT INTO `pacientes` (`id`, `nombre`, `dni`, `fecha_nacimiento`, `genero`, `d
 (21, 'Victoria Martínez', 30765432, '1989-05-16', 'femenino', 'Calle Güemes 120', 'victoria.martinez@gmail.com', '1233445566', 12, '112'),
 (22, 'Federico Rodríguez', 30323456, '1994-07-07', 'masculino', 'Calle Moreno 678', 'federico.rodriguez@gmail.com', '1244556677', 13, '113'),
 (23, 'Gabriela Sánchez', 30987632, '1990-09-21', 'femenino', 'Calle Pueyrredón 501', 'gabriela.sanchez@mail.com', '1255667788', 14, '114'),
-(24, 'Ricardo Álvarez', 30412345, '1982-10-11', 'masculino', 'Calle Tucumán 900', 'ricardo.alvarez@gmail.com', '1266778899', 15, '115');
+(24, 'Ricardo Álvarez', 30412345, '1982-10-11', 'masculino', 'Calle Tucumán 900', 'ricardo.alvarez@gmail.com', '1266778899', 15, '115'),
+(28, 'Esteban Martínez', 30222555, '2025-07-08', 'masculino', 'Las Heras 122', 'estebanmartinez@gmail.com', '2346554433', 1, '12366655');
 
 -- --------------------------------------------------------
 
@@ -450,19 +449,22 @@ CREATE TABLE `usuarios` (
   `nombre` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `id_categoriaUsuario` int(11) NOT NULL
+  `id_categoriaUsuario` int(11) NOT NULL,
+  `id_paciente` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `id_categoriaUsuario`) VALUES
-(2, 'Camila Mazzaro', 'camilamazzaro90@gmail.com', '*******', 1),
-(8, 'Esteban Mazzaro', 'estebanmazzaro@gmail.com', 'Camila123', 2),
-(9, 'Bruno Mazzaro', 'camilamazzaro90@gmail.com', 'Camila123', 2),
-(10, 'Mariano Mengide', 'mariano@gmail.com', 'Camila123', 2),
-(11, 'Hernán Ghersi', 'hernan@gmail.com', 'Camila123', 2);
+INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `id_categoriaUsuario`, `id_paciente`) VALUES
+(8, 'Esteban Mazzaro', 'estebanmazzaro@gmail.com', 'Camila123', 2, NULL),
+(10, 'Mariano Mengide', 'mariano@gmail.com', 'Camila123', 2, NULL),
+(11, 'Hernán Ghersi', 'hernan@gmail.com', 'Camila123', 2, NULL),
+(12, 'Camila Pérez', 'camilamazzaro@yahoo.com.mx', 'Camila123', 1, NULL),
+(15, 'Esteban Martínez', 'estebanmartinez@gmail.com', '$2b$10$uGaZL02ImUioKBHYy.R7Fext0OhkCneT9N3vVFOdFx2DCijpZ0ns6', 4, 28),
+(16, 'Camila Mazzaro', 'camilamazzaro90@gmail.com', '$2b$10$/6VVVCi5amAf6IUixZb5GeTGTViu48htinxmjThgK/Ghkn2BWDLIG', 4, 7),
+(17, 'Juan Carlos Pérez', 'juanperez@gmail.com', '$2b$10$GjCsPN9CclW7eR5aOTpqEeVttnFOegpHKAINkhqDFSsrcKwaol0Pq', 4, 8);
 
 -- --------------------------------------------------------
 
@@ -482,7 +484,8 @@ CREATE TABLE `usuario_categorias` (
 INSERT INTO `usuario_categorias` (`id`, `categoria`) VALUES
 (1, 'Administrador'),
 (2, 'Medico'),
-(3, 'Secretaria');
+(3, 'Secretaria'),
+(4, 'Paciente');
 
 --
 -- Índices para tablas volcadas
@@ -640,7 +643,7 @@ ALTER TABLE `obras_sociales`
 -- AUTO_INCREMENT de la tabla `pacientes`
 --
 ALTER TABLE `pacientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `practicas`
@@ -664,7 +667,7 @@ ALTER TABLE `turno_estados`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_categorias`
