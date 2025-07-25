@@ -368,6 +368,34 @@ class TurnoModel{
         });
     }
 
+    async listarTurnosPaciente(id_paciente) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+            SELECT 
+                t.fecha_hora,
+                u.nombre AS medico,
+                p.nombre AS practica,
+                e.nombre AS estado
+            FROM turnos t
+            INNER JOIN medicos m ON t.id_medico = m.id
+            INNER JOIN usuarios u ON m.id_usuario = u.id
+            LEFT JOIN practicas p ON t.id_practica = p.id
+            LEFT JOIN turno_estados e ON t.id_estado_turno = e.id
+            WHERE t.id_paciente = ?
+            ORDER BY t.fecha_hora DESC
+            `;
+
+            conx.query(sql, [id_paciente], (err, results) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            resolve(results);
+            });
+        });
+    }
+
+
 }
 
 module.exports = TurnoModel;

@@ -1,0 +1,150 @@
+<head>
+    <link rel="stylesheet" href="/public/css/panel/panel_pacientes.css">
+</head>
+
+<!--BARRA LATERAL-->
+<div class="barra-lateral">
+    <div class="logo">
+        <!--Icono-->
+        <svg id="icono" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080"><defs><style>.cls-1{fill:#005b6f;}</style></defs><path class="cls-1" d="M568.89,414.46c-69.34,0-125.76,56.41-125.76,125.76s56.41,125.76,125.76,125.76,125.76-56.41,125.76-125.76-56.41-125.76-125.76-125.76Z"/><path class="cls-1" d="M680.55,262.19l91.68-201.07c-27.71-11.77-56.6-21.17-85.98-27.96l-44.23,216.51c13.11,3.3,26.04,7.51,38.52,12.52Z"/><path class="cls-1" d="M641.7,830.45l44.29,216.5c29.33-6.8,58.22-16.21,85.94-28l-91.76-201.04c-12.48,5.03-25.39,9.24-38.46,12.54Z"/><path class="cls-1" d="M470.28,1050.9c29.57,5.63,59.79,8.69,89.92,9.1l-2.72-220.29-40.4-4.07-46.8,215.26Z"/><path class="cls-1" d="M470.45,28.77l46.38,215.36,40.59-4.07,2.74-220.28c-30.03.41-60.18,3.44-89.71,9Z"/><path class="cls-1" d="M881.9,955.31c24-18.12,46.52-38.39,67-60.3l-165.31-146.66c-9.43,9.71-19.59,18.85-30.26,27.23l128.56,179.74Z"/><path class="cls-1" d="M882.35,124.93l-128.82,179.56c10.65,8.39,20.78,17.54,30.16,27.25l165.59-146.33c-20.48-22.01-42.98-42.33-66.94-60.48Z"/><path class="cls-1" d="M71.19,387.09c-9.04,29.47-15.47,59.77-19.12,90.16l220.15,19.95c1.94-13.48,4.79-26.86,8.5-39.86l-209.53-70.25Z"/><path class="cls-1" d="M176.45,198c-19.81,22.68-37.72,47.19-53.29,72.93l192,109.43c7.21-11.4,15.24-22.4,23.93-32.74l-162.64-149.61Z"/><path class="cls-1" d="M348.89,1011.72l88.02-202.71c-12.08-5.91-23.83-12.69-35.02-20.2l-131.37,177.7c24.71,17.29,51.04,32.49,78.36,45.21Z"/><path class="cls-1" d="M280.57,622.27c-3.7-12.92-6.53-26.18-8.44-39.51l-219.95,21.42c3.71,29.91,10.05,59.63,18.9,88.45l209.49-70.36Z"/><path class="cls-1" d="M271,113.2l131.06,177.93c11.27-7.54,23.09-14.35,35.21-20.29l-88.15-202.65c-27.21,12.69-53.47,27.82-78.12,45.01Z"/><path class="cls-1" d="M339.03,732.24c-8.7-10.39-16.75-21.43-23.97-32.89l-192.04,109.33c15.53,25.7,33.37,50.19,53.08,72.85l162.93-149.29Z"/></svg>
+
+        <span>Centro de Ojos <br> Chivilcoy</span>
+    </div>
+    
+    <a class="boton btn-panel-general" href="/panelPacientes">
+        <i class="fa-solid fa-house"></i>
+        <span>Panel General</span>
+    </a>
+
+    <nav class="navegacion">
+        <ul>
+            <li>
+                <a href="/panelPacientes/turnos">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>Turnos</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/panelPacientes/recetas">
+                    <i class="fa-regular fa-files-medical"></i>
+                    <span>Recetas</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/panelPacientes/estudios">
+                    <i class="fa-regular fa-eye"></i>
+                    <span>Estudios</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/panelPacientes/perfil">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Perfil</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="div-inferior">
+        <div class="usuario">
+            <div class="contenedor-icono-usuario">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="info-usuario">
+                <div class="nombre-email">
+                    <span class="nombre"><%= nombreUsuario %></span>
+                    <span class="email"><%= emailUsuario %></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón de Logout -->
+        <div class="logout">
+            <a href="" class="btn-logout">
+                Cerrar Sesión
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </a>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+
+    // Logout
+    const logoutButton = document.querySelector('.btn-logout');
+
+    logoutButton.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        Swal.fire({
+            title: '¿Seguro de cerrar sesión?',
+            text: 'Estás a punto de cerrar sesión.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cerrar sesión',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#005b6f',
+            cancelButtonColor: '#c0d8db',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Si el usuario confirma, redirigir a la URL de logout
+                window.location.href = '/logout';
+            }
+        });
+    });
+
+    // Ícono desplegable
+    const icono = document.getElementById("icono");
+    const barraLateral = document.querySelector(".barra-lateral");
+    const spans = document.querySelectorAll("span");
+    const palanca = document.querySelector(".switch");
+    const circulo = document.querySelector(".circulo");
+
+    // Obtener el estado guardado de localStorage para la barra lateral
+    const barraEstado = localStorage.getItem('barraEstado');
+
+    // Establecer el estado inicial de la barra lateral
+    if (barraEstado === 'mini') {
+        barraLateral.classList.add("mini-barra-lateral");
+        spans.forEach((span) => {
+            span.classList.add("oculto");
+        });
+    }
+
+    //para trabajar con la clase .active
+    // Obtener la URL actual
+    const currentLocation = window.location.pathname;
+
+    // Obtener todos los enlaces
+    const navLinks = document.querySelectorAll('nav ul li a');
+
+    navLinks.forEach(link => {
+        // Comprobar si el href del enlace coincide con la URL actual
+        if (link.getAttribute('href') === currentLocation || 
+            (currentLocation === '/' && link.getAttribute('href') === '#')) { 
+            link.classList.add('active'); // Agregar clase active al enlace actual
+        }
+    });
+
+    // Cambiar el estado de la barra lateral al hacer clic en el icono
+    icono.addEventListener("click", () => {
+        if (barraLateral.classList.contains("mini-barra-lateral")) {
+            barraLateral.classList.remove("mini-barra-lateral");
+            spans.forEach((span) => {
+                span.classList.remove("oculto");
+            });
+            localStorage.removeItem('barraEstado'); // Guardar estado como "expandido"
+        } else {
+            barraLateral.classList.add("mini-barra-lateral");
+            spans.forEach((span) => {
+                span.classList.add("oculto");
+            });
+            localStorage.setItem('barraEstado', 'mini'); // Guardar estado como "mini"
+        }
+    });
+
+</script>
