@@ -12,6 +12,13 @@ const usuarioModel = new UsuarioModel();
 
 const bcrypt = require('bcrypt');
 
+const jwt = require('jsonwebtoken'); //pide la librería jwt
+const nodemailer = require('nodemailer');
+const JWT_SECRET = 'Emilia'; //token para la asegurar la contraseña
+
+require('dotenv').config();
+
+
 class WebController{
 
     //Mostrar homepage
@@ -209,6 +216,117 @@ class WebController{
         } catch (err) {
             console.error('Error en login:', err);
             return res.status(500).json({ error: 1, message: 'Error interno del servidor.' });
+        }
+    }
+
+    //Cambiar contraseña
+    async solicitarCambioPass(req, res) {
+        const { email } = req.body;
+        usuarioModel.encontrarUsuarioPorMail(email, async (err, usuario) => {
+            if (err || !usuario) {
+                return res.status(404).json({
+                    message: "No se encontró al usuario"
+                });
+            }
+    
+            // Generar el token para el enlace
+            const token = jwt.sign({ id: usuario.id }, JWT_SECRET, { expiresIn: '1h' });
+    
+            // Configurar el transporte de Nodemailer (asegúrate de que tus credenciales son correctas)
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                },
+            });
+    
+            // Enlace para el cambio de contraseña
+            const linkReseteo = `http://localhost:3000/loginPacientes/cambiarPassword?token=${token}`;
+    
+            const configurarMail = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: '🔐 Solicitud para cambiar tu contraseña',
+                html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 10px; padding: 30px; background-color: #f9f9f9;">
+                    <div style="text-align: center;">
+                        <img src="http://localhost:3000/public/img/logo-oscuro-coch.png" alt="Centro de Ojos Logo" style="max-width: 150px; margin-bottom: 20px;">
+                    </div>
+                    <h2 style="color: #005b6f; text-align: center;">Solicitud de cambio de contraseña</h2>
+                    <p>Hola <strong>${usuario.nombre}</strong>,</p>
+                    <p>Hemos recibido una solicitud para cambiar tu contraseña en el <strong>Panel</strong> del Centro de Ojos Chivilcoy. Si fuiste vos quien hizo esta solicitud, podés establecer una nueva contraseña haciendo clic en el botón a continuación:</p>
+
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${linkReseteo}" style="background-color: #005b6f; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 16px;">Cambiar contraseña</a>
+                    </div>
+
+                    <p>Este enlace estará disponible por 1 hora. Si no solicitaste este cambio, simplemente ignorá este correo.</p>
+                    
+                    <hr style="margin: 40px 0;">
+                    <p style="font-size: 12px; color: #888; text-align: center;">Centro de Ojos Chivilcoy - Todos los derechos reservados</p>
+                </div>
+                `,
+            }; // CORREGIR: cuando tenga el dominio y hosting, cambiar localhost por la direccion correcta. 
+    
+            // Enviar el correo
+            transporter.sendMail(configurarMail, (error) => {
+                if (error) {
+                    console.error("Error al enviar el correo:", error);
+                    return res.status(500).json({
+                        message: "Error al enviar el correo de recuperación de contraseña",
+                    });
+                }
+                res.json({
+                    message: "Correo enviado con éxito. Revisa tu bandeja de entrada.",
+                });
+            });
+        });
+    }
+
+
+    async resetearPassword(req, res) {
+        const { token, nuevaPassword } = req.body;
+
+        console.log("Token recibido:", token);
+        console.log("Nueva contraseña recibida:", nuevaPassword);
+    
+        if (!token || !nuevaPassword) {
+            return res.status(400).json({
+                message: "El token o la nueva contraseña no fueron proporcionados.",
+            });
+        }
+    
+        try {
+            // Verificar el token
+            const decoded = jwt.verify(token, JWT_SECRET);
+    
+            // Hashear la nueva contraseña
+            const hashPassword = bcrypt.hashSync(nuevaPassword, 10);
+    
+            // Actualizar la contraseña en la base de datos
+            usuarioModel.actualizarPassword(decoded.id, hashPassword, (err) => {
+                if (err) {
+                    console.error("Error al actualizar la contraseña:", err);
+                    return res.status(500).json({
+                        message: "Hubo un problema al actualizar la contraseña.",
+                    });
+                }
+    
+                res.json({
+                    message: "La contraseña fue actualizada exitosamente.",
+                });
+            });
+        } catch (error) {
+            console.error("Error al procesar el token:", error);
+            if (error.name === "TokenExpiredError") {
+                return res.status(400).json({
+                    message: "El token ha expirado. Por favor, solicite un nuevo enlace.",
+                });
+            }
+            return res.status(400).json({
+                message: "Token inválido.",
+            });
         }
     }
 

@@ -134,6 +134,45 @@ class usuariosModel{
         });
     }
 
+    // Usar esta o la de arriba ---- CORREGIR
+    encontrarUsuarioPorMail(email, callback) { 
+        const sql = "SELECT * FROM usuarios WHERE email = ?";
+        conx.query(sql, [email], (err, results) => {
+            if (err) {
+                return callback(err, null);
+            }
+            callback(null, results[0]); //devuelve solo el primer usuario encontrado
+        });
+    }
+
+    actualizarPassword (usuarioId, nuevaPassword, callback){
+        const sql = "UPDATE usuarios SET password = ? WHERE id = ?";
+        conx.query (sql, [nuevaPassword, usuarioId], (err, results) => {
+            callback(err, results);
+        });
+    }
+
+    actualizarPasswordHash(callback) { //hashear contraseñas que no lo estén 
+        const sql = "SELECT id, password FROM usuarios WHERE LENGTH(password) < 60"; 
+        conx.query(sql, (err, results) => {
+            if (err) {
+                return callback(err, null); 
+            }
+            results.forEach((usuario) => {
+                const hashPass = bcryptjs.hashSync(usuario.password, rondas); // Encriptar contraseña de forma sincrónica
+
+                const sqlActualizar = "UPDATE usuarios SET password = ? WHERE id = ?";
+                conx.query(sqlActualizar, [hashPass, usuario.id], (err, result) => {
+                    if (err) {
+                        console.log(`Error actualizando la contraseña del usuario ID ${usuario.id}: `, err);
+                    } else {
+                        console.log(`Contraseña del usuario ID ${usuario.id} actualizada.`);
+                    }
+                });
+            });
+        });
+    }
+
 }
 
 module.exports = usuariosModel;

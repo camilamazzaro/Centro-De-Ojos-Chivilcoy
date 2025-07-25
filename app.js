@@ -3,6 +3,8 @@ const session = require('express-session');
 const app = express();
 const port = 3000; 
 
+require('dotenv').config();
+
 //importo middleware para guardar los datos de inicio de sesión
 const sessionData = require('./middleware/sessionData');
 

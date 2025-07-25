@@ -91,3 +91,100 @@
     width: 45%;
     margin-bottom: 2%;
 }
+
+
+/* -- LOGIN DE USUARIOS -- */
+.contenedor-login{
+    display: flex;
+    justify-content: space-between;
+    padding-right: 2em;
+}
+
+.contenedor-login .login-box{
+    width: 60%;
+    align-content: center;
+    z-index: 1000;
+}
+
+#formularioRecuperarContraseña{
+    width: 60%;
+}
+
+#formularioRecuperarContraseña button{
+    margin-top: 1em;
+}
+
+#formularioRecuperarContraseña .input-icono {
+    position: relative;
+}
+
+#formularioRecuperarContraseña .input-icono i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--COLOR_SECUNDARIO_3);
+}
+
+#formularioRecuperarContraseña .input-icono input {
+    padding-left: 35px;
+}
+
+#togglePassword {
+    position: absolute;
+    right: 12px; 
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px; 
+    color: #555;
+}
+
+/* ------- RECUPERAR CONTRASEÑA ------------ */
+
+.contenedor-logo-lateral{
+    width: 25%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.texto-bienvenida{
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    align-content: center;
+    padding-left: 70px;
+    z-index: 1000;
+    background: var(--COLOR_PRINCIPAL);
+}
+
+.texto-bienvenida h4{
+    color: white;
+    font-size: 20px;
+    margin-left: 30px;
+    font-weight: 500;
+    width: max-content;
+}
+
+.contenedor-logo-lateral .logo{
+    width: 400px;
+    height: 100px;
+    background-image: url("/public/img/logo-claro-coch.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    z-index: 1000;
+}
+
+#fondoWave {
+    position: absolute;
+    right: 90%; 
+    bottom: 0; 
+    width: 100vw;
+    height: 100%;
+    transform: rotate(90deg); 
+    transform-origin: bottom right; 
+    z-index: 0;
+}

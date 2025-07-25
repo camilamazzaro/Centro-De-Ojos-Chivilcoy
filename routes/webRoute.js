@@ -49,4 +49,16 @@ router.get('/registroPacientes', webController.mostrarRegistroPacientes);
 router.get('/loginPacientes', webController.mostrarLoginPacientes);
 router.post('/loginPacientes', webController.loginPaciente);
 
+
+// Ruta para cambiar password
+router.get('/loginPacientes/cambiarPassword', (req, res) => {
+    const token = req.query.token;
+    if (!token) {
+        return res.status(400).send("No se proporcionó un token");
+    }
+    res.render('usuarios/cambiarPassword', { token }); //renderiza tmb el token
+});
+router.post('/loginPacientes/solicitarCambioPass', webController.solicitarCambioPass);
+router.post('/loginPacientes/cambiarPassword', webController.resetearPassword);
+
 module.exports = router;
