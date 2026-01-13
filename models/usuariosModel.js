@@ -1,4 +1,6 @@
 const conx = require('../database/db');
+const bcrypt = require('bcrypt'); 
+
 
 class usuariosModel{
 
@@ -159,7 +161,7 @@ class usuariosModel{
                 return callback(err, null); 
             }
             results.forEach((usuario) => {
-                const hashPass = bcryptjs.hashSync(usuario.password, rondas); // Encriptar contraseña de forma sincrónica
+                const hashPass = bcrypt.hashSync(usuario.password, rondas); // Encriptar contraseña de forma sincrónica
 
                 const sqlActualizar = "UPDATE usuarios SET password = ? WHERE id = ?";
                 conx.query(sqlActualizar, [hashPass, usuario.id], (err, result) => {
@@ -172,6 +174,30 @@ class usuariosModel{
             });
         });
     }
+
+    verificarPassword(idUsuario, passwordIngresada) {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT password FROM usuarios WHERE id = ?";
+            conx.query(sql, [idUsuario], async (err, results) => {
+                if (err) return reject(err);
+                if (results.length === 0) return resolve(false);
+
+                // Comparamos la pass ingresada con la encriptada en la BD
+                const match = await bcrypt.compare(passwordIngresada, results[0].password);
+                resolve(match); // Devuelve true o false
+            });
+        });
+    }
+
+    actualizarDatosSimples(id, nombre, email) {
+    return new Promise((resolve, reject) => {
+        const sql = "UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?";
+        conx.query(sql, [nombre, email, id], (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+}
 
 }
 

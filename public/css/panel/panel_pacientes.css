@@ -377,3 +377,19 @@
 .pedirTurnoPanel{
     width: 100%;
 }
+
+/* ---- Perfil paciente ---- */
+
+.perfil-paciente{
+    margin-left: 1em;
+    width: 60%;
+}
+
+.subtitulo-perfil-paciente{
+    color: var(--COLOR_PRINCIPAL);
+}
+
+.botones-perfil{
+    text-align: right;
+    margin-top: 1em;
+}

@@ -234,6 +234,19 @@ class PacienteModel{
         });
     }
 
+    async actualizarDatosBasicos(id, nombre, email) {
+        return new Promise((resolve, reject) => {
+            const sql = "UPDATE pacientes SET nombre = ?, email = ? WHERE id = ?";
+            conx.query(sql, [nombre, email, id], (err, result) => {
+                if (err) {
+                    console.error("Error actualizando datos básicos de paciente:", err);
+                    return reject(err);
+                }
+                resolve(result);
+            });
+        })
+    }
+
 }
 
 //exporto la función/es para poder ser utilizada/s desde el controlador

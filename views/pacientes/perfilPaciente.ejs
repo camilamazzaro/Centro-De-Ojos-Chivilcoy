@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../commons/head', { title: 'Mi Perfil' }) %>
+    <link rel="stylesheet" href="/css/panel/panel_pacientes.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<div class="contenedor-flex">
+        
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-pacientes') %>
+        </div>
+
+        <div class="perfil-paciente">
+            <div class="encabezado-panel">
+                <h1>Mi Perfil</h1>
+            </div>
+
+            <div class="perfil-wrapper">
+                
+                <div class="card-panel">
+                    <div class="subtitulo-perfil-paciente">
+                        <h3><i class="fa-regular fa-user"></i> Datos de Cuenta</h3>
+                    </div>
+                    <form id="formDatosUsuario">
+                        <div class="form-group">
+                            <label class="form-label">Nombre y Apellido</label>
+                            <input type="text" name="nombre" class="form-control" value="<%= user.nombre %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email (Usuario)</label>
+                            <input type="email" name="email" class="form-control" value="<%= user.email %>" required>
+                        </div>
+                        <div class="botones-perfil">
+                            <button type="submit" class="btn">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-panel">
+                    <div class="subtitulo-perfil-paciente">
+                        <h3><i class="fa-solid fa-lock"></i> Seguridad</h3>
+                    </div>
+                    <form id="formPassword">
+                        <div class="form-group">
+                            <label class="form-label">Contraseña Actual</label>
+                            <input type="password" name="currentPassword" class="form-control" required>
+                        </div>
+                        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                        <div class="form-group">
+                            <label class="form-label">Nueva Contraseña</label>
+                            <input type="password" name="newPassword" class="form-control" minlength="6" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Repetir Nueva Contraseña</label>
+                            <input type="password" name="confirmPassword" class="form-control" minlength="6" required>
+                        </div>
+
+                        <div class="botones-perfil">
+                            <button type="submit" class="btn">Actualizar Contraseña</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    <script>
+        document.getElementById('formDatosUsuario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const res = await fetch('/panelPacientes/perfil/actualizarDatos', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                
+                if(result.success) {
+                    Swal.fire('Éxito', 'Datos actualizados', 'success').then(() => location.reload());
+                } else {
+                    Swal.fire('Error', result.mensaje || 'No se pudo actualizar', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire('Error', 'Fallo de conexión', 'error');
+            }
+        });
+
+        // Actualizar Contraseña
+        document.getElementById('formPassword').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            if(data.newPassword !== data.confirmPassword) {
+                return Swal.fire('Error', 'Las contraseñas nuevas no coinciden', 'warning');
+            }
+
+            try {
+                const res = await fetch('/panelPacientes/perfil/cambiarPassword', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                
+                if(result.success) {
+                    Swal.fire('Éxito', 'Contraseña cambiada correctamente', 'success').then(() => {
+                        e.target.reset();
+                    });
+                } else {
+                    Swal.fire('Error', result.mensaje || 'Contraseña actual incorrecta', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire('Error', 'Fallo de conexión', 'error');
+            }
+        });
+    </script>
+</div>
+</html>
