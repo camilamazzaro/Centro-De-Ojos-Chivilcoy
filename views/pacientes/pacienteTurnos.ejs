@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <%- include('../commons/head', { title: title }) %>
+    <link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">
+    
+    <link rel="stylesheet" href="/public/css/turnos.css">
+    <link rel="stylesheet" href="/css/panel/panel_pacientes.css">
+    
+    <title>Mis Turnos</title>
+</head>
+
+<body>
+
+    <div class="contenedor-flex">
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-pacientes') %>
+        </div>
+    
+        <div class="contenedor-listado">
+            <div class="container contenedor-listado-turnos mt-5">
+                <h1 class="text-center mb-4">Mis Turnos</h1>
+
+                <div class="div-superior" style="justify-content: flex-end;">
+                    <div class="mb-3">
+                        <a href="/panelPacientes/nuevo-turno" class="btn btn-agregar">Solicitar Nuevo Turno</a>
+                    </div>
+                </div>
+                
+                <form id="filtroEstadoForm" class="filtros-turnos">
+                    <label>
+                        <input type="radio" name="estado" value="todos" checked> Todos
+                    </label>
+                    <label class="estado-reservado">
+                        <input type="radio" name="estado" value="Reservado"> Reservados
+                    </label>
+                    <label class="estado-confirmado">
+                        <input type="radio" name="estado" value="Confirmado"> Confirmados
+                    </label>
+                </form>
+            
+                <div class="table-responsive">
+                    <table class="table table-striped tabla-turnos">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Médico</th>
+                                <th>Práctica</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody id="tablaTurnosBody">
+                            <% if (turnos && turnos.length > 0) { %>
+                                <% turnos.forEach(function(turno) { %>
+                                    <tr>
+                                        <td><%= turno.fecha ? moment(turno.fecha).format('DD/MM/YYYY') : '---' %></td>
+                                        <td><%= turno.hora %></td>
+                                        <td><%= turno.nombre_medico %></td>
+                                        <td><%= turno.nombre_practica || 'Consulta General' %></td>
+                                        
+                                        <td class="<%= turno.estado === 'Confirmado' ? 'estado-confirmado' : '' %> <%= turno.estado === 'Reservado' ? 'estado-reservado' : '' %>">
+                                            <%= turno.estado %>
+                                        </td>                                
+                                        
+                                        <td class="acciones-paciente">
+                                            <% if (turno.estado === 'reservado' || turno.estado === 'confirmado') { %>
+                                                <button class="btn btn-eliminar" onclick="cancelarTurno(<%= turno.id %>)">
+                                                    <i class="fa-solid fa-xmark"></i> Cancelar
+                                                </button>
+                                            <% } else { %>
+                                                <span class="text-muted">-</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">No tienes turnos registrados.</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const filtroEstadoForm = document.getElementById('filtroEstadoForm');
+            const tablaTurnosBody = document.getElementById('tablaTurnosBody');
+    
+            filtroEstadoForm.addEventListener('change', function () {
+                const estadoSeleccionado = document.querySelector('input[name="estado"]:checked').value.toLowerCase();
+                const filas = tablaTurnosBody.querySelectorAll('tr');
+
+                filas.forEach(fila => {
+                    const celdaEstado = fila.querySelector('td:nth-child(5)');
+                    if (!celdaEstado) return;
+                    const estadoFila = celdaEstado.textContent.trim().toLowerCase();
+    
+                    if (estadoSeleccionado === 'todos' || estadoFila.includes(estadoSeleccionado)) {
+                        fila.style.display = '';
+                    } else {
+                        fila.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        async function cancelarTurno(idTurno) {
+            const result = await Swal.fire({
+                title: '¿Cancelar Turno?',
+                text: 'El turno quedará "Libre" nuevamente y perderás tu reserva.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, cancelar',
+                cancelButtonText: 'No, volver'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    // Llamamos a la ruta de cancelación
+                    const response = await fetch(`/turnos/cancelar/${idTurno}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    // Si responde texto plano (como lo tienes en tu controller actual) o JSON
+                    if (response.ok) {
+                        Swal.fire({
+                            title: 'Cancelado',
+                            text: 'El turno ha sido liberado correctamente.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload(); 
+                        });
+                    } else {
+                        Swal.fire('Error', 'No se pudo cancelar el turno.', 'error');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    Swal.fire('Error', 'Error de conexión con el servidor.', 'error');
+                }
+            }
+        }
+    </script>
+    
+</body>
+</html>

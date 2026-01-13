@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <%- include('../commons/head', { title: title }) %>
+    <link rel="stylesheet" href="/css/panel/panel_pacientes.css">
+    
+    <style>
+        /* --- ESTILOS GENERALES DEL PANEL --- */
+        .contenido-panel {
+            background-color: #f8f9fa; /* Fondo gris muy suave */
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        /* --- DIAGRAMA DE PROCESO (CIRCULITOS) --- */
+        .diagrama-proceso {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .diagrama-proceso::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background-color: #e0e0e0;
+            z-index: 0;
+        }
+        .paso {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 40px;
+            z-index: 1;
+            position: relative;
+        }
+        .circulo {
+            width: 50px;
+            height: 50px;
+            background-color: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #999;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .circulo.verde {
+            background-color: #38b5a9;
+            border-color: #38b5a9;
+            color: white;
+            box-shadow: 0 4px 10px rgba(40, 70, 167, 0.2);
+        }
+        .paso span {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* --- CONTENEDORES DE PASOS --- */
+        .container-pasoUno, .container-pasoDos {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .ocultar { display: none !important; }
+
+        .row-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+        .col-input {
+            flex: 0 0 33.3333%;
+            max-width: 33.3333%;
+            padding: 0 15px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 0.95rem;
+        }
+        .form-control, .form-select {
+            width: 100%;
+            height: 48px;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #fff;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
+        .contenedor-detalle-formulario {
+            display: flex;
+            gap: 40px; 
+            margin-top: 30px;
+        }
+        
+        .columna-izquierda {
+            flex: 1; 
+            max-width: 400px;
+        }
+        
+        .detalle-medico {
+            background-color: #f8fbfd; 
+            border: 1px solid #eef2f5;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .detalle-medico h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 8px;
+            margin-top: 20px;
+        }
+        .detalle-medico h2:first-child { margin-top: 0; }
+
+        .dato-resaltado {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .info-medico-turnos {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+        .foto-medico {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .detalles-medico h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #007bff;
+            font-weight: 700;
+        }
+        .detalles-medico p {
+            margin: 2px 0 0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .columna-derecha {
+            flex: 1.5;
+            background: #fff;
+            padding-left: 20px;
+            border-left: 1px solid #eee;
+        }
+        .titulo-seccion {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: 700;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .datos-paciente-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .dato-grupo label {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .dato-grupo div {
+            font-size: 16px;
+            color: #444;
+            font-weight: 500;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        
+        .modificar-fecha {
+            background: transparent;
+            border: 1px solid #ccc;
+            color: #666;
+            padding: 10px 20px;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .modificar-fecha:hover { background: #f0f0f0; color: #333; }
+
+        .turnos-disponibles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .turno {
+            padding: 8px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            background: white;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.2s;
+        }
+        .turno:hover {
+            border-color: #007bff;
+            color: #007bff;
+            background: #f8f9fa;
+        }
+        .turno.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+            box-shadow: 0 4px 6px rgba(0,123,255,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .contenedor-detalle-formulario {
+                flex-direction: column;
+            }
+            .columna-derecha {
+                border-left: none;
+                border-top: 1px solid #eee;
+                padding-left: 0;
+                padding-top: 30px;
+            }
+            .columna-izquierda {
+                max-width: 100%;
+            }
+            .col-input {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            .datos-paciente-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<div class="contenedor-flex">
+        
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-pacientes') %>
+        </div>
+
+        <div class="contenedor-agregar">
+            
+            <div class="encabezado-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; margin-top: 1em;">
+                <h1 style="margin-left: 20px;">Solicitar Nuevo Turno</h1>
+                <a href="/panelPacientes/turnos" class="btn-secundario" style="text-decoration: none; color: #666;">← Volver</a>
+            </div>
+
+            <div class="container-pasoUno">
+                <div class="diagrama-proceso">
+                    <div class="paso">
+                        <div class="circulo verde">1</div>
+                        <span>Selección</span>
+                    </div>
+                    <div class="paso">
+                        <div class="circulo">2</div>
+                        <span>Confirmación</span>
+                    </div>
+                </div>
+                
+                <div class="row-inputs">
+                    <div class="col-input">
+                        <label for="fecha" class="form-label">Fecha del turno:</label>
+                        <input type="date" id="fecha" class="form-control">
+                    </div>
+
+                    <div class="col-input">
+                        <label for="medico" class="form-label">Seleccionar Médico:</label>
+                        <select id="medico" name="medico" class="form-select">
+                            <option value="0">Seleccione</option>
+                        </select>
+                    </div>
+
+                    <div class="col-input">
+                        <label for="practica" class="form-label">Seleccionar Servicio:</label>
+                        <select id="practica" name="practica" class="form-select" required>
+                            <option value="0">Seleccione</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="medicos mt-4">
+                    <div class="alert alert-info" style="text-align: center; color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb; padding: 15px; border-radius: 8px;">
+                        <i class="fa-regular fa-calendar-days me-2"></i>
+                        Seleccione una fecha para ver los médicos y horarios disponibles.
+                    </div>
+                </div>
+                
+                <div style="text-align: right; margin-top: 30px;">
+                    <button class="boton-siguiente boton-siguiente-paso-1 btn">Siguiente Paso</button>
+                </div>
+            </div>
+          
+            <div class="container-pasoDos ocultar">
+                
+                <div class="diagrama-proceso">
+                    <div class="paso">
+                        <div class="circulo">1</div>
+                        <span>Selección</span>
+                    </div>
+                    <div class="paso">
+                        <div class="circulo verde">2</div>
+                        <span>Confirmación</span>
+                    </div>
+                </div>
+            
+                <div class="contenedor-detalle-formulario">
+                    <div class="columna-izquierda">
+                        <div class="detalle-medico">
+                           </div>
+                        <button class="modificar-fecha">Modificar selección</button>
+                    </div>
+                    
+                    <div class="columna-derecha">
+                        <h3 class="titulo-seccion">Confirma tus Datos</h3>
+                        
+                        <div class="datos-paciente-grid">
+                            <div class="dato-grupo">
+                                <label>Nombre y Apellido</label>
+                                <div><%= user.nombre %></div> </div>
+                            
+                            <div class="dato-grupo">
+                                <label>Email de contacto</label>
+                                <div><%= user.email %></div>
+                            </div>
+                            
+                            <div class="dato-grupo">
+                                <label>Obra Social</label>
+                                <div class="fw-bold" style="color: #007bff;">
+                                    <%= paciente.nombre_obra_social || 'Particular' %>
+                                </div>
+                            </div>
+
+                            <div class="dato-grupo">
+                                <label>Nro. de Afiliado</label>
+                                <div>
+                                    <%= paciente.nro_afiliado || '-' %>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3" style="font-size: 0.9rem;">
+                            <i class="fa-solid fa-circle-info me-1"></i>
+                            El turno quedará reservado con estos datos.
+                        </div>
+
+                        <div style="text-align: right; margin-top: 20px;">
+                            <button class="boton-confirmar btn">Confirmar Reserva</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      // Referencias DOM
+      const fechaInput = document.querySelector("#fecha");
+      const medicoSelect = document.querySelector("#medico");
+      const practicaSelect = document.querySelector("#practica");
+      const medicosContrainer = document.querySelector(".medicos");
+      const detalleMedicoContainer = document.querySelector(".detalle-medico"); // Corregido selector
+      const pasoUno = document.querySelector(".container-pasoUno");
+      const pasoDos = document.querySelector(".container-pasoDos");
+      const btnSiguiente = document.querySelector(".boton-siguiente-paso-1");
+      const btnAtras = document.querySelector(".modificar-fecha");
+      const btnConfirmar = document.querySelector(".boton-confirmar");
+
+      // Estado Global
+      window.medicos = [];
+      window.id_turno_seleccionado = 0;
+      window.datos_turno_seleccionado = null;
+      window.estaEnviandoTurno = false;
+
+      // Event Listeners
+      fechaInput.addEventListener("change", obtenerMedicosPorFiltros);
+      medicoSelect.addEventListener("change", () => {
+          cargarPracticas();
+          cargarMedicosEnLaPagina();
+      });
+      btnSiguiente.addEventListener("click", irAPasoDos);
+      btnAtras.addEventListener("click", irAPasoUno);
+      btnConfirmar.addEventListener("click", confirmarTurnoBaseDatos);
+
+      // --- FUNCIONES ---
+
+      async function obtenerMedicosPorFiltros() {
+        window.id_turno_seleccionado = 0;
+        const fecha = fechaInput.value;
+
+        if (!fecha) {
+          medicosContrainer.innerHTML = '<div class="alert alert-warning text-center">Seleccione una fecha válida.</div>';
+          return;
+        }
+
+        try {
+            const resultado = await fetch('/panelPacientes/api/disponibilidad', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ "fecha": fecha })
+            });
+
+            const medicos = await resultado.json();
+            window.medicos = medicos;
+
+            if (!medicos || medicos.length === 0) {
+                medicosContrainer.innerHTML = '<div class="alert alert-warning text-center">No hay turnos disponibles para esta fecha.</div>';
+                medicoSelect.innerHTML = '<option value="0">Sin disponibilidad</option>';
+                return;
+            }
+            
+            cargarSelectMedicos();
+            cargarMedicosEnLaPagina();
+            
+        } catch (error) {
+            console.error(error);
+            medicosContrainer.innerHTML = '<div class="alert alert-danger">Error al cargar disponibilidad.</div>';
+        }
+      }
+
+      function cargarSelectMedicos() {
+        // Limpiamos selección previa de turno al cambiar filtros
+        limpiarTurnoSeleccionado();
+        
+        medicoSelect.innerHTML = `<option value="0">Todos los médicos</option>`;
+        window.medicos.forEach(medico => {
+          medicoSelect.innerHTML += `<option value="${medico.id}">${medico.nombre_medico}</option>`;
+        });
+      }
+
+      function cargarPracticas() {
+          practicaSelect.innerHTML = `<option value="0">Consulta General</option>`;
+          const id_medico_seleccionado = medicoSelect.value;
+          const medicoEncontrado = window.medicos.find(medico => medico.id == id_medico_seleccionado);
+          
+          if (medicoEncontrado && medicoEncontrado.practicas) {
+              medicoEncontrado.practicas.forEach(practica => {
+                  practicaSelect.innerHTML += `<option value="${practica.id}">${practica.nombre}</option>`;
+              });
+          }
+      }
+
+      function cargarMedicosEnLaPagina() {
+        limpiarTurnoSeleccionado();
+        medicosContrainer.innerHTML = "";
+        const id_medico_seleccionado = medicoSelect.value;
+
+        let medicosFiltrados = window.medicos;
+        if (id_medico_seleccionado != 0) {
+            medicosFiltrados = window.medicos.filter(m => m.id == id_medico_seleccionado);
+        }
+
+        if(medicosFiltrados.length === 0) {
+            medicosContrainer.innerHTML = '<div class="alert alert-info">No se encontraron médicos con ese filtro.</div>';
+            return;
+        }
+
+        medicosFiltrados.forEach(medico => {
+          medicosContrainer.innerHTML += construirHTMLMedico(medico);
+        });
+      }
+
+      function construirHTMLMedico(medico) {
+        let turnosHTML = "";
+        
+        if (medico.turnos && medico.turnos.length > 0) {
+            medico.turnos.forEach(turno => {
+                // Solo mostramos turnos con estado 1 (LIBRE)
+                if (turno.id_estado_turno === 1) {
+                    let objetoFecha = new Date(turno.fecha_hora);
+                    let hora = objetoFecha.toTimeString().split(' ')[0].substr(0, 5);
+                    
+                    turnosHTML += `<div 
+                        class="turno" 
+                        onclick="seleccionarTurno(this, ${turno.id_turno || turno.id})" 
+                        data-fecha="${turno.fecha_hora}" 
+                        data-idmedico="${medico.id}">
+                        ${hora}
+                    </div>`;
+                }
+            });
+        }
+
+        return `
+            <div style="background:white; border-radius:10px; padding:20px; margin-bottom:20px; border:1px solid #eee;">
+                <div style="display:flex; align-items:center; margin-bottom:15px;">
+                    <img src="${medico.foto || '/public/img/default-user.jpg'}" class="foto-medico" style="margin-right:15px;">
+                    <div>
+                        <h3 style="margin:0; font-size:18px; color:#333;">${medico.nombre_medico}</h3>
+                        <p style="margin:0; color:#888; font-size:14px;">Matrícula: ${medico.matricula || 'N/A'}</p>
+                    </div>
+                </div>
+                <div class="turnos-disponibles">
+                    ${turnosHTML || '<span style="color:#999; font-style:italic;">Sin turnos libres.</span>'}
+                </div>
+            </div>
+        `;
+      }
+
+      window.seleccionarTurno = function(elemento, idTurno) {
+        document.querySelectorAll('.turno').forEach(t => t.classList.remove('selected'));
+        elemento.classList.add('selected');
+
+        const idMedico = elemento.getAttribute("data-idmedico");
+        const fechaHora = elemento.getAttribute("data-fecha");
+
+        window.id_turno_seleccionado = idTurno;
+        window.datos_turno_seleccionado = { idMedico, fechaHora };
+      }
+
+      function limpiarTurnoSeleccionado() {
+        window.id_turno_seleccionado = 0;
+        window.datos_turno_seleccionado = null;
+      }
+    
+      function irAPasoUno() {
+        pasoUno.classList.remove("ocultar");
+        pasoDos.classList.add("ocultar");
+      }
+
+      function irAPasoDos() {
+        if (!window.id_turno_seleccionado) {
+           Swal.fire({
+               icon: 'warning',
+               title: 'Atención',
+               text: 'Por favor, selecciona un horario disponible.'
+           });
+           return;
+        }
+
+        // Llenar datos dinámicos del médico
+        const { idMedico, fechaHora } = window.datos_turno_seleccionado;
+        const medico = window.medicos.find(m => m.id == idMedico);
+        
+        if (medico) {
+            const fechaObj = new Date(fechaHora);
+            const fechaStr = fechaObj.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const horaStr = fechaObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+            const servicio = practicaSelect.options[practicaSelect.selectedIndex].text;
+
+            detalleMedicoContainer.innerHTML = `
+                <h2>Fecha</h2>
+                <p class="dato-resaltado">${fechaStr} - ${horaStr} hs</p>
+                
+                <h2>Servicio</h2>
+                <p>${servicio}</p>
+
+                <h2>Médico</h2>
+                <div class="info-medico-turnos">
+                    <img src="${medico.foto || '/public/img/default-user.jpg'}" class="foto-medico">
+                    <div class="detalles-medico">
+                        <h3>${medico.nombre_medico}</h3>
+                        <p>${medico.especialidad || 'Especialista'}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        pasoUno.classList.add("ocultar");
+        pasoDos.classList.remove("ocultar");
+      }
+    
+      async function confirmarTurnoBaseDatos() {
+        if (window.estaEnviandoTurno) return;
+        window.estaEnviandoTurno = true;
+
+        Swal.fire({ title: 'Procesando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+
+        const id_turno = window.id_turno_seleccionado;
+        const practicaValor = practicaSelect.value === "0" ? null : practicaSelect.value;
+        
+        try {
+            const resultado = await fetch('/panelPacientes/reservar', {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                "id_turno": id_turno,
+                "id_practica": practicaValor
+              })
+            });
+
+            const data = await resultado.json();
+
+            if (data.success) {
+              Swal.fire({
+                icon: 'success',
+                title: '¡Turno Confirmado!',
+                text: 'Podrás verlo en tu panel de turnos.',
+                confirmButtonText: 'Ir a Mis Turnos'
+              }).then((result) => {
+                 if(result.isConfirmed) window.location.href = "/panelPacientes/turnos";
+              });
+            } else {
+              Swal.fire({ icon: 'error', title: 'Error', text: data.mensaje || 'No se pudo reservar.' });
+            }
+        } catch (e) {
+            console.error(e);
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Intenta nuevamente.' });
+        } finally {
+            window.estaEnviandoTurno = false;
+        }
+      }
+    </script>
+</div>
+</html>

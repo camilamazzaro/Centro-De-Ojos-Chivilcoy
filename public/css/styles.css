@@ -245,14 +245,14 @@ select{
 
 .form-group label {
     position: absolute;
-    top: -8px;
+    top: -9px;
     left: 12px;
     background-color: white;
-    padding: 0 10px;
-    font-size: 14px;
+    padding: 0 5px;
+    font-size: 13px;
     color: #555;
-    font-weight: 400;
-    z-index: 1;
+    font-weight: 500;
+    z-index: 10;
 }
 
 .form-group input {
@@ -267,8 +267,9 @@ select{
 .form-group {
     position: relative;
     display: flex;
-    flex-direction: column; /*para que el label aparezca después del input*/
+    flex-direction: column;
     margin-top: 16px; 
+    margin-bottom: 0;
 }
 
 .form-group textarea {
@@ -291,11 +292,17 @@ select{
     outline: none;
 }
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 .row {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap; 
+    margin-right: -15px; 
+    margin-left: -15px;
     margin-bottom: 1rem;
-    gap: 4em;
+    /* ELIMINADO: gap: 4em; -> Esto era lo que rompía el ancho de la fila */
 }
 
 .col-md-12{
@@ -314,13 +321,21 @@ select{
 .col-md-4 {
     flex: 0 0 33.3333%;
     max-width: 33.3333%;
-    padding: 0;
+    padding-right: 10px; /* Es mejor tener padding interno para que los inputs no se toquen */
+    padding-left: 10px;
 }
 
 .col-md-3 {
     flex: 0 0 25%;
     max-width: 25%;
     padding: 0 ;
+}
+
+.form-control, 
+.form-select {
+    width: 100%; 
+    max-width: 100%; 
+    display: block;
 }
 
 /* --------------------------- BARRA LATERAL PANEL ADMIN ------------------------------- */

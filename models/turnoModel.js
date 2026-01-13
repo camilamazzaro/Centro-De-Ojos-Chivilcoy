@@ -93,13 +93,17 @@ class TurnoModel{
         });
     }
 
-    async obtenerTurno(id, callback){
+    async obtenerTurno(id, callback) {
         let sql = `SELECT * FROM turnos WHERE id = ?`;
         conx.query(sql, [id], async (err, results) => {
-            if (results.length === 0) {
-                callback(this.obtenerTurnoBase());
+            if (err) {
+                console.error("Error en obtenerTurno:", err);
+                return callback(null); 
+            }
+            if (!results || results.length === 0) {
+                return callback(null);
             } else {
-            callback(results[0]);
+                return callback(results[0]);
             }
         });
     }
@@ -395,7 +399,65 @@ class TurnoModel{
         });
     }
 
+    // PACIENTES
+    async obtenerPorPaciente(idPaciente) {
+        return new Promise((resolve, reject) => {
+            const query = `
+                SELECT 
+                    t.id, 
+                    DATE_FORMAT(t.fecha_hora, '%Y-%m-%d') as fecha,
+                    DATE_FORMAT(t.fecha_hora, '%H:%i') as hora,
+                    u.nombre as nombre_medico,
+                    p.nombre as nombre_practica,
+                    te.nombre as estado,
+                    
+                    -- DATOS AGREGADOS:
+                    os.nombre as nombre_obra_social,
+                    pac.nro_afiliado
 
+                FROM turnos t
+                INNER JOIN medicos m ON t.id_medico = m.id
+                INNER JOIN usuarios u ON m.id_usuario = u.id
+                LEFT JOIN practicas p ON t.id_practica = p.id
+                LEFT JOIN turno_estados te ON t.id_estado_turno = te.id
+                
+                -- JOINS NUEVOS PARA DATOS DEL PACIENTE:
+                INNER JOIN pacientes pac ON t.id_paciente = pac.id
+                LEFT JOIN obras_sociales os ON pac.id_obra_social = os.id
+                
+                WHERE t.id_paciente = ?
+                ORDER BY t.fecha_hora DESC
+            `;
+
+            conx.query(query, [idPaciente], (err, results) => {
+                if (err) {
+                    console.error("Error en obtenerPorPaciente:", err);
+                    reject(err);
+                } else {
+                    resolve(results); 
+                }
+            });
+        });
+    }
+
+    obtenerPerfil(idPaciente, callback) {
+    const query = `
+        SELECT 
+            p.*, 
+            os.nombre as nombre_obra_social 
+        FROM pacientes p
+        LEFT JOIN obras_sociales os ON p.id_obra_social = os.id
+        WHERE p.id = ?
+    `;
+
+    conx.query(query, [idPaciente], (err, results) => {
+        if (err) {
+            console.error("Error obteniendo perfil paciente:", err);
+            return callback(null);
+        }
+        return callback(results[0]); 
+    });
+}
 }
 
 module.exports = TurnoModel;

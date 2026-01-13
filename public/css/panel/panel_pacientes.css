@@ -371,3 +371,9 @@
 .tabla-turnos-general td {
     color: #333;
 }
+
+/*---- Nuevo turno ---- */
+
+.pedirTurnoPanel{
+    width: 100%;
+}
