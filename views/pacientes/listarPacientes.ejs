@@ -156,6 +156,7 @@
             </div>
 
             <form id="formReceta">
+                <input type="hidden" id="idPacienteReceta" name="id_paciente"> <!-- Para saber a qué paciente pertenece la receta a crear -->
                 <!-- Selección de médico -->
                 <div class="form-group">
                     <label for="medico">Médico</label>
@@ -251,17 +252,21 @@
             const modalReceta = document.getElementById("modalReceta");
             const cerrarModalReceta = document.querySelector(".cerrar-modal-receta");
 
-            const botonesReceta = document.querySelectorAll(".btnAbrirModalReceta");
+            const botonesReceta = document.querySelectorAll("#btnAbrirModalReceta");
             botonesReceta.forEach(btn => {
                 btn.addEventListener("click", () => {
                     const tr = btn.closest("tr");
-
+                    
+                    // Llenar datos visuales (spans)
                     document.getElementById("nombrePaciente").textContent = tr.querySelector("button").dataset.nombre;
                     document.getElementById("dniPaciente").textContent = tr.querySelector("button").dataset.dni;
                     document.getElementById("coberturaPaciente").textContent = tr.querySelector("button").dataset.cobertura;
                     document.getElementById("afiliadoPaciente").textContent = tr.querySelector("button").dataset.nroAfiliado;
 
-                    modalReceta.style.display = "flex";
+                    const idPaciente = btn.dataset.id; 
+                    document.getElementById("idPacienteReceta").value = idPaciente; 
+
+                    document.getElementById("modalReceta").style.display = "flex";
                 });
             });
 
@@ -311,6 +316,59 @@
             document.querySelector(".cerrar-modal-receta").addEventListener("click", () => {
                 document.getElementById("modalReceta").style.display = "none";
             });
+        });
+
+
+        // ENVIAR DATOS PARA CREAR RECETA
+
+        const formReceta = document.getElementById('formReceta');
+    
+        formReceta.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+
+            const formData = new FormData(formReceta);
+            const datos = Object.fromEntries(formData.entries());
+            
+            datos.firma_manuscrita = formReceta.querySelector('[name="firma_manuscrita"]').checked;
+            datos.firma_digital = formReceta.querySelector('[name="firma_digital"]').checked;
+
+            try {
+                const response = await fetch('/pacientes/receta/crear', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datos)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Receta Creada!',
+                        text: result.mensaje,
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        document.getElementById("modalReceta").style.display = "none";
+                        formReceta.reset();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.mensaje
+                    });
+                }
+
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un problema de conexión.'
+                });
+            }
         });
         </script>
 

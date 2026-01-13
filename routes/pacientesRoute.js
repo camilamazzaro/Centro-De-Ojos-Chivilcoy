@@ -38,4 +38,9 @@ router.get('/paciente/:pacienteId/historia-clinica/:historiaId/editar', historia
 router.put('/paciente/:pacienteId/historia-clinica/:historiaId/editar', historiaClinicaController.editarHistoriaClinica);
 
 
+// RECETAS
+router.post('/pacientes/receta/crear', pacienteController.crearReceta);
+router.put('/pacientes/receta/editar', pacienteController.editarReceta);
+router.delete('/pacientes/receta/eliminar/:id', pacienteController.eliminarReceta);
+
 module.exports = router; //exporto el módulo para que pueda ser incorporado en app.js

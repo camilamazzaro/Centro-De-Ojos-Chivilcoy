@@ -11,6 +11,9 @@ const turnoModel = new TurnoModel();
 const UsuarioModel = require('../models/usuariosModel');
 const usuarioModel = new UsuarioModel();
 
+const RecetaModel = require('../models/recetaModel');
+const recetaModel = new RecetaModel();
+
 const bcrypt = require('bcrypt');
 
 class PacienteController {
@@ -212,7 +215,61 @@ class PacienteController {
             }
         });
     } 
+
+    // RECETAS DIGITALES ---------------------------------------------------
+    async crearReceta(req, res) {
+        try {
+            const datosReceta = req.body;
+
+            if (!datosReceta.id_paciente || !datosReceta.medico || !datosReceta.tratamiento) {
+                return res.status(400).json({ 
+                    success: false, 
+                    mensaje: "Faltan datos obligatorios (Paciente, Médico o Tratamiento)." 
+                });
+            }
+
+            await recetaModel.crearReceta(datosReceta);
+
+            res.json({ success: true, mensaje: "Receta creada exitosamente." });
+
+        } catch (error) {
+            console.error("Error al crear receta:", error);
+            res.status(500).json({ success: false, mensaje: "Error interno al guardar la receta." });
+        }
+    }
+
+    async editarReceta(req, res) {
+        try {
+            const datos = req.body;
+            const idReceta = datos.id_receta; 
+
+            if (!idReceta) {
+                return res.status(400).json({ success: false, mensaje: "ID de receta no válido." });
+            }
+
+            await recetaModel.editarReceta(idReceta, datos);
+
+            res.json({ success: true, mensaje: "Receta actualizada correctamente." });
+
+        } catch (error) {
+            console.error("Error al editar receta:", error);
+            res.status(500).json({ success: false, mensaje: "Error interno al guardar los cambios." });
+        }
+    }
+
+    async eliminarReceta(req, res) {
+        try {
+            const { id } = req.params;
+            
+            await recetaModel.eliminarReceta(id);
+
+            res.json({ success: true, mensaje: "Receta eliminada correctamente." });
+
+        } catch (error) {
+            console.error("Error al eliminar receta:", error);
+            res.status(500).json({ success: false, mensaje: "Error al eliminar la receta." });
+        }
+    }
 }
 
-//exporto el controller con la funcion de listar
 module.exports = PacienteController;

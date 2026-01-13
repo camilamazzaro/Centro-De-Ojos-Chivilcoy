@@ -4,73 +4,84 @@ const historiaClinicaModel = new HistoriaClinicaModel();
 const PacienteModel = require('../models/pacienteModel');
 const pacienteModel = new PacienteModel();
 
+const RecetaModel = require('../models/recetaModel');
+const recetaModel = new RecetaModel();
+
+const MedicoModel = require('../models/medicoModel');
+const medicoModel = new MedicoModel();
+
 class HistoriaClinicaController{
 
-    async mostrarListadoHCE(req, res){
-        const pacienteId = req.params.pacienteId;
+    async mostrarListadoHCE(req, res) {
+        const pacienteId = req.params.pacienteId; 
         const fechaFiltro = req.query.fecha || null;
         const pagina = parseInt(req.query.pagina) || 1;
         const porPagina = 5;
 
-        historiaClinicaModel.listarHistoriasClinicas(pacienteId, (err, datos) => {
-            if (err) {
-            return res.status(500).send('Error al obtener los datos del paciente');
+        try {
+            const paciente = await pacienteModel.obtenerPaciente(pacienteId);
+
+            if (!paciente) {
+                return res.status(404).send("Paciente no encontrado");
             }
 
-            if (datos.length === 0) {
-                return res.render('historias_clinicas/listarHistoriasClinicas', {
-                    paciente: {},
-                    historias: [],
-                    pagina: 1,
-                    totalPaginas: 1,
+            let recetas = [];
+            try {
+                recetas = await recetaModel.listarPorPaciente(pacienteId); 
+            } catch (error) {
+                console.error("Error buscando recetas:", error);
+            }
+
+            let medicos = [];
+            try {
+
+                medicos = await medicoModel.listarMedicosAsync(); 
+            } catch (error) {
+                console.error("Error buscando médicos:", error);
+            }
+
+            historiaClinicaModel.listarHistoriasClinicas(pacienteId, (err, datos) => {
+                if (err) {
+                    return res.status(500).send('Error al obtener historias clínicas');
+                }
+
+                let historias = datos.map(row => ({
+                    historia_id: row.historia_id,
+                    fecha: row.fecha,
+                    motivo: row.motivo,
+                    diagnostico: row.diagnostico,
+                    tratamiento: row.tratamiento
+                }));
+
+                // Filtro por fecha
+                if (fechaFiltro) {
+                    historias = historias.filter(h => {
+                        const fecha = new Date(h.fecha).toISOString().slice(0, 10);
+                        return fecha === fechaFiltro;
+                    });
+                }
+
+                // Paginación
+                const totalHistorias = historias.length;
+                const totalPaginas = Math.ceil(totalHistorias / porPagina);
+                const desde = (pagina - 1) * porPagina;
+                const historiasPaginadas = historias.slice(desde, desde + porPagina);
+
+                res.render('historias_clinicas/listarHistoriasClinicas', {
+                    paciente: paciente,
+                    historias: historiasPaginadas,
+                    recetas: recetas,
+                    medicos: medicos, 
+                    pagina: pagina,
+                    totalPaginas: totalPaginas,
                     fecha: fechaFiltro
                 });
-            }
-
-            // separo datos del cliente
-            const paciente = {
-            id: datos[0].id,
-            nombre: datos[0].nombre_paciente,
-            dni: datos[0].dni,
-            genero: datos[0].genero,
-            fecha_nacimiento: datos[0].fecha_nacimiento,
-            edad: datos[0].edad,
-            direccion: datos[0].direccion,
-            nro_afiliado: datos[0].nro_afiliado,
-            cobertura: datos[0].cobertura
-            };
-
-            let historias = datos.map(row => ({
-            historia_id: row.historia_id,
-            fecha: row.fecha,
-            motivo: row.motivo,
-            antecedentes_personales: row.antecedentes_personales,
-            medicacion_actual: row.medicacion_actual,
-            examen_clinico: row.examen_clinico,
-            diagnostico: row.diagnostico,
-            tratamiento: row.tratamiento
-            }));
-
-            if(fechaFiltro){
-                historias = historias.filter(h => {
-                    const fecha = new Date(h.fecha).toISOString().slice(0,10);
-                    return fecha === fechaFiltro;
-                });
-            }
-
-            const totalHistorias = historias.length;
-            const totalPaginas = Math.ceil(totalHistorias / porPagina);
-            const desde = (pagina - 1) * porPagina;
-            const historiasPaginadas = historias.slice(desde, desde + porPagina);
-
-            res.render('historias_clinicas/listarHistoriasClinicas', {
-                paciente,
-                historias: historiasPaginadas,
-                pagina,
-                totalPaginas, 
-                fecha: fechaFiltro,
             });
-        });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Error interno del servidor");
+        }
     }
 
     async mostrarAgregarHCE(req, res) {
