@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/public/css/his_clinicas.css">
+</head>
+
+<style>
+    /* --------------- PLANTILLA RECETA ----------------- */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    .body_plantilla_receta {
+        font-family: 'Roboto', sans-serif;
+        font-size: 15px;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    /* Contenedor principal de CADA copia (Original, Duplicado, etc) */
+    .receta-container {
+        width: 100%;
+        height: 100vh;
+        padding: 40px 40px 100px 40px;
+        box-sizing: border-box;
+        position: relative; 
+        z-index: 1;         
+        overflow: hidden;
+    }
+    .receta-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        
+        background-image: url('<%= fondo %>');
+        background-position: center 65%;
+        background-repeat: no-repeat;
+        background-size: 50%; 
+
+        filter: grayscale(100%); 
+        opacity: 0.15;           
+        
+        z-index: -1;            
+        
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .receta-container .header {
+        border-bottom: 2px solid #474747;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .receta-container .header ul{
+        margin-top: 15px;
+    }
+
+    .centro-info h1 {
+        margin: 0;
+        color: #333;
+        font-size: 24px;
+    }
+
+    .centro-info p {
+        margin: 5px 0 0;
+        color: #666;
+    }
+
+    .etiqueta-copia {
+        font-weight: bold;
+        color: #999;
+        border: 1px solid #ddd;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
+
+    .paciente-info {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .paciente-info strong { color: #000; }
+
+    /* Cuerpo de la Receta */
+    .cuerpo-receta {
+        min-height: 300px;
+    }
+
+    .rp {
+        font-size: 16px;
+        font-weight: bold;
+        font-family: 'Roboto', sans-serif;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .tratamiento-texto {
+        font-size: 16px;
+        line-height: 1.6;
+        white-space: pre-wrap; 
+    }
+
+    /* Firmas */
+    .firmas-container {
+        position: absolute;
+        bottom: 130px; 
+        right: 50px;
+        text-align: center;
+        z-index: 10;  
+    }
+
+    .firma-img {
+        max-width: 150px;
+        max-height: 80px;
+        display: block;
+        margin: 0 auto 10px auto;
+    }
+
+    .sello-medico {
+        border-top: 1px solid #333;
+        padding-top: 5px;
+        font-size: 14px;
+    }
+
+    /* Esto fuerza el salto de página para duplicados */
+    .salto-pagina {
+        page-break-after: always;
+    }
+
+    .receta-container footer{
+        float: bottom;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    footer {
+        position: absolute; 
+        bottom: 40px;       
+        left: 40px;
+        right: 40px;       
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #ddd;
+        padding-top: 10px;
+    }
+
+    footer .footer-izquierda { text-align: left; font-size: 14px; color: #555; }
+    footer .footer-derecha { text-align: right; font-size: 14px; color: #555; }
+    
+    .footer-izquierda h5 { margin: 0 0 5px 0; font-size: 16px; color: #333; }
+    .footer-derecha p { margin: 2px 0; }
+</style>
+
+<body class="body_plantilla_receta">
+
+    <% copias.forEach((copia, index) => { %>
+        
+        <div class="receta-container <%= index < copias.length - 1 ? 'salto-pagina' : '' %>">
+            
+            <div class="header">
+                <div class="centro-info">
+                    <div class="datos-medico-receta">
+                        <h1>Dr. Mariano Mengide</h1>
+                        <p>Médico Oftalmólogo</p>
+                        <p><strong>M.P: 28979 - M-N:61156</strong></p>
+                    </div>
+                    
+                    <ul>
+                        <li>Médico Titular Asoc. Arg. Oftalmología.</li>
+                        <li>American Academy International Member.</li>
+                        <li>Miembro Asociación Panamericana de Oftalmología.</li>
+                        <li>Miembro S.A.C.R.Y.C. A.L.A.C.C.S.A.</li>
+                    </ul>
+                </div>
+                <div class="etiqueta-copia"><%= copia %></div>
+            </div>
+
+            <div class="paciente-info">
+                <p><%= receta.paciente_nombre %> (DNI: <%= receta.paciente_dni %>)</p>
+                <p><strong>Cobertura:</strong> <%= receta.obra_social %> <strong>Afiliado:</strong> <%= receta.nro_afiliado %></p>
+                <p><strong>Fecha:</strong> <%= new Date(receta.fecha).toLocaleDateString() %></p>
+            </div>
+
+            <div class="cuerpo-receta">
+                <span class="rp">Rp./</span>
+                <div class="tratamiento-texto"><%= receta.tratamiento %></div>
+
+                <% if (receta.diagnostico) { %>
+                    <br><p><strong>Diagnóstico:</strong> <%= receta.diagnostico %></p>
+                <% } %>
+                <% if (receta.indicaciones) { %>
+                    <p><strong>Indicaciones:</strong> <%= receta.indicaciones %></p>
+                <% } %>
+            </div>
+
+            <div class="firmas-container">
+    
+                <% if (firmaManuscrita) { %>
+                    <div style="display: inline-block; margin: 0 15px; text-align: center;">
+                        <img src="<%= firmaManuscrita %>" style="max-height: 80px; max-width: 150px; display: block; margin: 0 auto;">
+                        <span style="font-size: 10px;">Firma Médico</span>
+                    </div>
+                <% } %>
+
+                <% if (firmaDigital) { %>
+                    <div style="display: inline-block; margin: 0 15px; text-align: center;">
+                        <img src="<%= firmaDigital %>" style="max-height: 80px; max-width: 150px; display: block; margin: 0 auto;">
+                        <span style="font-size: 8px; color: #666;">Firmado Digitalmente<br>Ley 25.506</span>
+                    </div>
+                <% } %>
+
+            </div>
+
+            <footer>
+                <div class="footer-izquierda">
+                    <h5>CENTRO DE OJOS CHIVILCOY</h5>
+                    <p>Av. Sarmiento 171 <br>Chivilcoy / Bs. As.</p>
+                </div>
+
+                <div>
+                    <div class="footer-derecha">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <p>Tel. (02346) 42 8350</p>
+                        <p>42 9015 / 42 3222</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        
+    <% }) %>
+
+</body>
+</html>

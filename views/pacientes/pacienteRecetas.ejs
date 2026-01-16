@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../commons/head', { title: title }) %>
+    <link rel="stylesheet" href="/css/panel/panel_pacientes.css">
+
+</head>
+
+<div class="contenedor-flex">
+        
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-pacientes') %>
+        </div>
+
+        <div class="contenido-panel">
+            <div class="encabezado-panel">
+                <h1>Mis Recetas</h1>
+                <p style="color: #666;">Historial de prescripciones médicas digitales.</p>
+            </div>
+
+            <% if (recetas.length === 0) { %>
+                <div class="empty-state">
+                    <i class="fa-solid fa-file-prescription"></i>
+                    <h3>Aún no tenés recetas cargadas</h3>
+                    <p>Las recetas generadas por tus médicos aparecerán aquí automáticamente.</p>
+                </div>
+            <% } else { %>
+                
+                <div class="recetas-grid">
+                    <% recetas.forEach(receta => { %>
+                        <div class="receta-card">
+                            <div class="receta-header">
+                                <div>
+                                    <div class="receta-fecha">
+                                        <i class="fa-regular fa-calendar me-2"></i>
+                                        <%= new Date(receta.fecha).toLocaleDateString() %>
+                                    </div>
+                                    <div class="receta-medico">
+                                        <i class="fa-solid fa-user-doctor me-1"></i> 
+                                        Dr/a. <%= receta.nombre_medico %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="receta-body">
+                                <strong>Tratamiento:</strong><br>
+                                <%= receta.tratamiento %>
+                            </div>
+
+                            <a href="/receta/ver/<%= receta.id %>" target="_blank" class="btn-descargar">
+                                <i class="fa-solid fa-file-pdf me-2"></i> Ver / Descargar PDF
+                            </a>
+                        </div>
+                    <% }) %>
+                </div>
+
+            <% } %>
+
+        </div>
+    
+
+</div>
+</html>

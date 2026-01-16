@@ -393,3 +393,98 @@
     text-align: right;
     margin-top: 1em;
 }
+
+/* -------------------  MIS RECETAS  ----------------------------- */
+
+.recetas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.receta-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 5px solid var(--COLOR_SECUNDARIO_3); 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.receta-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.receta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.receta-fecha {
+    font-weight: 700;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.receta-medico {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.receta-body {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 0.95rem;
+    height: 80px;
+    overflow: hidden;
+    position: relative;
+}
+
+.receta-body::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(transparent, #f8f9fa);
+}
+
+.btn-descargar {
+    background-color: var(--COLOR_PRINCIPAL);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s;
+    display: block;
+}
+
+.btn-descargar:hover {
+    background-color: var(--COLOR_SECUNDARIO_3);
+    color: white;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px;
+    color: #888;
+}
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: #ddd;
+}

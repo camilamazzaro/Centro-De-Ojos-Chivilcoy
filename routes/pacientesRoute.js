@@ -3,6 +3,8 @@ const router = express.Router();
 const PacienteController = require('../controllers/pacienteController'); 
 const pacienteController = new PacienteController();
 
+const upload = require('../middleware/upload');
+
 const HistoriaClinicaController = require('../controllers/historiaClinicaController');
 const historiaClinicaController = new HistoriaClinicaController();
 
@@ -39,8 +41,22 @@ router.put('/paciente/:pacienteId/historia-clinica/:historiaId/editar', historia
 
 
 // RECETAS
-router.post('/pacientes/receta/crear', pacienteController.crearReceta);
-router.put('/pacientes/receta/editar', pacienteController.editarReceta);
+router.post('/pacientes/receta/crear', 
+    upload.fields([
+        { name: 'archivo_manuscrita', maxCount: 1 }, 
+        { name: 'archivo_digital', maxCount: 1 }
+    ]), 
+    pacienteController.crearReceta
+);
+router.put('/pacientes/receta/editar', 
+    upload.fields([
+        { name: 'archivo_manuscrita', maxCount: 1 }, 
+        { name: 'archivo_digital', maxCount: 1 }
+    ]), 
+    pacienteController.editarReceta
+);
 router.delete('/pacientes/receta/eliminar/:id', pacienteController.eliminarReceta);
+router.get('/receta/ver/:id', pacienteController.generarPdfReceta);
+
 
 module.exports = router; //exporto el módulo para que pueda ser incorporado en app.js

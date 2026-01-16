@@ -6,6 +6,8 @@ const TurnoModel = require('../models/turnoModel');
 const turnoModel = new TurnoModel();
 const UsuarioModel = require('../models/usuariosModel');
 const usuarioModel = new UsuarioModel();
+const RecetaModel = require('../models/recetaModel');
+const recetaModel = new RecetaModel();
 
 const bcrypt = require('bcrypt'); 
 const moment = require('moment');
@@ -206,6 +208,24 @@ class PanelPacientesController{
         } catch (error) {
             console.error('Error al cambiar password:', error);
             res.status(500).json({ success: false, mensaje: 'Error interno al procesar la solicitud.' });
+        }
+    }
+
+    async misRecetas(req, res) {
+        try {
+            const idPaciente = req.session.usuario.id_paciente;
+
+            const recetas = await recetaModel.listarPorPaciente(idPaciente);
+
+            res.render('pacientes/pacienteRecetas', {
+                title: 'Mis Recetas',
+                user: req.session.usuario, 
+                recetas: recetas
+            });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Error al cargar las recetas.');
         }
     }
 }

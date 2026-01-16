@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-01-2026 a las 20:31:30
+-- Tiempo de generación: 16-01-2026 a las 21:02:08
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -84,7 +84,8 @@ INSERT INTO `historias_clinicas` (`id`, `fecha`, `id_paciente`, `motivo`, `antec
 (4, '2025-06-24 20:26:32', 5, 'dfdf', 'dfdf', 'dfd', 'dfdf', 'dfdf', 'dfdf'),
 (5, '2025-06-24 20:26:40', 5, 'dfdfd', 'df', 'dfd', 'fd', 'fdf', 'dfdf'),
 (6, '2025-06-24 20:26:49', 5, 'dfd', 'ff', 'df', 'df', 'dfdff', 'df'),
-(7, '2025-06-24 20:29:01', 5, 'sfs', 'sfs', 'fsf', 'sfs', 'fsf', 'sfsf');
+(7, '2025-06-24 20:29:01', 5, 'sfs', 'sfs', 'fsf', 'sfs', 'fsf', 'sfsf'),
+(8, '2026-01-13 17:01:18', 7, 'Hola', 'cscscs', 'cscscs', 'cscs', 'cscsc', 'scscsc');
 
 -- --------------------------------------------------------
 
@@ -301,8 +302,19 @@ CREATE TABLE `recetas` (
   `firma_digital` tinyint(1) DEFAULT 0,
   `copias` enum('sin','duplicado','triplicado') DEFAULT 'sin',
   `formato_pdf` enum('A4','A5') DEFAULT 'A4',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `archivo_firma_manuscrita` varchar(255) DEFAULT NULL,
+  `archivo_firma_digital` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `recetas`
+--
+
+INSERT INTO `recetas` (`id`, `id_paciente`, `id_medico`, `fecha`, `tratamiento`, `diagnostico`, `indicaciones`, `comentarios`, `firma_manuscrita`, `firma_digital`, `copias`, `formato_pdf`, `created_at`, `archivo_firma_manuscrita`, `archivo_firma_digital`) VALUES
+(1, 7, 1, '2026-01-13', 'Fondo de ojo actualizado efjkhdsvbkdsbvksbvsbvosvbosnwnwnwnwnwnwnwnwnwnwnwnwnwnwnwnwcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc', 'hoal', 'dwdwd', 'dadad', 1, 0, 'duplicado', 'A4', '2026-01-13 19:39:37', NULL, NULL),
+(3, 7, 1, '2026-01-13', 'cscds', 'sss', 'sss', 'ssss', 1, 0, 'sin', 'A4', '2026-01-13 20:55:40', NULL, NULL),
+(4, 7, 5, '2026-01-15', 'Hola actu', NULL, NULL, NULL, 1, 0, 'sin', 'A4', '2026-01-15 00:59:10', '1768440015023.jpeg', NULL);
 
 -- --------------------------------------------------------
 
@@ -934,7 +946,7 @@ ALTER TABLE `estado_turno`
 -- AUTO_INCREMENT de la tabla `historias_clinicas`
 --
 ALTER TABLE `historias_clinicas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `horarios`
@@ -988,7 +1000,7 @@ ALTER TABLE `practicas`
 -- AUTO_INCREMENT de la tabla `recetas`
 --
 ALTER TABLE `recetas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `turnos`

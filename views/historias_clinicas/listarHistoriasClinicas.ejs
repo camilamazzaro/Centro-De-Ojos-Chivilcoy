@@ -204,169 +204,9 @@
 
         </div>
     </div>
-    
-    <div id="modalEditarReceta" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Editar Receta</h2>
-                <button class="cerrar-modal-editar cerrar-modal">&times;</button>
-            </div>
 
-            <form id="formEditarReceta">
-                <input type="hidden" id="edit_id_receta" name="id_receta">
+    <%- include('modalesRecetas') %>
 
-                <div class="form-group">
-                    <label for="edit_fecha">Fecha</label>
-                    <input type="date" id="edit_fecha" name="fecha" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_medico">Médico</label>
-                    <select id="edit_medico" name="medico" required>
-                        <% medicos.forEach(m => { %>
-                            <option value="<%= m.id %>"><%= m.nombre %></option>
-                        <% }) %>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_tratamiento">Tratamiento</label>
-                    <textarea id="edit_tratamiento" name="tratamiento" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_diagnostico">Diagnóstico</label>
-                    <textarea id="edit_diagnostico" name="diagnostico"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_indicaciones">Indicaciones</label>
-                    <textarea id="edit_indicaciones" name="indicaciones"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit_comentarios">Comentarios</label>
-                    <textarea id="edit_comentarios" name="comentarios"></textarea>
-                </div>
-
-                <div class="receta-firma">
-                    <label class="label-opciones">Opciones de firma:</label>
-                    <div class="opciones">
-                        <label><input type="checkbox" id="edit_firma_manuscrita" name="firma_manuscrita"> Firma manuscrita</label>
-                        <label><input type="checkbox" id="edit_firma_digital" name="firma_digital"> Firma digital</label>
-                    </div>
-                </div>
-
-                <div class="receta-copias">
-                    <label class="label-opciones">Copias:</label>
-                    <div class="opciones">
-                        <label><input type="radio" name="copias" value="sin" id="edit_copia_sin"> Sin copia</label>
-                        <label><input type="radio" name="copias" value="duplicado" id="edit_copia_duplicado"> Duplicado</label>
-                        <label><input type="radio" name="copias" value="triplicado" id="edit_copia_triplicado"> Triplicado</label>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Guardar Cambios</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="modalReceta" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Receta Digital</h2>
-                <button class="cerrar-modal-receta cerrar-modal">&times;</button>
-            </div>
-
-            <form id="formReceta">
-                <input type="hidden" id="idPacienteReceta" name="id_paciente"> <!-- Para saber a qué paciente pertenece la receta a crear -->
-                <!-- Selección de médico -->
-                <div class="form-group">
-                    <label for="medico">Médico</label>
-                    <select id="medico" name="medico" required>
-                        <option value="">Seleccione un médico</option>
-                        <% medicos.forEach(m => { %>
-                            <option value="<%= m.id %>"><%= m.nombre %></option>
-                        <% }) %>
-                    </select>
-                </div>
-
-                <!-- Detalles del médico -->
-                <div id="detallesMedico" class="sombra" style="display: none;"> 
-                    <p><strong>Especialidad</strong> <span id="especialidadMedico">Médico Oftalmólogo</span></p>
-                    <p><strong>Matrícula Provincial</strong> <span id="matriculaMedico"></span></p>
-                    <p><strong>Dirección</strong> <span id="direccionMedico">Av. Sarmiento 171, Chivilcoy, Bs. As.</span></p> <!--Preguntar-->
-                </div>
-
-                <!-- Datos del paciente -->
-
-
-                <div class="receta-datos-paciente sombra">
-                    <p><strong>Paciente</strong> <span id="nombrePaciente"></span></p>
-                    <p><strong>DNI</strong> <span id="dniPaciente"></span></p>
-                    <p><strong>Cobertura</strong> <span id="coberturaPaciente"></span></p>
-                    <p><strong>Nro. Afiliado</strong> <span id="afiliadoPaciente"></span></p>
-                </div>
-                
-
-                <!-- Datos de receta -->
-
-                <div class="form-group">
-                    <label for="fecha">Fecha</label>
-                    <input type="date" id="fecha" name="fecha" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="tratamiento">Tratamiento</label>
-                    <textarea id="tratamiento" name="tratamiento" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="diagnostico">Diagnóstico (opcional)</label>
-                    <textarea id="diagnostico" name="diagnostico"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="indicaciones">Indicaciones (opcional)</label>
-                    <textarea id="indicaciones" name="indicaciones"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="comentarios">Comentarios (opcional)</label>
-                    <textarea id="comentarios" name="comentarios"></textarea>
-                </div>
-
-                <!-- Opciones -->
-                <div class="receta-firma">
-                    <label class="label-opciones">Opciones de firma:</label>
-                    <div class="opciones">
-                        <label><input type="checkbox" name="firma_manuscrita"> Firma manuscrita</label>
-                        <label><input type="checkbox" name="firma_digital"> Adjuntar firma digital (opcional)</label>
-                    </div>
-                </div>
-
-                <div class="receta-copias">
-                    <label class="label-opciones">Copias:</label>
-                    <div class="opciones">
-                        <label><input type="radio" name="copias" value="sin" checked> Sin copia</label>
-                        <label><input type="radio" name="copias" value="duplicado"> Duplicado</label>
-                        <label><input type="radio" name="copias" value="triplicado"> Triplicado</label>
-                    </div>
-                </div>
-
-                <div class="receta-pdf">
-                    <label class="label-opciones">Tamaño de PDF:</label>
-                    <div class="opciones">
-                        <label><input type="radio" name="formato_pdf" value="A4" checked> A4</label>
-                        <label><input type="radio" name="formato_pdf" value="A5"> A5</label>
-                    </div>
-                </div>
-
-
-                <button type="submit" class="btn">Generar Receta</button>
-            </form>
-        </div>
-    </div>
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
@@ -405,80 +245,6 @@
             });
         }
     }); 
-
-    // Modal Editar receta -------------------------------------------------
-    const modalEditar = document.getElementById("modalEditarReceta");
-    const btnCerrarEditar = document.querySelector(".cerrar-modal-editar");
-    const formEditar = document.getElementById("formEditarReceta");
-
-    // ABRIR MODAL Y CARGAR DATOS
-    const botonesEditar = document.querySelectorAll(".btnEditarReceta");
-    
-    if(botonesEditar.length > 0) {
-        botonesEditar.forEach(btn => {
-            btn.addEventListener("click", () => {
-                // Llenar campos
-                document.getElementById("edit_id_receta").value = btn.dataset.id;
-                document.getElementById("edit_fecha").value = btn.dataset.fecha;
-                document.getElementById("edit_medico").value = btn.dataset.medico;
-                document.getElementById("edit_tratamiento").value = btn.dataset.tratamiento;
-                document.getElementById("edit_diagnostico").value = btn.dataset.diagnostico;
-                document.getElementById("edit_indicaciones").value = btn.dataset.indicaciones;
-                document.getElementById("edit_comentarios").value = btn.dataset.comentarios;
-
-                document.getElementById("edit_firma_manuscrita").checked = (btn.dataset.firmaManuscrita == '1');
-                document.getElementById("edit_firma_digital").checked = (btn.dataset.firmaDigital == '1');
-
-                // Radios (Copias)
-                const copiasVal = btn.dataset.copias; 
-                const radioCopia = document.getElementById(`edit_copia_${copiasVal}`);
-                if(radioCopia) radioCopia.checked = true;
-
-                // Mostrar Modal
-                modalEditar.style.display = "flex";
-            });
-        });
-    }
-
-    if(btnCerrarEditar) {
-        btnCerrarEditar.addEventListener("click", () => {
-            modalEditar.style.display = "none";
-        });
-    }
-
-    if(formEditar) {
-        formEditar.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(formEditar);
-            const data = Object.fromEntries(formData.entries());
-
-            // Ajuste manual para checkboxes
-            data.firma_manuscrita = document.getElementById("edit_firma_manuscrita").checked;
-            data.firma_digital = document.getElementById("edit_firma_digital").checked;
-
-            try {
-                const response = await fetch('/pacientes/receta/editar', {
-                    method: 'PUT', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    Swal.fire('Actualizado', 'La receta se modificó correctamente', 'success')
-                        .then(() => location.reload());
-                } else {
-                    Swal.fire('Error', result.mensaje, 'error');
-                }
-            } catch (error) {
-                console.error(error);
-                Swal.fire('Error', 'Fallo de conexión', 'error');
-            }
-        });
-    }
-
 
     // ELIMINAR RECETA
     const botonesEliminarReceta = document.querySelectorAll(".btnEliminarReceta");
@@ -527,8 +293,6 @@
         });
     }
 
-
-
 </script>
 
     <script>
@@ -564,83 +328,318 @@
     </script>
 
     <script>
-        // MODAL DE "NUEVA RECETA"
-        const btnNuevaReceta = document.querySelector("#recetas .btnAbrirModalReceta");
-        const modalNuevaReceta = document.getElementById("modalReceta");
+    // Esperamos a que todo el HTML esté cargado antes de ejecutar el JS
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM Cargado correctamente.");
+
+        // ==========================================
+        // LÓGICA DE FIRMAS (CHECKBOXES Y ARCHIVOS)
+        // ==========================================
         
-        if (btnNuevaReceta) {
+        // Variables globales para los archivos
+        let archivoManuscritaTemp = null;
+        let archivoDigitalTemp = null;
+        let tipoFirmaActual = ''; 
+
+        // Referencias del DOM
+        const modalArchivo = document.getElementById('modalSubirArchivo');
+        const inputArchivo = document.getElementById('inputArchivoFirma');
+        const btnConfirmarArchivo = document.getElementById('btnConfirmarArchivo');
+        const btnCerrarArchivo = document.querySelector('.cerrar-modal-archivo');
+        
+
+        // =======================================================
+        // "CREAR RECETA"
+        // =======================================================
+        const checkManuscritaCrear = document.querySelector('#modalReceta #checkFirmaManuscrita');
+        const checkDigitalCrear = document.querySelector('#modalReceta #checkFirmaDigital');
+        
+        const badgeManuscritaCrear = document.querySelector('#modalReceta #estadoFirmaManuscrita');
+        const badgeDigitalCrear = document.querySelector('#modalReceta #estadoFirmaDigital');
+
+        // Función reutilizable para abrir el modal de carga
+        function abrirModalCarga(e, tipo) {
+            console.log(`Click en checkbox ${tipo} del modal CREAR. Checked: ${e.target.checked}`);
+            
+            if (e.target.checked) {
+                // Configurar modal
+                tipoFirmaActual = tipo;
+                document.getElementById('tituloModalArchivo').innerText = 
+                    tipo === 'manuscrita' ? 'Adjuntar Firma Manuscrita' : 'Adjuntar Firma Digital';
+                
+                inputArchivo.value = ''; // Limpiar input anterior
+                
+                // Forzar visualización por encima de todo
+                modalArchivo.style.display = 'flex';
+                modalArchivo.style.zIndex = '9999'; // Z-index muy alto para asegurar que se vea
+            } else {
+                // Si desmarca, limpiamos lo que había
+                if (tipo === 'manuscrita') {
+                    archivoManuscritaTemp = null;
+                    badgeManuscritaCrear.textContent = 'Sin archivo';
+                    badgeManuscritaCrear.className = 'badge bg-secondary';
+                } else {
+                    archivoDigitalTemp = null;
+                    badgeDigitalCrear.textContent = 'Sin archivo';
+                    badgeDigitalCrear.className = 'badge bg-secondary';
+                }
+            }
+        }
+
+        // Asignar eventos a los checkboxes
+        if (checkManuscritaCrear) {
+            checkManuscritaCrear.addEventListener('change', (e) => abrirModalCarga(e, 'manuscrita'));
+        } else {
+            console.error("Error: No se encontró #checkFirmaManuscrita dentro de #modalReceta");
+        }
+
+        if (checkDigitalCrear) {
+            checkDigitalCrear.addEventListener('change', (e) => abrirModalCarga(e, 'digital'));
+        } else {
+            console.error("Error: No se encontró #checkFirmaDigital dentro de #modalReceta");
+        }
+
+        const checkManuscritaEdit = document.getElementById('edit_checkFirmaManuscrita');
+        const checkDigitalEdit = document.getElementById('edit_checkFirmaDigital');
+
+        if (checkManuscritaEdit) {
+            checkManuscritaEdit.addEventListener('change', (e) => abrirModalCarga(e, 'manuscrita'));
+        }
+        
+        if (checkDigitalEdit) {
+            checkDigitalEdit.addEventListener('change', (e) => abrirModalCarga(e, 'digital'));
+        }
+
+        // =======================================================
+        // LÓGICA DEL MODAL DE CARGA DE ARCHIVO (CONFIRMAR/CERRAR)
+        // =======================================================
+        
+        btnConfirmarArchivo.addEventListener('click', () => {
+            if (inputArchivo.files.length > 0) {
+                const archivo = inputArchivo.files[0];
+                
+                if (tipoFirmaActual === 'manuscrita') {
+                    archivoManuscritaTemp = archivo;
+                    // Actualizar badge visual en el modal de crear
+                    if(badgeManuscritaCrear) {
+                        badgeManuscritaCrear.textContent = 'Archivo cargado';
+                        badgeManuscritaCrear.className = 'badge bg-success';
+                    }
+                } else {
+                    archivoDigitalTemp = archivo;
+                    // Actualizar badge visual en el modal de crear
+                    if(badgeDigitalCrear) {
+                        badgeDigitalCrear.textContent = 'Archivo cargado';
+                        badgeDigitalCrear.className = 'badge bg-success';
+                    }
+                }
+                modalArchivo.style.display = 'none';
+            } else {
+                alert("Por favor seleccione un archivo.");
+            }
+        });
+
+        btnCerrarArchivo.addEventListener('click', () => {
+            modalArchivo.style.display = 'none';
+            // Si cierra sin confirmar, desmarcamos el checkbox correspondiente
+            if (tipoFirmaActual === 'manuscrita' && !archivoManuscritaTemp) {
+                if(checkManuscritaCrear) checkManuscritaCrear.checked = false;
+            }
+            if (tipoFirmaActual === 'digital' && !archivoDigitalTemp) {
+                if(checkDigitalCrear) checkDigitalCrear.checked = false;
+            }
+        });
+
+        // Cerrar modal archivo
+        if(btnCerrarArchivo) {
+            btnCerrarArchivo.addEventListener('click', () => {
+                modalArchivo.style.display = 'none';
+                // Si cierra sin confirmar, desmarcamos
+                if (tipoFirmaActual === 'manuscrita' && !archivoManuscritaTemp) checkManuscrita.checked = false;
+                if (tipoFirmaActual === 'digital' && !archivoDigitalTemp) checkDigital.checked = false;
+            });
+        }
+
+        // ==========================================
+        // 2. CREAR RECETA (SUBMIT)
+        // ==========================================
+
+        const formReceta = document.getElementById('formReceta');
+        const modalReceta = document.getElementById("modalReceta");
+
+        if (formReceta) {
+            formReceta.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(formReceta);
+
+                // Adjuntar los archivos manualmente al FormData
+                if (archivoManuscritaTemp) formData.append('archivo_manuscrita', archivoManuscritaTemp);
+                if (archivoDigitalTemp) formData.append('archivo_digital', archivoDigitalTemp);
+
+                // Asegurar valores de checkboxes
+                if(checkManuscritaCrear) formData.set('firma_manuscrita', checkManuscritaCrear.checked);
+                if(checkDigitalCrear) formData.set('firma_digital', checkDigitalCrear.checked);
+
+                try {
+                    const response = await fetch('/pacientes/receta/crear', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        Swal.fire('¡Receta Creada!', result.mensaje, 'success').then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', result.mensaje, 'error');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    Swal.fire('Error', 'Error de conexión', 'error');
+                }
+            });
+        }
+
+        // ==========================================
+        // 3. ABRIR MODAL NUEVA RECETA
+        // ==========================================
+        const btnNuevaReceta = document.querySelector("#recetas .btnAbrirModalReceta");
+        const cerrarModalNueva = document.querySelector(".cerrar-modal-receta");
+
+        if (btnNuevaReceta && modalReceta) {
             btnNuevaReceta.addEventListener("click", () => {
+                // Llenar datos
                 document.getElementById("nombrePaciente").textContent = btnNuevaReceta.dataset.nombre;
                 document.getElementById("dniPaciente").textContent = btnNuevaReceta.dataset.dni;
                 document.getElementById("coberturaPaciente").textContent = btnNuevaReceta.dataset.cobertura;
                 document.getElementById("afiliadoPaciente").textContent = btnNuevaReceta.dataset.nroAfiliado;
-
                 document.getElementById("idPacienteReceta").value = btnNuevaReceta.dataset.id;
-
-                modalNuevaReceta.style.display = "flex";
+                
+                modalReceta.style.display = "flex";
             });
         }
 
-        const cerrarModalNueva = document.querySelector(".cerrar-modal-receta");
-        if(cerrarModalNueva){
+        if(cerrarModalNueva && modalReceta) {
             cerrarModalNueva.addEventListener("click", () => {
-                modalNuevaReceta.style.display = "none";
+                modalReceta.style.display = "none";
             });
         }
 
-        // ENVIAR DATOS PARA CREAR RECETA
-        
-        const formReceta = document.getElementById('formReceta');
-    
-        formReceta.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // ==========================================
+        // EDITAR RECETA
+        // ==========================================
+        const modalEditar = document.getElementById("modalEditarReceta");
+        const btnCerrarEditar = document.querySelector(".cerrar-modal-editar");
+        const formEditar = document.getElementById("formEditarReceta");
+        const botonesEditar = document.querySelectorAll(".btnEditarReceta");
 
-            const formData = new FormData(formReceta);
-            const datos = Object.fromEntries(formData.entries());
-            
-            datos.firma_manuscrita = formReceta.querySelector('[name="firma_manuscrita"]').checked;
-            datos.firma_digital = formReceta.querySelector('[name="firma_digital"]').checked;
+        if(botonesEditar.length > 0 && modalEditar) {
+            botonesEditar.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    // Llenar datos
+                    document.getElementById("edit_id_receta").value = btn.dataset.id;
+                    document.getElementById("edit_fecha").value = btn.dataset.fecha;
+                    document.getElementById("edit_medico").value = btn.dataset.medico;
+                    document.getElementById("edit_tratamiento").value = btn.dataset.tratamiento;
+                    document.getElementById("edit_diagnostico").value = btn.dataset.diagnostico;
+                    document.getElementById("edit_indicaciones").value = btn.dataset.indicaciones;
+                    document.getElementById("edit_comentarios").value = btn.dataset.comentarios;
 
-            try {
-                const response = await fetch('/pacientes/receta/crear', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(datos)
+                    const chkManuscrita = document.getElementById("edit_checkFirmaManuscrita");
+                    const chkDigital = document.getElementById("edit_checkFirmaDigital");
+                    if(chkManuscrita) chkManuscrita.checked = (btn.dataset.firmaManuscrita == '1');
+                    if(chkDigital) chkDigital.checked = (btn.dataset.firmaDigital == '1');
+
+                    const copiasVal = btn.dataset.copias; 
+                    const radioCopia = document.getElementById(`edit_copia_${copiasVal}`);
+                    if(radioCopia) radioCopia.checked = true;
+
+                    modalEditar.style.display = "flex";
                 });
+            });
+        }
 
-                const result = await response.json();
+        if(btnCerrarEditar && modalEditar) {
+            btnCerrarEditar.addEventListener("click", () => {
+                modalEditar.style.display = "none";
+            });
+        }
 
-                if (result.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Receta Creada!',
-                        text: result.mensaje,
-                        confirmButtonText: 'Aceptar'
-                    }).then(() => {
-                        document.getElementById("modalReceta").style.display = "none";
-                        formReceta.reset(); 
-                        
-                        location.reload(); 
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: result.mensaje
-                    });
+        // Submit Editar
+        if(formEditar) {
+            formEditar.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(formEditar);
+                
+                if (archivoManuscritaTemp) {
+                    formData.append('archivo_manuscrita', archivoManuscritaTemp);
+                }
+                if (archivoDigitalTemp) {
+                    formData.append('archivo_digital', archivoDigitalTemp);
                 }
 
-            } catch (error) {
-                console.error(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo un problema de conexión.'
+                const chkM = document.getElementById("edit_checkFirmaManuscrita");
+                const chkD = document.getElementById("edit_checkFirmaDigital");
+                
+                formData.set('firma_manuscrita', chkM ? chkM.checked : false);
+                formData.set('firma_digital', chkD ? chkD.checked : false);
+
+                const idReceta = document.getElementById("edit_id_receta").value;
+                formData.set('id_receta', idReceta);
+
+                try {
+                    const response = await fetch('/pacientes/receta/editar', {
+                        method: 'PUT',
+
+                        body: formData 
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        Swal.fire('Actualizado', 'Receta modificada', 'success').then(() => {
+                            archivoManuscritaTemp = null;
+                            archivoDigitalTemp = null;
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', result.mensaje, 'error');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    Swal.fire('Error', 'Fallo de conexión', 'error');
+                }
+            });
+        }
+
+        const botonesEliminarReceta = document.querySelectorAll(".btnEliminarReceta");
+        if (botonesEliminarReceta.length > 0) {
+             botonesEliminarReceta.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const idReceta = btn.dataset.id;
+                    // ... Tu SweetAlert de eliminar ...
+                    Swal.fire({
+                        title: '¿Eliminar?',
+                        text: "No se puede deshacer",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Eliminar'
+                    }).then(async (res) => {
+                        if(res.isConfirmed) {
+                             const resp = await fetch(`/pacientes/receta/eliminar/${idReceta}`, {method: 'DELETE'});
+                             const d = await resp.json();
+                             if(d.success) location.reload();
+                        }
+                    })
                 });
+             });
             }
-        });
+    }); 
     </script>
+
 </body>
 </html>

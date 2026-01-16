@@ -24,4 +24,6 @@ router.post('/panelPacientes/perfil/actualizarDatos', panelPacientesController.a
 
 router.post('/panelPacientes/perfil/cambiarPassword', panelPacientesController.cambiarPassword);
 
+router.get('/panelPacientes/recetas', panelPacientesController.misRecetas);
+
 module.exports = router;

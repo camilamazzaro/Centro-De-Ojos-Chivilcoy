@@ -217,8 +217,17 @@
                 <div class="receta-firma">
                     <label class="label-opciones">Opciones de firma:</label>
                     <div class="opciones">
-                        <label><input type="checkbox" name="firma_manuscrita"> Firma manuscrita</label>
-                        <label><input type="checkbox" name="firma_digital"> Adjuntar firma digital (opcional)</label>
+                        <label>
+                            <input type="checkbox" name="firma_manuscrita" id="checkFirmaManuscrita"> 
+                            Firma manuscrita 
+                            <span id="estadoFirmaManuscrita" class="badge bg-secondary" style="font-size: 0.7em; margin-left: 5px; color: grey;">Sin archivo</span>
+                        </label>
+                        
+                        <label>
+                            <input type="checkbox" name="firma_digital" id="checkFirmaDigital"> 
+                            Adjuntar firma digital (opcional)
+                            <span id="estadoFirmaDigital" class="badge bg-secondary" style="font-size: 0.7em; margin-left: 5px; color: grey;">Sin archivo</span>
+                        </label>
                     </div>
                 </div>
 
@@ -245,6 +254,7 @@
         </div>
     </div>
 
+    <%- include('../historias_clinicas/modalesRecetas') %>
 
     <script>
 
@@ -318,6 +328,83 @@
             });
         });
 
+        // MODAL DE CARGA DE FIRMA - RECETA
+
+        const modalArchivo = document.getElementById('modalSubirArchivo');
+        const inputArchivo = document.getElementById('inputArchivoFirma');
+        const btnConfirmarArchivo = document.getElementById('btnConfirmarArchivo');
+        const btnCerrarArchivo = document.querySelector('.cerrar-modal-archivo');
+        const tituloModalArchivo = document.getElementById('tituloModalArchivo');
+
+        const checkManuscrita = document.getElementById('checkFirmaManuscrita');
+        const checkDigital = document.getElementById('checkFirmaDigital');
+        const badgeManuscrita = document.getElementById('estadoFirmaManuscrita');
+        const badgeDigital = document.getElementById('estadoFirmaDigital');
+
+        let archivoManuscritaTemp = null;
+        let archivoDigitalTemp = null;
+        let tipoFirmaActual = '';
+
+        function abrirModalCarga(tipo) {
+            tipoFirmaActual = tipo;
+            tituloModalArchivo.textContent = tipo === 'manuscrita' ? 'Adjuntar Firma Manuscrita' : 'Adjuntar Firma Digital';
+            inputArchivo.value = ''; // Limpiar input
+            modalArchivo.style.display = 'flex';
+        }
+
+        function actualizarBadges() {
+            if(badgeManuscrita) {
+                badgeManuscrita.textContent = archivoManuscritaTemp ? 'Archivo cargado' : 'Sin archivo';
+                badgeManuscrita.style.color = archivoManuscritaTemp ? 'green' : 'grey';
+            }
+            if(badgeDigital) {
+                badgeDigital.textContent = archivoDigitalTemp ? 'Archivo cargado' : 'Sin archivo';
+                badgeDigital.style.color = archivoDigitalTemp ? 'green' : 'grey';
+            }
+        }
+
+        // Listeners Checkboxes
+        checkManuscrita.addEventListener('change', (e) => {
+            if(e.target.checked) {
+                abrirModalCarga('manuscrita');
+            } else {
+                archivoManuscritaTemp = null;
+                actualizarBadges();
+            }
+        });
+
+        checkDigital.addEventListener('change', (e) => {
+            if(e.target.checked) {
+                abrirModalCarga('digital');
+            } else {
+                archivoDigitalTemp = null;
+                actualizarBadges();
+            }
+        });
+
+        // Confirmar Archivo del Modal Secundario
+        btnConfirmarArchivo.addEventListener('click', () => {
+            if (inputArchivo.files.length > 0) {
+                const archivo = inputArchivo.files[0];
+                if (tipoFirmaActual === 'manuscrita') {
+                    archivoManuscritaTemp = archivo;
+                } else {
+                    archivoDigitalTemp = archivo;
+                }
+                actualizarBadges();
+                modalArchivo.style.display = 'none';
+            } else {
+                alert("Por favor seleccione un archivo.");
+            }
+        });
+
+        btnCerrarArchivo.addEventListener('click', () => {
+            modalArchivo.style.display = 'none';
+            // Si cerró sin cargar, desmarcamos el checkbox
+            if(tipoFirmaActual === 'manuscrita' && !archivoManuscritaTemp) checkManuscrita.checked = false;
+            if(tipoFirmaActual === 'digital' && !archivoDigitalTemp) checkDigital.checked = false;
+        });
+
 
         // ENVIAR DATOS PARA CREAR RECETA
 
@@ -326,19 +413,23 @@
         formReceta.addEventListener('submit', async (e) => {
             e.preventDefault(); 
 
+            // Usamos FormData para poder enviar archivos
             const formData = new FormData(formReceta);
-            const datos = Object.fromEntries(formData.entries());
             
-            datos.firma_manuscrita = formReceta.querySelector('[name="firma_manuscrita"]').checked;
-            datos.firma_digital = formReceta.querySelector('[name="firma_digital"]').checked;
+            // Agregamos manualmente los archivos si existen
+            if(archivoManuscritaTemp) formData.append('archivo_manuscrita', archivoManuscritaTemp);
+            if(archivoDigitalTemp) formData.append('archivo_digital', archivoDigitalTemp);
+
+            // Aseguramos los valores booleanos de los checkboxes
+            formData.set('firma_manuscrita', checkManuscrita.checked);
+            formData.set('firma_digital', checkDigital.checked);
 
             try {
+                // NOTA: Al usar FormData, NO se debe poner el header 'Content-Type': 'application/json'
+                // El navegador detecta automáticamente 'multipart/form-data'
                 const response = await fetch('/pacientes/receta/crear', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(datos)
+                    body: formData 
                 });
 
                 const result = await response.json();
@@ -352,6 +443,10 @@
                     }).then(() => {
                         document.getElementById("modalReceta").style.display = "none";
                         formReceta.reset();
+                        // Resetear variables globales
+                        archivoManuscritaTemp = null;
+                        archivoDigitalTemp = null;
+                        actualizarBadges();
                     });
                 } else {
                     Swal.fire({
@@ -370,6 +465,7 @@
                 });
             }
         });
+
         </script>
 
 

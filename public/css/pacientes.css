@@ -718,3 +718,116 @@ tbody .paciente-acciones a, .paciente-acciones button{
     }
 }
 
+/* --- MODAL CARGAR ARCHIVO RECETA ---- */
+/* Modal de Subir Archivo - RECETA */
+
+#modalSubirArchivo {
+    background-color: rgba(0, 0, 0, 0.5); 
+    backdrop-filter: blur(4px); 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#modalSubirArchivo .modal-content {
+    background-color: #ffffff;
+    border-radius: 12px; 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); 
+    border: none;
+    overflow: hidden;
+    animation: slideDown 0.3s ease-out; 
+}
+
+#modalSubirArchivo .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#tituloModalArchivo {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+/* Botón cerrar (X) */
+.cerrar-modal-archivo {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.cerrar-modal-archivo:hover {
+    color: #333;
+}
+
+/* --- Cuerpo del Modal --- */
+#modalSubirArchivo .p-4 {
+    padding: 25px !important;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* --- Input de Archivo Estilizado --- */
+#inputArchivoFirma {
+    border: 2px dashed #cbd5e1; 
+    background-color: #f8fafc;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #64748b;
+}
+
+#inputArchivoFirma:hover, 
+#inputArchivoFirma:focus {
+    border-color: #3b82f6; 
+    background-color: #eff6ff;
+    outline: none;
+}
+
+#btnConfirmarArchivo {
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+    margin-top: 1em;
+}
+
+#btnConfirmarArchivo:hover {
+    transform: translateY(-1px); /* Efecto de elevación */
+}
+
+#btnConfirmarArchivo:active {
+    transform: translateY(0);
+}
+
+/* Animación de entrada */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

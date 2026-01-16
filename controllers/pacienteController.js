@@ -16,6 +16,12 @@ const recetaModel = new RecetaModel();
 
 const bcrypt = require('bcrypt');
 
+// Para manejar el pdf de recetas digitales
+const puppeteer = require('puppeteer');
+const ejs = require('ejs');
+const path = require('path');
+const fs = require('fs');
+
 class PacienteController {
 
     //funcion para listar los pacientes
@@ -221,6 +227,8 @@ class PacienteController {
         try {
             const datosReceta = req.body;
 
+            const archivos = req.files || {};
+
             if (!datosReceta.id_paciente || !datosReceta.medico || !datosReceta.tratamiento) {
                 return res.status(400).json({ 
                     success: false, 
@@ -228,7 +236,7 @@ class PacienteController {
                 });
             }
 
-            await recetaModel.crearReceta(datosReceta);
+            await recetaModel.crearReceta(datosReceta, archivos);
 
             res.json({ success: true, mensaje: "Receta creada exitosamente." });
 
@@ -242,12 +250,14 @@ class PacienteController {
         try {
             const datos = req.body;
             const idReceta = datos.id_receta; 
+            
+            const archivos = req.files || {};
 
             if (!idReceta) {
                 return res.status(400).json({ success: false, mensaje: "ID de receta no válido." });
             }
 
-            await recetaModel.editarReceta(idReceta, datos);
+            await recetaModel.editarReceta(idReceta, datos, archivos);
 
             res.json({ success: true, mensaje: "Receta actualizada correctamente." });
 
@@ -268,6 +278,136 @@ class PacienteController {
         } catch (error) {
             console.error("Error al eliminar receta:", error);
             res.status(500).json({ success: false, mensaje: "Error al eliminar la receta." });
+        }
+    }
+
+    async generarPdfReceta(req, res) {
+        try {
+            const idReceta = req.params.id;
+            
+            const receta = await recetaModel.obtenerPorIdCompleto(idReceta);
+
+            if (!receta) {
+                return res.status(404).send("Receta no encontrada");
+            }
+
+            // ---------------------------------------------------------
+            // FUNCIÓN AUXILIAR: Convertir archivo local a Base64
+            // ---------------------------------------------------------
+            const convertirABase64 = (nombreArchivo) => {
+                if (!nombreArchivo) return null;
+
+
+                const ruta = path.join(process.cwd(), 'public', 'uploads', nombreArchivo);
+                
+                if (fs.existsSync(ruta)) {
+                    const ext = path.extname(nombreArchivo).toLowerCase();
+                    let mime = 'image/png'; 
+                    if (ext === '.jpg' || ext === '.jpeg') mime = 'image/jpeg';
+                    if (ext === '.svg') mime = 'image/svg+xml';
+
+                    const bitmap = fs.readFileSync(ruta);
+                    return `data:${mime};base64,${bitmap.toString('base64')}`; 
+                } else {
+                    console.error("ERROR: No se encontró el archivo:", ruta);
+                    return null;
+                }
+            };
+
+            // ---------------------------------------------------------
+            // 2. PROCESAR FIRMAS (MANUSCRITA Y DIGITAL)
+            // ---------------------------------------------------------
+            let imgManuscrita = null;
+            let imgDigital = null;
+            
+
+            if (receta.firma_manuscrita && receta.archivo_firma_manuscrita) {
+                imgManuscrita = convertirABase64(receta.archivo_firma_manuscrita);
+            }
+            
+            if (receta.firma_digital && receta.archivo_firma_digital) {
+                imgDigital = convertirABase64(receta.archivo_firma_digital);
+            }
+
+
+            // ---------------------------------------------------------
+            // 3. PROCESAR IMAGEN DE FONDO (LOGO)
+            // ---------------------------------------------------------
+            let fondoBase64 = '';
+            const rutaFondo = path.join(__dirname, '../public/img/COCH - ISOLOGO.svg'); 
+            
+            if (fs.existsSync(rutaFondo)) {
+                const img = fs.readFileSync(rutaFondo);
+                // Asumiendo que el logo es SVG. Si es PNG, cambia a 'image/png'
+                fondoBase64 = `data:image/svg+xml;base64,${img.toString('base64')}`;
+            }
+
+            // ---------------------------------------------------------
+            // 4. DEFINIR COPIAS
+            // ---------------------------------------------------------
+            let etiquetasCopias = ['ORIGINAL']; 
+            
+            if (receta.copias === 'duplicado') {
+                etiquetasCopias.push('DUPLICADO');
+            } else if (receta.copias === 'triplicado') {
+                etiquetasCopias.push('DUPLICADO', 'TRIPLICADO');
+            }
+
+            // ---------------------------------------------------------
+            // 5. RENDERIZAR EJS -> HTML
+            // ---------------------------------------------------------
+            const rutaPlantilla = path.join(__dirname, '../views/recetas/plantillaReceta.ejs');
+            
+            const htmlContent = await ejs.renderFile(rutaPlantilla, {
+                receta: receta,
+                copias: etiquetasCopias,
+                firmaManuscrita: imgManuscrita,
+                firmaDigital: imgDigital,      
+                fondo: fondoBase64             
+            });
+
+            // ---------------------------------------------------------
+            // 6. GENERAR PDF CON PUPPETEER
+            // ---------------------------------------------------------
+            const browser = await puppeteer.launch({ 
+                headless: 'new',
+                args: ['--no-sandbox', '--disable-setuid-sandbox'] 
+            });
+            
+            const page = await browser.newPage();
+
+            await page.setContent(htmlContent, { 
+                waitUntil: 'networkidle0' 
+            });
+
+            const pdfBuffer = await page.pdf({
+                format: receta.formato_pdf || 'A4',
+                printBackground: true, // para que salga el fondo gris
+                margin: { 
+                    top: '10mm', 
+                    bottom: '10mm', 
+                    left: '10mm', 
+                    right: '10mm' 
+                }
+            });
+
+            await browser.close();
+
+            // ---------------------------------------------------------
+            // 7. ENVIAR RESPUESTA AL NAVEGADOR
+            // ---------------------------------------------------------
+            res.setHeader('Content-Type', 'application/pdf');
+            
+            const nombreArchivo = `Receta-${receta.paciente_nombre.replace(/\s+/g, '_')}-${receta.id}.pdf`;
+            
+            // 'inline' abre el visor del navegador. 'attachment' fuerza la descarga.
+            res.setHeader('Content-Disposition', `inline; filename="${nombreArchivo}"`);
+            
+            res.send(pdfBuffer);
+
+        } catch (error) {
+            console.error("Error grave generando PDF:", error);
+            res.status(500).send("Error interno al generar el PDF. Revise la consola del servidor.");
         }
     }
 }

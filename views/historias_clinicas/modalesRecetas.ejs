@@ -1,0 +1,190 @@
+<div id="modalReceta" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Receta Digital</h2>
+            <button class="cerrar-modal-receta cerrar-modal">&times;</button>
+        </div>
+
+        <form id="formReceta">
+            <input type="hidden" id="idPacienteReceta" name="id_paciente">
+            
+            <div class="form-group">
+                <label for="medico">Médico</label>
+                <select id="medico" name="medico" required>
+                    <option value="">Seleccione un médico</option>
+                    <% medicos.forEach(m => { %>
+                        <option value="<%= m.id %>"><%= m.nombre %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div id="detallesMedico" class="sombra" style="display: none;"> 
+                <p><strong>Especialidad</strong> <span id="especialidadMedico">Médico Oftalmólogo</span></p>
+                <p><strong>Matrícula Provincial</strong> <span id="matriculaMedico"></span></p>
+                <p><strong>Dirección</strong> <span id="direccionMedico">Av. Sarmiento 171, Chivilcoy, Bs. As.</span></p>
+            </div>
+
+            <div class="receta-datos-paciente sombra">
+                <p><strong>Paciente</strong> <span id="nombrePaciente"></span></p>
+                <p><strong>DNI</strong> <span id="dniPaciente"></span></p>
+                <p><strong>Cobertura</strong> <span id="coberturaPaciente"></span></p>
+                <p><strong>Nro. Afiliado</strong> <span id="afiliadoPaciente"></span></p>
+            </div>
+            
+            <div class="form-group">
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" name="fecha" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tratamiento">Tratamiento</label>
+                <textarea id="tratamiento" name="tratamiento" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="diagnostico">Diagnóstico (opcional)</label>
+                <textarea id="diagnostico" name="diagnostico"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="indicaciones">Indicaciones (opcional)</label>
+                <textarea id="indicaciones" name="indicaciones"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="comentarios">Comentarios (opcional)</label>
+                <textarea id="comentarios" name="comentarios"></textarea>
+            </div>
+
+            <div class="receta-firma">
+                <label class="label-opciones">Opciones de firma:</label>
+                <div class="opciones">
+                    <label>
+                        <input type="checkbox" name="firma_manuscrita" id="checkFirmaManuscrita"> 
+                        Firma manuscrita 
+                        <span id="estadoFirmaManuscrita" class="badge bg-secondary" style="font-size: 0.7em; margin-left: 5px;">Sin archivo</span>
+                    </label>
+                    
+                    <label>
+                        <input type="checkbox" name="firma_digital" id="checkFirmaDigital"> 
+                        Adjuntar firma digital (opcional)
+                        <span id="estadoFirmaDigital" class="badge bg-secondary" style="font-size: 0.7em; margin-left: 5px;">Sin archivo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="receta-copias">
+                <label class="label-opciones">Copias:</label>
+                <div class="opciones">
+                    <label><input type="radio" name="copias" value="sin" checked> Sin copia</label>
+                    <label><input type="radio" name="copias" value="duplicado"> Duplicado</label>
+                    <label><input type="radio" name="copias" value="triplicado"> Triplicado</label>
+                </div>
+            </div>
+
+            <div class="receta-pdf">
+                <label class="label-opciones">Tamaño de PDF:</label>
+                <div class="opciones">
+                    <label><input type="radio" name="formato_pdf" value="A4" checked> A4</label>
+                    <label><input type="radio" name="formato_pdf" value="A5"> A5</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Generar Receta</button>
+        </form>
+    </div>
+</div>
+
+<div id="modalEditarReceta" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Editar Receta</h2>
+            <button class="cerrar-modal-editar cerrar-modal">&times;</button>
+        </div>
+
+        <form id="formEditarReceta">
+            <input type="hidden" id="edit_id_receta" name="id_receta">
+
+            <div class="form-group">
+                <label for="edit_fecha">Fecha</label>
+                <input type="date" id="edit_fecha" name="fecha" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_medico">Médico</label>
+                <select id="edit_medico" name="medico" required>
+                    <% medicos.forEach(m => { %>
+                        <option value="<%= m.id %>"><%= m.nombre %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_tratamiento">Tratamiento</label>
+                <textarea id="edit_tratamiento" name="tratamiento" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_diagnostico">Diagnóstico</label>
+                <textarea id="edit_diagnostico" name="diagnostico"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_indicaciones">Indicaciones</label>
+                <textarea id="edit_indicaciones" name="indicaciones"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_comentarios">Comentarios</label>
+                <textarea id="edit_comentarios" name="comentarios"></textarea>
+            </div>
+
+            <div class="receta-firma">
+                <label class="label-opciones">Opciones de firma:</label>
+                <div class="opciones">
+                    <label>
+                        <input type="checkbox" name="firma_manuscrita" id="edit_checkFirmaManuscrita"> 
+                        Firma manuscrita 
+                    </label>
+                    <label>
+                        <input type="checkbox" name="firma_digital" id="edit_checkFirmaDigital"> 
+                        Firma digital
+                    </label>
+                </div>
+            </div>
+
+            <div class="receta-copias">
+                <label class="label-opciones">Copias:</label>
+                <div class="opciones">
+                    <label><input type="radio" name="copias" value="sin" id="edit_copia_sin"> Sin copia</label>
+                    <label><input type="radio" name="copias" value="duplicado" id="edit_copia_duplicado"> Duplicado</label>
+                    <label><input type="radio" name="copias" value="triplicado" id="edit_copia_triplicado"> Triplicado</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Guardar Cambios</button>
+        </form>
+    </div>
+</div>
+
+<div id="modalSubirArchivo" class="modal" style="display: none; z-index: 1100;">
+    <div class="modal-content" style="max-width: 450px; width: 90%;"> <div class="modal-header">
+            <h3 id="tituloModalArchivo">Adjuntar Firma</h3>
+            <button type="button" class="cerrar-modal-archivo cerrar-modal" aria-label="Cerrar">&times;</button>
+        </div>
+
+        <div class="p-4">
+            <div class="mb-4"> <label class="form-label" for="inputArchivoFirma">Seleccione el archivo</label>
+                <div style="font-size: 0.85em; color: #888; margin-bottom: 5px;">Formatos: .jpg, .png, .pdf</div>
+                <input type="file" id="inputArchivoFirma" class="form-control" accept="image/*,.pdf">
+            </div>
+            
+            <div class="text-end" style="text-align: right;">
+                <button type="button" id="btnConfirmarArchivo" class="btn">
+                    <i class="fa-solid fa-check"></i> Confirmar Carga
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
