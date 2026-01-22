@@ -6,18 +6,99 @@
     --COLOR_SECUNDARIO_3: #38b5a9;
 }
 
+/* --- HERO SECTION PROFESIONALES --- */
+.hero-profesionales {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7em 10% 3em 10%; 
+    background-color: white;
+    gap: 50px;
+    margin-top: 20px;
+}
+
+.hero-texto {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.hero-texto h1 {
+    color: var(--COLOR_PRINCIPAL);
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.hero-texto .separador {
+    width: 80px;
+    height: 4px;
+    background-color: var(--COLOR_SECUNDARIO_3);
+    margin-bottom: 25px;
+    border-radius: 2px;
+}
+
+.hero-texto p {
+    color: #555;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 500px;
+}
+
+/* Lado Derecho: Composición de Imágenes */
+.hero-imagenes {
+    flex: 1;
+    position: relative;
+    height: 400px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-imagenes img {
+    position: absolute;
+    object-fit: cover;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+.foto-principal {
+    width: 320px;
+    height: 380px;
+    top: 0;
+    right: 20px;
+    z-index: 1;
+    border-radius: 50px 0 50px 0;
+    filter: brightness(0.95);
+}
+
+/* Foto de adelante (Más chica y superpuesta) */
+.foto-secundaria {
+    width: 240px;
+    height: 240px;
+    bottom: 20px;
+    left: 40px; /* Se superpone a la izquierda */
+    z-index: 2;
+    border-radius: 0 40px 0 40px; /* Borde asimétrico invertido */
+    border: 5px solid white;
+}
+
+.hero-profesionales:hover .foto-secundaria {
+    transform: scale(1.05);
+}
+
+
 .container-profesionales {
     background: var(--COLOR_PRINCIPAL);
     display: flex;
     flex-direction: row;
     align-items: flex-start; 
     justify-content: space-between;
-    padding: 20px 20px 0 20px; 
+    padding: 10px 20px 0 20px; 
     width: 100%;
     height: 630px; 
     box-sizing: border-box;
     margin-bottom: 50px; 
-    margin-top: 30px;
 }
 
 .textos-profesionales {
@@ -118,6 +199,15 @@
     display: block;
 }
 
+
+.container-medicos{
+    display: flex;
+    margin: 4em auto;
+    justify-content: center;
+    width: 80%;
+    gap: 100px;
+}
+
 .container-botones {
     display: flex;
     justify-content: center;
@@ -168,16 +258,15 @@
 /*PROFESIONALES - INFO MEDICO*/
 
 
-/*estilos del "alert"*/
 .modal-horarios {
-    display: none; /*en principio no se muestra*/
+    display: none; 
     position: fixed;
     z-index: 1001; 
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /*para que se vea el fondo oscuro*/
+    background-color: rgba(0, 0, 0, 0.5);
     text-align: center;
 }
 
@@ -185,12 +274,11 @@
     background: rgba(255, 255, 255, 0.8);
     margin: 10% auto;
     padding: 30px 40px;
-    border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(20px);
-    width: 400px;
+    width: 500px;
     border-radius: 15px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    color: var(--AZUL_OSCURO);
+    color: var(--COLOR_OSCURO);
     position: relative;
 }
 
@@ -202,15 +290,22 @@
 }
 
 .modal-horarios-contenido ul{
-    list-style: none;
+    list-style: none; 
     padding: 0;
+    margin-top: 15px;
+    text-align: left;
 }
 
 .modal-horarios-contenido ul li{
-    margin-bottom: .5em;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
 }
 
-.close { /*esta es la cruz para cerrar el formulario de recuperar contra*/
+.close { 
     position: absolute;
     top: 10px;
     right: 15px;
@@ -287,13 +382,14 @@
     width: 400px; 
     height: auto; 
     margin-right: 10px; 
-    border: 2px solid var(--COLOR_PRINCIPAL);
+    border: 3px solid var(--COLOR_SECUNDARIO_3);
     border-radius: 25px 0 25px 0 ;
+    background-color: var(--COLOR_PRINCIPAL);
 }
 
 .medico-detalles {
     width: max-content;
-    color: var(--AZUL_OSCURO);
+    color: #333;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -302,7 +398,7 @@
 }
 
 .medico-detalles h2 {
-    color: var(--AZUL_OSCURO); 
+    color: var(--COLOR_PRINCIPAL); 
     font-size: 40px;
     margin: 0; 
 }
@@ -356,4 +452,41 @@
 
 .medico-detalles .practicas-medico{
     height: max-content;
+}
+
+@media (max-width: 900px) {
+    .hero-profesionales {
+        flex-direction: column;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .hero-texto {
+        padding-right: 0;
+        margin-bottom: 40px;
+    }
+
+    .hero-texto .separador {
+        margin: 0 auto 20px auto;
+    }
+
+    .hero-imagenes {
+        width: 100%;
+        height: 350px;
+    }
+
+    .foto-principal {
+        width: 200px;
+        height: 280px;
+        right: 50%;
+        transform: translateX(50%); 
+    }
+
+    .foto-secundaria {
+        width: 160px;
+        height: 160px;
+        left: 50%;
+        transform: translateX(-80%); 
+        bottom: 0;
+    }
 }

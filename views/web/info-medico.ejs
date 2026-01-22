@@ -58,54 +58,64 @@
         </div>
     </div>
 
-    <!-- Modal para mostrar horarios -->
     <div id="modal-horarios" class="modal-horarios">
         <div class="modal-horarios-contenido">
-            <span class="close" onclick="cerrarModal()">&times;</span> <!--Para poder apretar una cruz y cerrar el formulario-->
+            <span class="close" onclick="cerrarModal()">&times;</span>
             <h5>Horarios Disponibles</h5>
-            <div>
-                <ul>
+            <div class="lista-horarios-container">
+                <ul class="lista-horarios">
                     <% if (horarios && horarios.length > 0) { 
-                        const diasSemana = {
-                            "Lunes": "Lunes",
-                            "Martes": "Martes",
-                            "Miércoles": "Miércoles",
-                            "Jueves": "Jueves",
-                            "Viernes": "Viernes",
-                            "Sábado": "Sábado",
-                            "Domingo": "Domingo"
+                        
+                        /* 1. MAPA DE TRADUCCIÓN (DB -> VISTA) */
+                        /* Las claves deben coincidir EXACTO con lo que viene de la BD (minúsculas, sin tilde) */
+                        const nombresDias = {
+                            "lunes": "Lunes",
+                            "martes": "Martes",
+                            "miercoles": "Miércoles",
+                            "jueves": "Jueves",
+                            "viernes": "Viernes",
+                            "sabado": "Sábado",
+                            "domingo": "Domingo"
                         };
+
+                        /* 2. ORDEN DE LOS DÍAS */
+                        /* Para que siempre aparezca Lunes primero, luego Martes, etc. */
+                        const ordenDias = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
+
+                        /* 3. AGRUPAR HORARIOS */
                         const horariosPorDia = {};
 
-                        horarios.forEach(horario => {
-                            const dia = diasSemana[horario.dia_semana];
-                            const horaInicio = new Date('1970-01-01T' + horario.hora_inicio);
-                            const horaFin = new Date('1970-01-01T' + horario.hora_fin);
+                        horarios.forEach(h => {
+                            const diaDb = h.dia_semana.toLowerCase(); // Aseguramos minúsculas
+                            
+                            // Formato de hora simple: "16:30:00" -> "16:30"
+                            // Cortamos los primeros 5 caracteres del string
+                            const inicio = h.hora_inicio.substring(0, 5);
+                            const fin = h.hora_fin.substring(0, 5);
 
-                            const formatoHora = hora => hora.getMinutes() === 0 
-                                ? hora.getHours() 
-                                : hora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
-
-                            const horaInicioFormateada = formatoHora(horaInicio);
-                            const horaFinFormateada = formatoHora(horaFin);
-
-                            if (!horariosPorDia[dia]) {
-                                horariosPorDia[dia] = [];
+                            if (!horariosPorDia[diaDb]) {
+                                horariosPorDia[diaDb] = [];
                             }
-                            horariosPorDia[dia].push(`de ${horaInicioFormateada} a ${horaFinFormateada}hs`);
+                            horariosPorDia[diaDb].push(`de ${inicio} a ${fin}hs`);
                         });
+                    %>
 
-                        Object.keys(horariosPorDia).forEach(dia => { %>
-                            <li><strong class="dia-semana"><%= dia %>:</strong> <%= horariosPorDia[dia].join(' / ') %></li>
-                        <% });
-                    } else { %>
-                        <p>No tiene horarios asignados</p>
+                        <% ordenDias.forEach(diaKey => { 
+                            if (horariosPorDia[diaKey]) { %>
+                                <li>
+                                    <strong class="dia-semana"><%= nombresDias[diaKey] %>:</strong> 
+                                    <span><%= horariosPorDia[diaKey].join(' / ') %></span>
+                                </li>
+                            <% } 
+                        }); %>
+
+                    <% } else { %>
+                        <li class="sin-horarios">No tiene horarios asignados actualmente.</li>
                     <% } %>
                 </ul>
             </div>
         </div>
     </div>
-
 
     <!--FOOTER-->
     <%- include('../commons/footer-web') %>

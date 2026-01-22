@@ -23,6 +23,9 @@ router.get('/profesionales', webController.mostrarProfesionales);
 //ruta a ver más desde profesionales 
 router.get('/profesionales/infoMedico/:medicoId', webController.mostrarInfoMedico);
 
+//ruta a equipos
+router.get('/equipos', webController.mostrarEquipos);
+
 //ruta a coberturas
 router.get('/coberturas', webController.mostrarCoberturas);
 

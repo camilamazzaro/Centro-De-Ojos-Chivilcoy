@@ -1,214 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>  
+<html lang="es">
+<head>
     <%- include('../commons/head-web') %>
-    <title>Nosotros</title>
+    <title>Nosotros | Centro de Ojos Chivilcoy</title>
     <link rel="stylesheet" href="/public/css/web/nosotros.css">
 </head>
-
 <body>
-    
-    <!-- Menú de navegación -->
+
     <%- include('../commons/menu-web') %>
+        <section class="nosotros-hero">
+            <div class="hero-content">
+                <h1>Dedicados a cuidar tu visión</h1>
+                <p>Combinamos excelencia médica y tecnología de vanguardia en Chivilcoy.</p>
+            </div>
+        </section>
 
-    <!-- Sección de información sobre el Centro Médico -->
-    <section class="nosotros">
-
-        <div class="container-imagen">
-            
-        </div>
-        
-        <!-- Esquema de proceso -->
-        <div class="container-proceso">
-            <div class="item-proceso">
-                <i class="fa-regular fa-eye"></i>
-                <div class="info-proceso info-1">
-                    <h3>Visión</h3>
-                    <p>Nuestra visión es ser el centro de referencia en atención médica integral
-                        en Chivilcoy, reconocidos por nuestra calidad, innovación y compromiso.
-                    </p>
-                </div>
-            </div>
-    
-            <div class="item-proceso">
-                <i class="fa-regular fa-hand-holding-heart"></i>
-                <div class="info-proceso info-2">
-                    <h3>Confianza</h3>
-                    <p>Construimos relaciones basadas en la transparencia y el respeto,
-                        garantizando que cada paciente se sienta seguro y cuidado en todo momento.
-                    </p>
-                </div>
-            </div>
-    
-            <div class="item-proceso">
-                <i class="fa-regular fa-handshake-simple"></i>
-                <div class="info-proceso info-3">
-                    <h3>Objetivo</h3>
-                    <p>Nuestro objetivo es mejorar la calidad de vida de nuestra comunidad a través
-                        de servicios médicos innovadores y accesibles, siempre enfocados
-                        en el bienestar integral.
-                    </p>
-                </div>
-            </div>
-    
-            <div class="item-proceso">
-                <i class="fa-regular fa-bullseye-arrow"></i>
-                <div class="info-proceso info-4">
-                    <h3>Misión</h3>
-                    <p>Nuestra misión es ofrecer atención médica accesible y de excelencia, promoviendo
-                        la salud y el bienestar de nuestra comunidad. Nos esforzamos por ser un aliado
-                        confiable en la salud de nuestros pacientes.
-                    </p>
-                </div>
-            </div>
-    
-            <div class="imagen-centro">
-                <img src="/public/img/logo-oscuro-coch.png" alt="Imagen Central">
-            </div>
-        </div>
-
-        
-        <div class="container-proceso-mobile"> 
-            <div class="item-proceso-mobile">
-                <i class="fa-regular fa-eye"></i>
-                <h3>Visión</h3>
-                <p>Nuestra visión es ser el centro de referencia en atención médica integral
-                    en Chivilcoy, reconocidos por nuestra calidad, innovación y compromiso.
-                </p>
-            </div>
-            
-            <div class="item-proceso-mobile">
-                <i class="fa-regular fa-hand-holding-heart"></i>
-                <h3>Confianza</h3>
-                <p>Construimos relaciones basadas en la transparencia y el respeto,
-                    garantizando que cada paciente se sienta seguro y cuidado en todo momento.
-                </p>
-            </div>
-        
-            <div class="item-proceso-mobile">
-                <i class="fa-regular fa-handshake-simple"></i>
-                <h3>Objetivo</h3>
-                <p>Nuestro objetivo es mejorar la calidad de vida de nuestra comunidad a través
-                    de servicios médicos innovadores y accesibles, siempre enfocados
-                    en el bienestar integral.
-                </p>
-            </div>
-        
-            <div class="item-proceso-mobile">
-                <i class="fa-regular fa-bullseye-arrow"></i>
-                <h3>Misión</h3>
-                <p>Nuestra misión es ofrecer atención médica accesible y de excelencia, promoviendo
-                    la salud y el bienestar de nuestra comunidad. Nos esforzamos por ser un aliado
-                    confiable en la salud de nuestros pacientes.
-                </p>
-            </div>
-        </div>
-
-        <div class="container-info-centro">
-            <h1>Centro Médico Villarino</h1>
-
-            <div class="container-img-info">
-                <div class="container-infoCentro">
-                    <img src="/public/img/noticias_1.jpg" alt="img-consultorio">
-                    <div class="flecha-circular">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </div>
-                </div>
-                <div class="texto-info">
-                    <div class="item-infoCentro">
-                        <i class="fa-solid fa-check"></i>
-                        <p> Somos un Centro Médico que se encuentra en la 
-                            ciudad de Chivilcoy, desde el año 2009, ofreciendo un 
-                            servicio de salud integral único</p>
-                    </div>
-                    <div class="item-infoCentro">
-                        <i class="fa-solid fa-check"></i>
-                        <p> Nuestro espacio está conformado por 7 médicos de 
-                            variadas especialidades: clínica médica, oftalmología, 
-                            ginecología, nutrición, neurocirugía, cirugía genera y 
-                            cardiología.</p>
-                    </div>
-                </div>
-
-            </div>
-
-            <a href="/profesionales" class="btn btn-primary">Equipo Médico</a>
-
-        </div>
-            
-
-    
-        <!-- Container fotos -->
-        <div class="container-img">
-            <div class="img1">
-                <img src="/public/img/noticias_1.jpg" alt="Imagen 1">
-            </div>
-            <div class="img2">
-                <img src="/public/img/noticias_1.jpg" alt="Imagen 2">
-            </div>
-            <div class="img3">
-                <img src="/public/img/noticias_1.jpg" alt="Imagen 3">
-            </div>
-            <div class="img4">
-                <img src="/public/img/noticias_1.jpg" alt="Imagen 4">
-            </div>
-        </div>
-    
-        <div class="container-mapa">
-            <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d818.0726713749121!2d-60.02252270000001!3d-34.89915399999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bea534817abb7f%3A0x6d1a9c6534364092!2sConsultorio%20Medico%20Villarino!5e0!3m2!1ses!2sar!4v1725455908050!5m2!1ses!2sar" 
-                ></iframe> <!-- Para traer páginas externas usamos iframe -->
-            <div class="container-info">
-                <h2>Información del Centro</h2>
-                <div class="item-info">
-                    <i class="fa-regular fa-location-dot"></i>
-                    <p><strong>Dirección</strong> <br>Lamadrid 29, Chivilcoy, Bs As </p>
-                </div>
-                <div class="item-info">
-                    <i class="fa-regular fa-phone"></i>
-                    <p><strong>Teléfono</strong><br>2346 426515</p>
-                </div>
-                <div class="item-info">
-                    <i class="fa-regular fa-envelope"></i>
-                    <p><strong>Email</strong><br>centromedicovillarino@gmail.com</p>
-                </div>
+        <section class="section-historia container-gral">
+            <div class="col-texto">
+                <span class="badge-section">Nuestra Esencia</span>
+                <h2>Nacimos con un objetivo claro: cuidar tu vista.</h2>
+                <p>El <strong>Centro de Ojos Chivilcoy</strong> comenzó con la convicción de que la salud visual de alta complejidad debía estar al alcance de todos. Entendemos que ver bien no es solo una cuestión médica, es la llave para conectarse con el mundo.</p>
+                <p>Desde nuestros inicios, hemos evolucionado incorporando láseres de última generación y técnicas avanzadas, pero manteniendo intacto nuestro enfoque: <strong>tratar a la persona detrás de los ojos</strong>.</p>
                 
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="numero">+25</span>
+                        <span class="label">Años de Trayectoria</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="numero">+15k</span>
+                        <span class="label">Pacientes Atendidos</span>
+                    </div>
+                </div>
             </div>
-        </div>
-
-
-
-        <div class="container-frase">
-            <i class="fa-solid fa-quote-left"></i>
-            <div class="frase">
-                <p class="frase-principal">Somos Profesionales al Servicio de tu Salud</p>
-                <p class="subtitulo">Centro Médico Villarino</p>
+            <div class="col-imagen">
+                <img src="/public/img/nosotros_img.jpg" alt="Consultorio moderno">
             </div>
-            <i class="fa-solid fa-quote-right"></i>
-        </div>
-    
-    </section>
-    
-    <!--FOOTER-->
-    <%- include('../commons/footer-web') %>
+        </section>
 
-    <a href="https://wa.me/2324652338" target="_blank" class="boton-flotante-wsp" id="botonFlotante" style="display: none;">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+        <section class="section-valores">
+            <div class="container-gral">
+                <h2 class="text-center">Nuestros Pilares</h2>
+                <div class="grid-valores">
+                    <div class="card-valor">
+                        <div class="icon-valor"><i class="fa-solid fa-hand-holding-medical"></i></div>
+                        <h3>Compromiso</h3>
+                        <p>Acompañamos al paciente en cada etapa, desde la prevención hasta la recuperación.</p>
+                    </div>
+                    <div class="card-valor">
+                        <div class="icon-valor"><i class="fa-solid fa-microscope"></i></div>
+                        <h3>Innovación</h3>
+                        <p>Contamos con equipos de última generación y de alta precisión.</p>
+                    </div>
+                    <div class="card-valor">
+                        <div class="icon-valor"><i class="fa-solid fa-users"></i></div>
+                        <h3>Calidad Humana</h3>
+                        <p>Priorizamos la empatía y la claridad en la comunicación médico-paciente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <script>
-        window.addEventListener("scroll", function() {
-            var botonFlotante = document.getElementById("botonFlotante");
-    
-            // Mostrar el botón cuando el usuario haya hecho scroll más de 200px
-            if (window.scrollY > 200) {
-                botonFlotante.style.display = "block"; // Muestra el botón
-            } else {
-                botonFlotante.style.display = "none"; // Oculta el botón
-            }
-        });
-    </script>
+        <section class="section-equipo container-gral">
+            <div class="header-equipo">
+                <h2>Cuerpo Médico</h2>
+                <p>Nuestros oftalmólogos 100% especializados en el cuidado de tu salud visual.</p>
+            </div>
+
+            <div class="grid-equipo">
+
+                <div class="card-medico">
+                    <div class="foto-medico">
+                        <img src="/public/img/mazzaro_foto.jpeg" alt="Dra. Ejemplo">
+                    </div>
+                    <h3>Dra. Esteban Mazzaro</h3>
+                    <!-- <span class="especialidad">Oftalmopediatría</span> -->
+                    <p class="matricula">M.P. 55210</p>
+                </div>
+
+
+                <div class="card-medico">
+                    <div class="foto-medico">
+                        <img src="/public/img/mariano_mengide.jpeg">
+                    </div>
+                    <h3>Dr. Mariano Mengide</h3>
+                    <!-- <span class="especialidad">Director Médico - Cirujano</span> -->
+                    <p class="matricula">M.P. 28979</p>
+                </div>
+
+                <div class="card-medico">
+                    <div class="foto-medico">
+                        <img src="/public/img/fescina_foto.jpeg" alt="Dr. Ejemplo">
+                    </div>
+                    <h3>Dr. Raúl Fescina</h3>
+                    <!-- <span class="especialidad">Retina y Vítreo</span> -->
+                    <p class="matricula">M.P. 33102</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-cta-final">
+            <h2>Cuidá tu salud visual con los mejores</h2>
+            <a href="/pedirTurno" class="btn-reservar btn">Solicitar Turno Online</a>
+        </section>
+
+    </main>
+
+    <%- include('../commons/footer-web') %> 
 
 </body>
 </html>

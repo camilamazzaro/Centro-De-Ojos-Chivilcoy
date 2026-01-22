@@ -1,64 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <%- include('../commons/head-web') %>
-    <title>Contacto</title>
+    <title>Contacto | Centro de Ojos Chivilcoy</title>
     <link rel="stylesheet" href="/public/css/web/contacto.css">
 </head>
-
-
 <body>
-    <!-- Menú de navegación -->
+
     <%- include('../commons/menu-web') %>
-        
-        <div class="carrusel-contacto">
+
+    <main>
+        <section class="contacto-hero">
+            <h1>Estamos para ayudarte</h1>
+            <p>Comunicate con nosotros por cualquiera de nuestros canales de atención.</p>
+        </section>
+
+        <section class="info-cards container-gral">
             
-        </div>
-    
-        <form action="/pedirTurno" method="GET" class="form-turno">
-            <div class="container-reserva sombra">
-                <h2>Ahora podes reservar tu turno online</h2>
-                <button type="submit" class="boton-turno">Pedir Turno</button>
-            </div>
-    
-            <div class="container-turno sombra">
-                <h3>Encontranos en</h3>
-                <div class="iconos-redes-contacto">
-                    <div class="iconos-container">
-                        <a href="https://wa.me/2324652338" target="blank" class="icono-red-contacto whatsapp">
-                            <i class="fa-brands fa-whatsapp"></i>
-                        </a>
-                        <a href="https://www.instagram.com/centromedicovillarino" target="blank" class="icono-red-contacto instagram">
-                            <i class="fa-brands fa-instagram"></i>
-                        </a>
-                        <a href="https://www.facebook.com/profile.php?id=61557067552824" target="blank" class="icono-red-contacto facebook">
-                            <i class="fa-brands fa-facebook-f"></i>
-                        </a>
-                    </div>
+            <div class="contact-card">
+                <div class="icon-circle">
+                    <i class="fa-solid fa-phone"></i>
                 </div>
+                <h3>Llámanos</h3>
+                <p>Atención administrativa y turnos.</p>
+                <a href="tel:02346428350" class="data-link">(02346) 42-8350</a>
+                <a href="tel:02346429015" class="data-link">(02346) 42-9015</a>
             </div>
-        </form>
-    
-    
-    <!--FOOTER-->
+
+            <div class="contact-card destacado">
+                <div class="icon-circle">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <h3>Escribinos</h3>
+                <p>Consultas rápidas y envío de órdenes.</p>
+                <a href="https://wa.link/scss7o" target="_blank" class="btn-whatsapp">
+                    Iniciar Chat
+                </a>
+            </div>
+
+            <div class="contact-card">
+                <div class="icon-circle">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <h3>Visitanos</h3>
+                <p>Pleno centro de la ciudad.</p>
+                <span class="data-text">Av. Sarmiento 171</span>
+                <span class="data-text">Chivilcoy, Buenos Aires</span>
+            </div>
+
+            <div class="contact-card">
+                <div class="icon-circle">
+                    <i class="fa-regular fa-clock"></i>
+                </div>
+                <h3>Horarios</h3>
+                <p>Atención al público.</p>
+                <span class="data-text">Lun a Vie: 08:00 - 20:00 hs</span>
+                <span class="data-text">Sábados: 09:00 - 12:00 hs</span>
+            </div>
+        </section>
+
+        <section class="mapa-section">
+            <div class="mapa-iframe">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3279.796345686016!2d-60.01362792346859!3d-34.90795497258045!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x959187a4c70d4d1d%3A0x1d3600f12479e00b!2sAv.%20Sarmiento%20171%2C%20B6620%20Chivilcoy%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1700000000000!5m2!1ses!2sar" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </section>
+
+        <section class="faq-section container-gral">
+            <div class="faq-header">
+                <h2>Preguntas Frecuentes</h2>
+                <p>Resolvemos tus dudas antes de que vengas a la consulta.</p>
+            </div>
+
+            <div class="accordion">
+                <details class="faq-item">
+                    <summary>¿Necesito turno previo para atenderme?</summary>
+                    <div class="faq-content">
+                        <p>Sí, trabajamos con turnos programados para brindar una mejor atención y evitar esperas. Sin embargo, ante una <strong>urgencia oftalmológica</strong>, por favor acercate directamente o llamanos por teléfono.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>¿Cuánto tiempo demora un fondo de ojos?</summary>
+                    <div class="faq-content">
+                        <p>Si tu médico te solicita un fondo de ojos, debés considerar que el proceso de dilatación pupilar demora entre 20 y 40 minutos. Te recomendamos venir acompañado y no conducir vehículos inmediatamente después del estudio.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>¿Atienden por PAMI u Obras Sociales?</summary>
+                    <div class="faq-content">
+                        <p>Sí, trabajamos con la mayoría de las Obras Sociales y Prepagas (OSDE, IOMA, PAMI, Swiss Medical, Galeno, entre otras). Te sugerimos consultar la vigencia de tu cobertura al momento de sacar el turno.</p>
+                    </div>
+                </details>
+                
+                <details class="faq-item">
+                    <summary>¿Hacen recetas de anteojos y lentes de contacto?</summary>
+                    <div class="faq-content">
+                        <p>Sí, realizamos la medición computarizada y la prueba subjetiva para recetar anteojos de lejos, cerca y multifocales, así como la adaptación de lentes de contacto.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+    </main>
+
     <%- include('../commons/footer-web') %>
 
-    <a href="https://wa.me/2324652338" target="_blank" class="boton-flotante-wsp" id="botonFlotante" style="display: none;">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
-
-    <script>
-        window.addEventListener("scroll", function() {
-            var botonFlotante = document.getElementById("botonFlotante");
-    
-            // Mostrar el botón cuando el usuario haya hecho scroll más de 200px
-            if (window.scrollY > 200) {
-                botonFlotante.style.display = "block"; // Muestra el botón
-            } else {
-                botonFlotante.style.display = "none"; // Oculta el botón
-            }
-        });
-    </script>
-    
 </body>
+</html>

@@ -47,6 +47,10 @@ class WebController{
 
     }
 
+    mostrarEquipos(req,res){
+        res.render('web/equipos', {title: 'Nuestros Equipos'});
+    }
+
     //Mostrar pagina coberturas
     async mostrarCoberturas(req, res) {
         try {
