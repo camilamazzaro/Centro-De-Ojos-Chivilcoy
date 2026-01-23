@@ -31,10 +31,32 @@ const rutasPanelAdmin = require('./routes/panelAdminRoute');
 const rutasWeb = require('./routes/webRoute'); 
 const rutasPanelPacientes = require('./routes/panelPacientesRoute.js');
 const rutasLogin = require('./routes/loginRoute.js');
+const rutasPanelSecretaria = require('./routes/panelSecretariasRoute');
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Middleware para hacer disponibles los datos de sesión en todas las vistas
+app.use((req, res, next) => {
+    // Si hay un usuario en sesión, pasamos sus datos a locals
+    if (req.session && req.session.idUsuario) {
+        res.locals.isLogged = true;
+        res.locals.nombreUsuario = req.session.nombreUsuario;
+        res.locals.categoria = req.session.categoria;
+        res.locals.idUsuario = req.session.idUsuario;
+        res.locals.nombreUsuario = req.session.nombreUsuario; 
+        res.locals.emailUsuario = req.session.emailUsuario;
+    } else {
+        // Si no hay sesión, definimos valores por defecto para que EJS no falle
+        res.locals.isLogged = false;
+        res.locals.nombreUsuario = null;
+        res.locals.categoria = null;
+        res.locals.emailUsuario = '';
+        res.locals.idUsuario = null;
+    }
+    next();
+});
 
 app.use('/public', express.static('public'));
 app.set('views', './views');
@@ -50,6 +72,7 @@ app.use('/', rutasPanelAdmin);
 app.use('/', rutasWeb);
 app.use('/', rutasPanelPacientes);
 app.use('/', rutasLogin);
+app.use('/', rutasPanelSecretaria)
 
 //muestra el puerto que escucha el server
 app.listen(port, () => { 

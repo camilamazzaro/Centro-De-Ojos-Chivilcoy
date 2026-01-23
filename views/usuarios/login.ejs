@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/public/css/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="contenedor-login">
+        <div class="contenedor-logo">
+            <div class="logo"></div>
+        </div>
+        <h1>Iniciar sesión</h1>
+
+        <!-- <label for="usuario_email">Email</label> -->
+        <div class="contenedor-input">
+            <i class="fas fa-envelope icono"></i>
+            <input type="text" id="usuario_email" placeholder="Ingrese su email" minlength="6" required>
+        </div>
+
+        <!-- <label for="usuario_password">Password</label> -->
+        <div class="contenedor-input">
+            <i class="fas fa-lock icono"></i>
+            <input type="password" id="usuario_password" placeholder="Ingrese su contraseña" minlength="3" required>
+        </div>
+
+        <div class="contenedor-guardar-sesion">
+            <input type="checkbox" id="guardar_sesion" name="guardar_sesion">
+            <label for="guardar_sesion">Recordar inicio de sesión</label>
+        </div>
+
+        <div class="contenedor-recuperarPassword">
+            <a href="cambiarPassword.ejs">Recuperar contraseña</a>
+        </div>
+        
+
+        <button type="submit" class="enviar btn">Ingresar</button>
+    </div>
+
+    <script type="text/javascript">
+        const inputEmail = document.querySelector("#usuario_email");
+        const inputPassword = document.querySelector("#usuario_password");
+        const buttonEnviar = document.querySelector(".enviar");
+        const recordarSesion = document.querySelector("#guardar_sesion");
+
+        buttonEnviar.addEventListener("click", async () => {
+            const resultado = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: inputEmail.value,
+                    password: inputPassword.value,
+                    recordar: recordarSesion.checked 
+                }),
+            });
+
+            const data = await resultado.json();
+
+            if (data.error === 1) {
+                alert("Usuario o contraseña incorrecto");
+                location.href = "/login";
+            } else {
+                if (data.categoria === 3) {
+                    window.location.href = "/panelSecretaria";
+                } else if (data.categoria === 1) {
+                    window.location.href = "/panelAdmin";
+                } else if (data.categoria === 2) {
+                    window.location.href = "/panelMedicos";
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

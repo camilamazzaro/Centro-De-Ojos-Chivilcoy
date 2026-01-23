@@ -7,152 +7,112 @@
     <link rel="stylesheet" href="/public/css/usuarios.css">
     <%- include('../commons/head') %>
 </head>
-    <body>
-        <div class="contenedor-flex">
+<body>
+    <div class="contenedor-flex">
+        <div class="contenedor-barra-lateral">
+            <%- include('../commons/barra-lateral-admin') %>
+        </div>
 
-            <div class="contenedor-barra-lateral">
-                <!--Acá se va a mostrar la barra lateral según el tipo de usuario que sea-->
-                <%- include('../commons/barra-lateral-admin') %>
-            </div>
-
-            <div class="contenedor-agregar">
-                <div class="crearUsuarioForm container contenedor-formulario-insertar"> 
-                    <h1>Registrar Usuario</h1>
-                    <div class="formulario-insertar">
-                        <div class="form-group">
-                            <label for="nombre">Nombre</label>
-                            <input type="text" name="nombre" id="usuario_nombre" required class="form-control"><br>
-                        </div> 
-                        
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" name="email" id="usuario_email" autocomplete="new-email" required minlength="8" class="form-control"><br>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="password">Contraseña</label>
-                            <input type="password" name="password" id="usuario_password" autocomplete="new-password"  class="form-control"><br>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="categoria">Categoría</label>
-                            <select id="usuario_categoria" class="form-select"> 
-                                <% categorias.forEach((categoria) => { %>
-                                    <option value="<%= categoria.id %>" <%= (categoria.id == usuario.id_categoriaUsuario) ? 'selected' : '' %> >
-                                        <%= categoria.categoria %>
-                                    </option>
-                                <% }) %>
-                            </select>
-                        </div>
-        
-        
-                        <div class="botones">
-                            <button type="submit" class="btn guardar btn-guardar">Guardar</button> 
-                            <a href="/usuarios" class=" btn btn-cancelar">Cancelar</a>
-                        </div>
-                        
+        <div class="contenedor-agregar">
+            <div class="crearUsuarioForm container contenedor-formulario-insertar"> 
+                <h1>Registrar Usuario</h1>
+                <div class="formulario-insertar">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" name="nombre" id="usuario_nombre" required class="form-control"><br>
+                    </div> 
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="usuario_email" autocomplete="new-email" required minlength="8" class="form-control"><br>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" name="password" id="usuario_password" autocomplete="new-password"  class="form-control"><br>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categoria">Categoría</label>
+                        <select id="usuario_categoria" class="form-select"> 
+                            <% categorias.forEach((categoria) => { %>
+                                <option value="<%= categoria.id %>" <%= (categoria.id == usuario.id_categoriaUsuario) ? 'selected' : '' %> >
+                                    <%= categoria.categoria %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+    
+                    <div class="botones">
+                        <button type="button" class="btn guardar btn-guardar">Guardar</button> 
+                        <a href="/usuarios" class=" btn btn-cancelar">Cancelar</a>
                     </div>
                 </div>
-            </div> 
-        </div>
-        
-        
+            </div>
+        </div> 
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <script>
-            const botonGuardar = document.querySelector(".guardar");
-        
-            botonGuardar.addEventListener("click", async (e) => {
-                e.preventDefault();
-        
-                const usuarioNombre = document.querySelector("#usuario_nombre").value.trim();
-                const usuarioEmail = document.querySelector("#usuario_email").value.trim();
-                const usuarioPassword = document.querySelector("#usuario_password").value;
-                const usuarioCategoria = document.querySelector("#usuario_categoria").value;
-        
-                // Validar campos vacíos
-                if (!usuarioNombre || !usuarioEmail || !usuarioCategoria) {
+    <script>
+        const botonGuardar = document.querySelector(".guardar");
+    
+        botonGuardar.addEventListener("click", async (e) => {
+            e.preventDefault();
+    
+            const usuarioNombre = document.querySelector("#usuario_nombre").value.trim();
+            const usuarioEmail = document.querySelector("#usuario_email").value.trim();
+            const usuarioPassword = document.querySelector("#usuario_password").value;
+            const usuarioCategoria = document.querySelector("#usuario_categoria").value;
+    
+            // 1. Validaciones
+            if (!usuarioNombre || !usuarioEmail || !usuarioCategoria || !usuarioPassword) {
+                return Swal.fire({ icon: 'warning', title: 'Campos obligatorios', text: 'Todos los campos son requeridos.' });
+            }
+    
+            if (usuarioNombre.split(" ").length < 2) {
+                return Swal.fire({ icon: 'warning', title: 'Nombre incompleto', text: 'Ingresá nombre y apellido.' });
+            }
+    
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(usuarioEmail)) {
+                return Swal.fire({ icon: 'warning', title: 'Email inválido', text: 'Formato incorrecto.' });
+            }
+    
+            // 2. Envío al servidor
+            try {
+                const results = await fetch('/usuario/agregar/0', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        nombre: usuarioNombre,
+                        email: usuarioEmail,
+                        password: usuarioPassword,
+                        categoria: usuarioCategoria,
+                        id: 0 // Explicitamos que es ID 0 para crear
+                    }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+    
+                const data = await results.json();
+    
+                if (data.success) {
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Campos obligatorios',
-                        text: 'Todos los campos marcados son requeridos.',
-                        confirmButtonColor: '#f39c12',
+                        icon: 'success',
+                        title: '¡Registrado!',
+                        text: 'El usuario se guardó correctamente.',
+                        confirmButtonColor: '#3085d6',
                         confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        window.location.href = "/usuarios"; // Redirección explícita
                     });
-                    return;
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: data.message });
                 }
-        
-                // Validar que el nombre contenga al menos dos palabras
-                const nombrePalabras = usuarioNombre.split(" ");
-                if (nombrePalabras.length < 2) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Nombre incompleto',
-                        text: 'Por favor, ingresá nombre y apellido.',
-                        confirmButtonColor: '#f39c12',
-                        confirmButtonText: 'Aceptar'
-                    });
-                    return;
-                }
-        
-                // Validar email con expresión regular
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(usuarioEmail)) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Email inválido',
-                        text: 'Ingresá un email con el formato correcto (ej: ejemplo@correo.com).',
-                        confirmButtonColor: '#f39c12',
-                        confirmButtonText: 'Aceptar'
-                    });
-                    return;
-                }
-        
-                try {
-                    const results = await fetch('/usuario/agregar/0', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            nombre: usuarioNombre,
-                            email: usuarioEmail,
-                            password: usuarioPassword,
-                            categoria: usuarioCategoria,
-                        }),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-        
-                    const data = await results.json();
-        
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Usuario guardado',
-                            text: 'El usuario se guardó correctamente.',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'Aceptar'
-                        }).then(() => {
-                            location.href = "/usuarios";
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'No se pudo guardar el usuario.',
-                            confirmButtonColor: '#d33',
-                            confirmButtonText: 'Intentar de nuevo'
-                        });
-                    }
-                } catch (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error de conexión',
-                        text: 'No se pudo conectar con el servidor.',
-                        confirmButtonColor: '#d33',
-                        confirmButtonText: 'Cerrar'
-                    });
-                }
-            });
-        </script>        
-        
-    </body>
+            } catch (error) {
+                console.error(error);
+                Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor.' });
+            }
+        });
+    </script>        
+</body>
 </html>
