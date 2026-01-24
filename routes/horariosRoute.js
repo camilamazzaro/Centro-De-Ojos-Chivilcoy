@@ -4,7 +4,11 @@ const router = express.Router();
 const HorarioController = require('../controllers/horarioController');
 const horarioController = new HorarioController();
 
-// const autenticar = require('../middleware/autenticacion')([3]);
+const auth = require('../middleware/autenticacion');
+
+// roles permitidos para este módulo
+const ROLES = [1, 3]; 
+router.use(auth(ROLES));
 
 // Ruta para listar todos los horarios  
 router.get('/medico/:medicoId/horarios', horarioController.listarHorarios);

@@ -4,6 +4,12 @@ const router = express.Router();
 const UsuariosController = require('../controllers/usuariosController');
 const usuariosController = new UsuariosController();
 
+const auth = require('../middleware/autenticacion');
+
+// roles permitidos para este módulo
+const ROLES = [1]; 
+router.use(auth(ROLES));
+
 //LISTAR USUARIOS
 router.get('/usuarios', usuariosController.listarUsuarios);
 

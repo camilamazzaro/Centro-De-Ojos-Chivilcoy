@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../commons/head') %>
+    <title>Acceso Denegado</title>
+    
+    <style>
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .error-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .error-card {
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            border-top: 5px solid #dc3545; 
+        }
+
+        .icon-lock {
+            font-size: 80px;
+            color: #dc3545;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .error-code {
+            font-size: 1.2rem;
+            color: #888;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .error-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .error-message {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .btn-volver {
+            display: inline-block;
+            background-color: var(--COLOR_PRINCIPAL, #005b6f);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-volver:hover {
+            background-color: #004455;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,91,111, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="error-container">
+        <div class="error-card">
+            <div class="icon-lock">
+                <i class="fa-solid fa-lock"></i> </div>
+            <div class="error-code">Error 403</div>
+            <h1 class="error-title">Acceso Restringido</h1>
+            
+            <p class="error-message">
+                <%= typeof mensaje !== 'undefined' ? mensaje : 'Lo sentimos, no tienes los permisos necesarios para ver esta sección.' %>
+            </p>
+
+            <% if (typeof isLogged !== 'undefined' && isLogged) { %>
+                <a href="javascript:history.back()" class="btn-volver">Volver Atrás</a>
+            <% } else { %>
+                <a href="/login" class="btn-volver">Iniciar Sesión</a>
+            <% } %>
+        </div>
+    </div>
+
+</body>
+</html>

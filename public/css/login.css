@@ -125,7 +125,7 @@ body::before {
     background: transparent;
     border: 2px solid var(--COLOR_OSCURO);
     border-radius: 10px;
-    color: var(--COLOR_OSCURO);
+    color: #fff;
     font-size: 14px;
 }
 

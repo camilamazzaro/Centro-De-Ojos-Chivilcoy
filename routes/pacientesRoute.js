@@ -11,7 +11,11 @@ const historiaClinicaController = new HistoriaClinicaController();
 const PacienteModel = require('../models/pacienteModel');
 const pacienteModel = new PacienteModel();
 
-// const autenticar = require('../middleware/autenticacion')([1, 2, 3]);
+const auth = require('../middleware/autenticacion');
+
+// roles permitidos para este módulo
+const ROLES = [1, 3, 4]; 
+router.use(auth(ROLES));
 
 //Ruta para listar los pacientes
 router.get('/pacientes', pacienteController.listarPacientes);

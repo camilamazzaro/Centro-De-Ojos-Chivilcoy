@@ -8,6 +8,13 @@ require('dotenv').config();
 //importo middleware para guardar los datos de inicio de sesión
 const sessionData = require('./middleware/sessionData');
 
+// 1. PRIMERO: Archivos Estáticos (CSS, JS, IMG)
+app.use('/public', express.static('public'));
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Sesión
 app.use(session({
     "secret": 'Emilia', //se va a configurar una cookie en el navegador para q no se metan en el programa
@@ -18,24 +25,6 @@ app.use(session({
         maxAge: 1000 * 60 * 30 //expira después de 30 minutos
     }
 }));
-
-app.use(sessionData);
-
-// Rutas y middleware de la aplicación
-const rutasUsuarios = require('./routes/usuariosRoute.js');
-const rutasMedicos = require('./routes/medicosRoute');
-const rutasTurnos = require('./routes/turnosRoute'); 
-const rutasPacientes = require('./routes/pacientesRoute');
-const rutasHorarios = require('./routes/horariosRoute');
-const rutasPanelAdmin = require('./routes/panelAdminRoute');
-const rutasWeb = require('./routes/webRoute'); 
-const rutasPanelPacientes = require('./routes/panelPacientesRoute.js');
-const rutasLogin = require('./routes/loginRoute.js');
-const rutasPanelSecretaria = require('./routes/panelSecretariasRoute');
-
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Middleware para hacer disponibles los datos de sesión en todas las vistas
 app.use((req, res, next) => {
@@ -58,21 +47,38 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/public', express.static('public'));
-app.set('views', './views');
-app.set('view engine', 'ejs');
+
+// app.use(sessionData);
+
+// Rutas y middleware de la aplicación
+const rutasUsuarios = require('./routes/usuariosRoute.js');
+const rutasMedicos = require('./routes/medicosRoute');
+const rutasTurnos = require('./routes/turnosRoute'); 
+const rutasPacientes = require('./routes/pacientesRoute');
+const rutasHorarios = require('./routes/horariosRoute');
+const rutasPanelAdmin = require('./routes/panelAdminRoute');
+const rutasWeb = require('./routes/webRoute'); 
+const rutasPanelPacientes = require('./routes/panelPacientesRoute.js');
+const rutasLogin = require('./routes/loginRoute.js');
+const rutasPanelSecretaria = require('./routes/panelSecretariasRoute');
 
 
+// rutas públicas
+app.use('/', rutasWeb);
+app.use('/', rutasLogin);
+
+// rutas privadas
 app.use('/', rutasUsuarios);
 app.use('/', rutasMedicos);
 app.use('/', rutasTurnos);
 app.use('/', rutasPacientes);
 app.use('/', rutasHorarios);
 app.use('/', rutasPanelAdmin);
-app.use('/', rutasWeb);
 app.use('/', rutasPanelPacientes);
-app.use('/', rutasLogin);
-app.use('/', rutasPanelSecretaria)
+app.use('/', rutasPanelSecretaria);
+
+app.set('views', './views');
+app.set('view engine', 'ejs');
 
 //muestra el puerto que escucha el server
 app.listen(port, () => { 

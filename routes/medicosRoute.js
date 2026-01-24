@@ -7,7 +7,12 @@ const MedicoModel = require('../models/medicoModel');
 const medicoModel = new MedicoModel();
 const upload = require('../middleware/upload');
 
-// const autenticar = require('../middleware/autenticacion')([1, 3]);
+const auth = require('../middleware/autenticacion');
+
+// roles permitidos para este módulo
+const ROLES = [1,3]; 
+router.use(auth(ROLES));
+
 
 // Ruta para listar todos los médicos
 router.get('/medicos', medicoController.listarMedicos);

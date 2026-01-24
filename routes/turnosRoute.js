@@ -3,7 +3,11 @@ const router = express.Router();
 const TurnoController = require('../controllers/turnoController'); //importo el controller para poder utilizar sus funciones
 const turnoController = new TurnoController();
 
-// const autenticar = require('../middleware/autenticacion')([3, 2]);
+const auth = require('../middleware/autenticacion');
+
+// roles permitidos para este módulo
+const ROLES = [1, 3]; 
+router.use(auth(ROLES));
 
 //Ruta para listar los turnos
 router.get('/turnos', turnoController.listarTurnos);

@@ -3,7 +3,12 @@ const router = express.Router();
 
 const PanelAdminController = require('../controllers/panelAdminController');
 const panelAdminController = new PanelAdminController();
-// const autenticar = require('../middleware/autenticacion')([3]); 
+
+const auth = require('../middleware/autenticacion');
+
+// roles permitidos para este módulo
+const ROLES = [1]; 
+router.use(auth(ROLES));
 
 //rutas redirección a home
 router.get('/panelAdmin', panelAdminController.mostrarPanelGeneral);
