@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-01-2026 a las 21:02:08
+-- Tiempo de generación: 31-01-2026 a las 00:05:43
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -115,7 +115,8 @@ INSERT INTO `horarios` (`id`, `id_medico`, `dia_semana`, `hora_inicio`, `hora_fi
 (8, 5, 'miercoles', '16:51:00', '20:55:00'),
 (9, 1, 'jueves', '08:30:00', '12:30:00'),
 (10, 1, 'viernes', '16:30:00', '20:30:00'),
-(11, 1, 'sabado', '08:30:00', '10:30:00');
+(11, 1, 'sabado', '08:30:00', '10:30:00'),
+(12, 1, 'miercoles', '19:28:00', '22:31:00');
 
 -- --------------------------------------------------------
 
@@ -801,7 +802,8 @@ INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `id_categoriaUsuari
 (12, 'Camila Pérez', 'camilamazzaro@yahoo.com.mx', 'Camila123', 1, NULL),
 (15, 'Esteban Martínez', 'estebanmartinez@gmail.com', '$2b$10$uGaZL02ImUioKBHYy.R7Fext0OhkCneT9N3vVFOdFx2DCijpZ0ns6', 4, 28),
 (16, 'Camila Mazzaro', 'camilamazzaro90@gmail.com', '$2b$10$poiRZBDSWHFznudc2KtEAuH8h2Z/x96CPDBKcPw93L6YDEfDh0fCW', 4, 7),
-(17, 'Juan Carlos Pérez', 'juanperez@gmail.com', '$2b$10$GjCsPN9CclW7eR5aOTpqEeVttnFOegpHKAINkhqDFSsrcKwaol0Pq', 4, 8);
+(17, 'Juan Carlos Pérez', 'juanperez@gmail.com', '$2b$10$GjCsPN9CclW7eR5aOTpqEeVttnFOegpHKAINkhqDFSsrcKwaol0Pq', 4, 8),
+(18, 'Camila Mazzaro', 'camimazzari11@gmail.com', '$2b$10$kR2lAVZrZTEKckSNuVeix.jzbM8hu29dPy44B52JgL/vxJWRi12DC', 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -952,7 +954,7 @@ ALTER TABLE `historias_clinicas`
 -- AUTO_INCREMENT de la tabla `horarios`
 --
 ALTER TABLE `horarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `medicos`
@@ -1018,7 +1020,7 @@ ALTER TABLE `turno_estados`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_categorias`
