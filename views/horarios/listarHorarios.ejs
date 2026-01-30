@@ -35,7 +35,16 @@
                         <div class="tarjeta-horario">
                             <h3><%= dia %></h3>
                             <div class="horarios">
-                                <% const horariosDia = horarios.filter(horario => horario.dia_semana.toLowerCase() === dia.toLowerCase()); %>
+                                <% 
+                                    const horariosDia = horarios.filter(horario => {
+
+                                        const diaBD = horario.dia_semana.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+
+                                        const diaArray = dia.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+                                        
+                                        return diaBD === diaArray;
+                                    }); 
+                                %>
                                 <% if (horariosDia.length > 0) { %>
                                     <% horariosDia.forEach(horario => { %>
                                         <div class="horario-item">

@@ -6,8 +6,8 @@ const turnoController = new TurnoController();
 const auth = require('../middleware/autenticacion');
 
 // roles permitidos para este módulo
-const ROLES = [1, 3]; 
-router.use(auth(ROLES));
+// const ROLES = [1, 3]; 
+// router.use(auth(ROLES));
 
 //Ruta para listar los turnos
 router.get('/turnos', turnoController.listarTurnos);

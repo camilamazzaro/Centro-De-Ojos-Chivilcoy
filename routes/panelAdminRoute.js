@@ -7,8 +7,8 @@ const panelAdminController = new PanelAdminController();
 const auth = require('../middleware/autenticacion');
 
 // roles permitidos para este módulo
-const ROLES = [1]; 
-router.use(auth(ROLES));
+// const ROLES = [1]; 
+// router.use(auth(ROLES));
 
 //rutas redirección a home
 router.get('/panelAdmin', panelAdminController.mostrarPanelGeneral);

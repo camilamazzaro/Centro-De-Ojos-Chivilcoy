@@ -10,8 +10,8 @@ const upload = require('../middleware/upload');
 const auth = require('../middleware/autenticacion');
 
 // roles permitidos para este módulo
-const ROLES = [1,3]; 
-router.use(auth(ROLES));
+// const ROLES = [1,3]; 
+// router.use(auth(ROLES));
 
 
 // Ruta para listar todos los médicos

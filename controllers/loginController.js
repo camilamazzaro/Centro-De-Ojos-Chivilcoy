@@ -75,12 +75,17 @@ class LoginController {
                         });
                     }
     
-                    req.session.idMedico = idMedico || null; // asigna el idMedico si existe
-    
-                    res.json ({
-                        idUsuario: usuario.id,
-                        categoria: usuario.id_categoriaUsuario,
-                        error: 0 // login correcto
+                    req.session.save((err) => {
+                        if (err) {
+                            console.error("Error al guardar la sesión:", err);
+                            return res.status(500).json({ error: 1, message: "Error al iniciar sesión" });
+                        }
+
+                        res.json({
+                            idUsuario: usuario.id,
+                            categoria: usuario.id_categoriaUsuario,
+                            error: 0 
+                        });
                     });
                 });
             } else {

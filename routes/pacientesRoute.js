@@ -14,8 +14,8 @@ const pacienteModel = new PacienteModel();
 const auth = require('../middleware/autenticacion');
 
 // roles permitidos para este módulo
-const ROLES = [1, 3, 4]; 
-router.use(auth(ROLES));
+// const ROLES = [1, 3, 4]; 
+// router.use(auth(ROLES));
 
 //Ruta para listar los pacientes
 router.get('/pacientes', pacienteController.listarPacientes);

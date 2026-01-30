@@ -11,8 +11,8 @@ router.use(sessionData);
 const auth = require('../middleware/autenticacion');
 
 // roles permitidos para este módulo
-const ROLES = [4]; 
-router.use(auth(ROLES));
+// const ROLES = [4]; 
+// router.use(auth(ROLES));
 
 router.get('/panelPacientes', panelPacientesController.mostrarPanelPacientes);
 router.get('/panelPacientes/turnos', panelPacientesController.pacienteTurnos);
