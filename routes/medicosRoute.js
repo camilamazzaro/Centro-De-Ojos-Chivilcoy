@@ -7,7 +7,7 @@ const MedicoModel = require('../models/medicoModel');
 const medicoModel = new MedicoModel();
 const upload = require('../middleware/upload');
 
-const auth = require('../middleware/autenticacion');
+const autenticar = require('../middleware/autenticacion')([1, 3]);
 
 // roles permitidos para este módulo
 // const ROLES = [1,3]; 
@@ -15,15 +15,15 @@ const auth = require('../middleware/autenticacion');
 
 
 // Ruta para listar todos los médicos
-router.get('/medicos', medicoController.listarMedicos);
+router.get('/medicos',autenticar, medicoController.listarMedicos);
 
 
 // Rutas para mostrar el formulario de inserción de un nuevo médico y guardar nuevo médico
-router.get('/medico/agregar/0', medicoController.insertarMedico);
+router.get('/medico/agregar/0', autenticar, medicoController.insertarMedico);
 router.post('/medico/agregar/0', upload.single('foto'), medicoController.guardarMedico);
 
 // Rutas para mostrar el formulario de edición de un médico (por ID) y guardar datos actualizados
-router.get('/medico/editar/:id', medicoController.editarMedico);
+router.get('/medico/editar/:id', autenticar, medicoController.editarMedico);
 router.post('/medico/editar/:id', upload.single('foto'), medicoController.guardarMedico);
 
 
@@ -31,6 +31,6 @@ router.post('/medico/editar/:id', upload.single('foto'), medicoController.guarda
 router.delete('/medicos/eliminar/:medicoId', medicoController.eliminarMedico);
 
 //Obtener médicos por obra social
-router.get('/medicos/por-obra-social/:obraSocialId', medicoController.obtenerMedicosPorObraSocial);
+router.get('/medicos/por-obra-social/:obraSocialId', autenticar, medicoController.obtenerMedicosPorObraSocial);
 
 module.exports = router;

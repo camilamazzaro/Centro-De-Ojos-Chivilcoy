@@ -11,19 +11,19 @@ const historiaClinicaController = new HistoriaClinicaController();
 const PacienteModel = require('../models/pacienteModel');
 const pacienteModel = new PacienteModel();
 
-const auth = require('../middleware/autenticacion');
+const autenticar = require('../middleware/autenticacion')([1,2,3]);
 
 // roles permitidos para este módulo
 // const ROLES = [1, 3, 4]; 
 // router.use(auth(ROLES));
 
 //Ruta para listar los pacientes
-router.get('/pacientes', pacienteController.listarPacientes);
+router.get('/pacientes',autenticar, pacienteController.listarPacientes);
 
 //Ruta para editar y agregar pacientes
-router.get('/pacientes/editar/:id', pacienteController.editarPaciente);
+router.get('/pacientes/editar/:id',autenticar, pacienteController.editarPaciente);
 // router.post('/pacientes/editar/:id', pacienteController.guardarPaciente);
-router.get('/pacientes/agregar/0', pacienteController.mostrarAgregarPaciente);
+router.get('/pacientes/agregar/0',autenticar, pacienteController.mostrarAgregarPaciente);
 
 //Rutas para agregar por pasos al cliente
 router.post('/pacientes/guardar-info-personal', pacienteController.guardarInfoPersonal); //paso 1
@@ -37,10 +37,10 @@ router.delete('/pacientes/eliminar/:id', pacienteController.eliminarPaciente);
 router.put('/pacientes/editar/:id', pacienteController.editarPaciente)
 
 // HISTORIAS CLÍNICAS
-router.get('/paciente/historias-clinicas/:pacienteId', historiaClinicaController.mostrarListadoHCE);
-router.get('/paciente/:pacienteId/historia-clinica/agregar', historiaClinicaController.mostrarAgregarHCE);
+router.get('/paciente/historias-clinicas/:pacienteId',autenticar, historiaClinicaController.mostrarListadoHCE);
+router.get('/paciente/:pacienteId/historia-clinica/agregar',autenticar, historiaClinicaController.mostrarAgregarHCE);
 router.post('/paciente/:pacienteId/historia-clinica/agregar', historiaClinicaController.guardarHistoriaClinica);
-router.get('/paciente/:pacienteId/historia-clinica/:historiaId/editar', historiaClinicaController.mostrarEditarHCE);
+router.get('/paciente/:pacienteId/historia-clinica/:historiaId/editar',autenticar, historiaClinicaController.mostrarEditarHCE);
 router.put('/paciente/:pacienteId/historia-clinica/:historiaId/editar', historiaClinicaController.editarHistoriaClinica);
 
 
@@ -60,7 +60,7 @@ router.put('/pacientes/receta/editar',
     pacienteController.editarReceta
 );
 router.delete('/pacientes/receta/eliminar/:id', pacienteController.eliminarReceta);
-router.get('/receta/ver/:id', pacienteController.generarPdfReceta);
+router.get('/receta/ver/:id',autenticar, pacienteController.generarPdfReceta);
 
 
 module.exports = router; //exporto el módulo para que pueda ser incorporado en app.js
