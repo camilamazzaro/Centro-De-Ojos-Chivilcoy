@@ -45,17 +45,24 @@ class PanelSecretariaController {
                     }
                 });
             });
+            
+            const listarReservadosPromise = new Promise((resolve, reject) => {
+                turnoModel.obtenerTurnosReservados((resultados) => {
+                    resolve(resultados || []); 
+                });
+            });
 
             // Ejecutar todas las promesas en paralelo
-            Promise.all([listarMedicosPromise, obtenerObrasSocialesPromise, listarTurnosPromise])
-                .then(([medicos, obrasSociales, {turnos, total}]) => {
+            Promise.all([listarMedicosPromise, obtenerObrasSocialesPromise, listarTurnosPromise, listarReservadosPromise])
+                .then(([medicos, obrasSociales, {turnos, total}, turnosReservados]) => {
                     
                     res.render('panel/panelSecretarias', {
                         title: 'Panel General Secretarias',
                         medicos: medicos,
                         obrasSociales: obrasSociales,
                         turnos: turnos,
-                        totalTurnos: total
+                        totalTurnos: total,
+                        turnosReservados: turnosReservados || []
                     });
                 })
                 .catch(error => {
@@ -67,6 +74,23 @@ class PanelSecretariaController {
             console.error('Error al obtener datos para la página de panel secretarias:', error);
             res.status(500).send('Error al cargar el panel de secretarias');
         }
+    }
+
+    confirmarTurno(req, res) {
+        const idTurno = req.params.id;
+        console.log("----------------------------------------------");
+        console.log("📡 [CONTROLLER] Petición recibida en confirmarTurno");
+        console.log("📡 [CONTROLLER] ID recibido:", idTurno);
+        console.log("----------------------------------------------");
+
+        turnoModel.cambiarEstado(idTurno, 3, (err, result) => {
+            if (err) {
+                console.error("🔥 [CONTROLLER] Error reportado por el Modelo:", err);
+                return res.status(500).json({ success: false, message: "Error al confirmar turno" });
+            }
+            console.log("✅ [CONTROLLER] Éxito. Resultado BD:", result);
+            res.json({ success: true, message: "Turno confirmado exitosamente" });
+        });
     }
 
     mostrarCalendario (req, res){

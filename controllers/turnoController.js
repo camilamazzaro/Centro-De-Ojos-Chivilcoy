@@ -296,38 +296,38 @@ class TurnoController {
         }
 
 
-    async confirmarTurno(req, res) {
-        const idTurno = req.params.id;
+    // async confirmarTurno(req, res) {
+    //     const idTurno = req.params.id;
     
-        turnoModel.obtenerTurno(idTurno, (turno) => {
-            if (!turno || turno.id_paciente === null) {
-                res.json({
-                    "mensaje": "El turno no tiene asignado un paciente, por lo tanto, no se puede confirmar."
-                });
-                return;
-            }
+    //     turnoModel.obtenerTurno(idTurno, (turno) => {
+    //         if (!turno || turno.id_paciente === null) {
+    //             res.json({
+    //                 "mensaje": "El turno no tiene asignado un paciente, por lo tanto, no se puede confirmar."
+    //             });
+    //             return;
+    //         }
     
-            if (turno.id_estadoTurno != 2) {
-                res.json({
-                    "mensaje": "El turno no se encuentra en estado reservado, por lo tanto, no se puede confirmar."
-                });
-                return;
-            }
+    //         if (turno.id_estadoTurno != 2) {
+    //             res.json({
+    //                 "mensaje": "El turno no se encuentra en estado reservado, por lo tanto, no se puede confirmar."
+    //             });
+    //             return;
+    //         }
     
-            turnoModel.confirmarTurno(idTurno, (resultado) => {
-                if (resultado === null) {
-                    res.json({
-                        "mensaje": "Hubo un error al confirmar el turno. Contacte con un administrador."
-                    });
-                } else {
-                    res.json({
-                        "success": true,
-                        "mensaje": "Turno confirmado con éxito"
-                    });
-                }
-            });
-        });
-    }
+    //         turnoModel.confirmarTurno(idTurno, (resultado) => {
+    //             if (resultado === null) {
+    //                 res.json({
+    //                     "mensaje": "Hubo un error al confirmar el turno. Contacte con un administrador."
+    //                 });
+    //             } else {
+    //                 res.json({
+    //                     "success": true,
+    //                     "mensaje": "Turno confirmado con éxito"
+    //                 });
+    //             }
+    //         });
+    //     });
+    // }
     
 
     async crearTurnosDesdeHorarios(req, res) {

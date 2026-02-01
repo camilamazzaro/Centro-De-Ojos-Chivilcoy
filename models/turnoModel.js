@@ -458,6 +458,47 @@ class TurnoModel{
         return callback(results[0]); 
     });
 }
+
+// Obtener turnos que están reservados (estado 2) para confirmar
+    obtenerTurnosReservados(callback) {
+        const sql = `
+            SELECT 
+                t.id, 
+                t.fecha_hora, 
+                u.nombre as nombre_medico,  
+                p.nombre as nombre_paciente 
+            FROM turnos t
+            JOIN medicos m ON t.id_medico = m.id
+            JOIN usuarios u ON m.id_usuario = u.id  
+            JOIN pacientes p ON t.id_paciente = p.id
+            WHERE t.id_estado_turno = 2 
+            ORDER BY t.fecha_hora ASC
+        `;
+        
+        conx.query(sql, (err, results) => {
+            if (err) {
+                console.error("Error en obtenerTurnosReservados:", err); 
+                throw err;
+            }
+            callback(results);
+        });
+    }
+
+    // Cambiar estado de un turno (usado para confirmar)
+    cambiarEstado(idTurno, idNuevoEstado, callback) {
+        const sql = "UPDATE turnos SET id_estado_turno = ? WHERE id = ?";
+        console.log("💾 [MODEL] Ejecutando SQL:", sql);
+        console.log("💾 [MODEL] Datos: Estado =", idNuevoEstado, ", ID =", idTurno);
+        
+        conx.query(sql, [idNuevoEstado, idTurno], (err, result) => {
+            if (err) {
+                console.error("🔥 [MODEL] Error SQL FATAL:", err); // <--- AQUÍ VEREMOS EL ERROR REAL
+                return callback(err, null);
+            }
+            console.log("💾 [MODEL] SQL ejecutado correctamente. Filas afectadas:", result.affectedRows);
+            callback(null, result);
+        });
+    }
 }
 
 module.exports = TurnoModel;

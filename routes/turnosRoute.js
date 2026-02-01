@@ -22,7 +22,7 @@ router.post('/turnos/agregar/0', turnoController.guardarTurno);
 //Ruta para eliminar turnos
 router.post('/turnos/cancelar/:id', turnoController.cancelarTurno);
 
-router.post('/turnos/confirmar/:id', turnoController.confirmarTurno);
+// router.post('/turnos/confirmar/:id', turnoController.confirmarTurno);
 
 router.get('/turnos/desdeHorarios',autenticar, turnoController.crearTurnosDesdeHorarios);
 

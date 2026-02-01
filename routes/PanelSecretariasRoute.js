@@ -17,4 +17,6 @@ router.get('/panelSecretaria/calendarioTurnos', autenticar, panelSecretariaContr
 // Esta ruta también queda protegida automáticamente
 router.get('/calendario/obtenerTurnos',autenticar, panelSecretariaController.obtenerTurnosCalendarioMedicos);
 
+router.post('/turnos/confirmar/:id', autenticar, panelSecretariaController.confirmarTurno);
+
 module.exports = router;
