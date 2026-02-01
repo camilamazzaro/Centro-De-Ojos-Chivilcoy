@@ -8,6 +8,7 @@ const TurnoModel = require('../models/turnoModel');
 const turnoModel = new TurnoModel();
 
 const moment = require('moment');
+const nodemailer = require('nodemailer');
 
 class PanelSecretariaController {
 
@@ -76,21 +77,82 @@ class PanelSecretariaController {
         }
     }
 
-    confirmarTurno(req, res) {
+    async confirmarTurno(req, res) {
         const idTurno = req.params.id;
-        console.log("----------------------------------------------");
-        console.log("📡 [CONTROLLER] Petición recibida en confirmarTurno");
-        console.log("📡 [CONTROLLER] ID recibido:", idTurno);
-        console.log("----------------------------------------------");
 
-        turnoModel.cambiarEstado(idTurno, 3, (err, result) => {
-            if (err) {
-                console.error("🔥 [CONTROLLER] Error reportado por el Modelo:", err);
-                return res.status(500).json({ success: false, message: "Error al confirmar turno" });
+        try {
+            // 1. Actualizar estado en la BD
+            await new Promise((resolve, reject) => {
+                turnoModel.cambiarEstado(idTurno, 3, (err, result) => {
+                    if (err) reject(new Error("Error al actualizar estado en BD: " + err.message));
+                    else resolve(result);
+                });
+            });
+
+            // 2. Obtener datos del turno para el mail
+            const turno = await new Promise((resolve, reject) => {
+                turnoModel.obtenerDetalleTurno(idTurno, (err, data) => {
+                    if (err) reject(new Error("Error al obtener datos: " + err.message));
+                    else resolve(data);
+                });
+            });
+
+            // Validación
+            if (!turno || !turno.email_paciente) {
+                console.warn("Turno confirmado, pero faltan datos para el mail.");
+                return res.json({ success: true, message: "Turno confirmado (Sin mail)" });
             }
-            console.log("✅ [CONTROLLER] Éxito. Resultado BD:", result);
-            res.json({ success: true, message: "Turno confirmado exitosamente" });
-        });
+
+            // 3. ENVÍO DE MAIL (Directo aquí para evitar errores de 'this')
+            (async () => {
+                try {
+                    const transporter = nodemailer.createTransport({
+                        service: 'gmail',
+                        auth: {
+                            user: 'camilamazzaro90@gmail.com', 
+                            pass: 'sbbu sttl uuei kbht'       
+                        }
+                    });
+
+                    const fechaObj = new Date(turno.fecha_hora);
+                    const fechaTexto = fechaObj.toLocaleString('es-AR', { 
+                        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                    });
+
+                    const mailOptions = {
+                        from: 'Centro de Ojos Chivilcoy <camilamazzaro90@gmail.com>',
+                        to: turno.email_paciente,
+                        subject: '✅ Turno Confirmado - Centro de Ojos',
+                        html: `
+                            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+                                <h2 style="color: #005b6f; text-align: center;">¡Turno Confirmado!</h2>
+                                <p>Hola <strong>${turno.nombre_paciente}</strong>,</p>
+                                <p>Tu turno ha sido confirmado exitosamente.</p>
+                                <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #005b6f; margin: 20px 0;">
+                                    <p><strong>👨‍⚕️ Profesional:</strong> ${turno.nombre_medico}</p>
+                                    <p><strong>📅 Fecha:</strong> ${fechaTexto} hs</p>
+                                    <p><strong>📍 Lugar:</strong> Centro de Ojos Chivilcoy</p>
+                                </div>
+                                <hr>
+                                <p style="font-size: 12px; color: #777; text-align: center;">Por favor no responder a este correo.</p>
+                            </div>
+                        `
+                    };
+
+                    await transporter.sendMail(mailOptions);
+                    console.log(`📧 Email enviado exitosamente a: ${turno.email_paciente}`);
+                } catch (errorMail) {
+                    console.error("❌ Error enviando mail:", errorMail);
+                }
+            })(); // Ejecución inmediata de la función asíncrona
+
+            // 4. Responder al cliente inmediatamente
+            res.json({ success: true, message: "Turno confirmado y procesando envío de mail." });
+
+        } catch (error) {
+            console.error("🔥 Error crítico en confirmarTurno:", error);
+            res.status(500).json({ success: false, message: error.message });
+        }
     }
 
     mostrarCalendario (req, res){

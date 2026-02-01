@@ -16,6 +16,8 @@ const medicoModel = new MedicoModel();
 const EstadoTurnoModel = require('../models/estadoTurnoModel');
 const estadoTurnoModel = new EstadoTurnoModel();
 
+const nodemailer = require('nodemailer'); 
+
 const diasSpanish = {
     "Monday": 'lunes',
     "Tuesday": 'martes',
@@ -113,18 +115,87 @@ class TurnoController {
     });
     }
 
-    //funcion para agregar turnos
-    async guardarTurno(req, res){
+    // Función para guardar (crear o editar) turnos
+    async guardarTurno(req, res) {
         const datos = req.body;
-        console.log(datos);
-        turnoModel.guardarTurno(datos, (result)=>{
-            res.send({
-                "success": true,
+        console.log("💾 Datos recibidos para guardar:", datos);
+
+        const enviarEmailNovedadLocal = async (turno, esEdicion) => {
+            try {
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'camilamazzaro90@gmail.com',
+                        pass: 'sbbu sttl uuei kbht'        
+                    }
+                });
+
+                const fechaObj = new Date(turno.fecha_hora);
+                const fechaTexto = fechaObj.toLocaleString('es-AR', { 
+                    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                });
+
+                const titulo = esEdicion ? "‼️ Cambio en tu Turno" : "Nuevo Turno Agendado";
+                const mensajeIntro = esEdicion 
+                    ? "Te informamos que hubo una <strong>modificación</strong> en los datos de tu turno."
+                    : "Te informamos que se ha generado un <strong>nuevo turno</strong> a tu nombre.";
+
+                const mailOptions = {
+                    from: 'Centro de Ojos Chivilcoy <camilamazzaro90@gmail.com>',
+                    to: turno.email_paciente,
+                    subject: `${titulo} - Centro de Ojos`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+                            <h2 style="color: #005b6f; text-align: center;">${titulo}</h2>
+                            <p>Hola <strong>${turno.nombre_paciente}</strong>,</p>
+                            <p>${mensajeIntro}</p>
+                            
+                            <div style="background-color: #e7f1ff; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 5px solid #005b6f;">
+                                <h3 style="margin-top: 0; color: #005b6f;">Detalles Actualizados:</h3>
+                                <p><strong>👨‍⚕️ Profesional:</strong> ${turno.nombre_medico}</p>
+                                <p><strong>📅 Fecha y Hora:</strong> ${fechaTexto} hs</p>
+                                <p><strong>🏥 Lugar:</strong> Centro de Ojos Chivilcoy</p>
+                            </div>
+
+                            <p style="font-size: 14px; color: #666;">Si no realizaste esta solicitud o tienes dudas, por favor comunícate con nosotros.</p>
+                            <hr>
+                            <p style="text-align: center; font-size: 12px; color: #777;">Sistema de Turnos Automático</p>
+                        </div>
+                    `
+                };
+
+                await transporter.sendMail(mailOptions);
+                console.log(`📧 Notificación enviada a ${turno.email_paciente}`);
+            } catch (error) {
+                console.error("❌ Error enviando mail:", error);
+            }
+        };
+
+        turnoModel.guardarTurno(datos, (result) => {
+            if (!result) {
+                return res.status(500).send({ "success": false, "message": "Error al guardar en BD" });
+            }
+
+            const idTurno = (datos.id && datos.id != 0) ? datos.id : result.insertId;
+            const esEdicion = (datos.id && datos.id != 0);
+
+            turnoModel.obtenerDetalleTurno(idTurno, (err, turnoDetalle) => {
+                
+                if (!err && turnoDetalle && turnoDetalle.email_paciente) {
+                    // AQUÍ ESTÁ EL CAMBIO: Llamamos a la función local, no a 'this.'
+                    enviarEmailNovedadLocal(turnoDetalle, esEdicion); 
+                } else {
+                    console.log("ℹ️ No se envió mail (Faltan datos o paciente sin email).");
+                }
+
+                res.send({
+                    "success": true,
+                    "message": "Turno guardado correctamente"
+                });
             });
         });
-        console.log("Datos recibidos:", datos);
-
     }
+
 
     //Funcion para agregar el nuevo turno
     async agregarTurno(req, res) {
@@ -190,14 +261,68 @@ class TurnoController {
     //funcion para cancelar turnos
     async cancelarTurno(req, res) {
         const id = req.params.id;
-        turnoModel.cancelarTurno(id, (result) => {
-            if (!result) {
-                return res.status(500).send("Error al cancelar el turno.");
-            } else {
-            res.redirect('/turnos'); // Redirige a la lista de turnos tras cancelar el turno
-            }
+
+        turnoModel.obtenerDetalleTurno(id, (err, turno) => {
+            
+            turnoModel.cancelarTurno(id, (result) => {
+                if (!result) {
+                    return res.status(500).send("Error al cancelar el turno.");
+                }
+
+                if (!err && turno && turno.email_paciente) {
+                    
+                    const enviarEmailCancelacion = async () => {
+                        try {
+                            const transporter = nodemailer.createTransport({
+                                service: 'gmail',
+                                auth: {
+                                    user: 'camilamazzaro90@gmail.com',
+                                    pass: 'sbbu sttl uuei kbht' 
+                                }
+                            });
+
+                            const fechaObj = new Date(turno.fecha_hora);
+                            const fechaTexto = fechaObj.toLocaleString('es-AR', { 
+                                day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                            });
+
+                            const mailOptions = {
+                                from: 'Centro de Ojos Chivilcoy <camilamazzaro90@gmail.com>',
+                                to: turno.email_paciente,
+                                subject: '❌ Turno Cancelado - Centro de Ojos',
+                                html: `
+                                    <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+                                        <h2 style="color: #dc3545; text-align: center;">Turno Cancelado</h2>
+                                        <p>Hola <strong>${turno.nombre_paciente}</strong>,</p>
+                                        <p>Te informamos que el siguiente turno ha sido <strong>cancelado</strong>:</p>
+                                        
+                                        <div style="background-color: #fff5f5; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 5px solid #dc3545;">
+                                            <p style="margin: 5px 0;"><strong>👨‍⚕️ Profesional:</strong> ${turno.nombre_medico}</p>
+                                            <p style="margin: 5px 0;"><strong>📅 Fecha original:</strong> ${fechaTexto} hs</p>
+                                        </div>
+
+                                        <p style="font-size: 14px;">Si usted no solicitó esta cancelación o desea reprogramar, por favor ingrese nuevamente al sistema o comuníquese con la secretaría.</p>
+                                        <hr>
+                                        <p style="text-align: center; font-size: 12px; color: #777;">Centro de Ojos Chivilcoy</p>
+                                    </div>
+                                `
+                            };
+
+                            await transporter.sendMail(mailOptions);
+                            console.log(`📧 Mail de cancelación enviado a ${turno.email_paciente}`);
+
+                        } catch (error) {
+                            console.error("❌ Error enviando mail de cancelación:", error);
+                        }
+                    };
+
+                    enviarEmailCancelacion();
+                }
+
+                res.redirect('/turnos'); 
+            });
         });
-    }   
+    } 
     
     async obtenerTurnosDisponibles(req, res) {
         const { fecha, id_medico } = req.params;
@@ -228,10 +353,53 @@ class TurnoController {
             telefono,
             correo,
             nro_afiliado,
-            id_practica
+            id_practica,
+            nombre_medico,
+            fecha_turno_texto
         } = req.body;
 
         console.log("Datos recibidos:", req.body);
+
+        // FUNCIÓN AUXILIAR PARA ENVIAR MAIL 
+        const enviarConfirmacionEmail = async (destinatario, nombrePaciente) => {
+            try {
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'camilamazzaro90@gmail.com', 
+                        pass: 'sbbu sttl uuei kbht'
+                    }
+                });
+
+                const mailOptions = {
+                    from: 'Centro de Ojos Chivilcoy <tucorreo@gmail.com>',
+                    to: destinatario,
+                    subject: 'Confirmación de Solicitud de Turno - Centro de Ojos',
+                    html: `
+                        <div style="font-family: Arial, sans-serif; color: #333;">
+                            <h2 style="color: #005b6f;">¡Hola ${nombrePaciente}!</h2>
+                            <p>Hemos recibido tu solicitud de turno. El mismo se encuentra <strong>pendiente de confirmación</strong> por parte de nuestra secretaría.</p>
+                            
+                            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                                <h3>Detalles del turno:</h3>
+                                <p><strong>Médico:</strong> ${nombre_medico}</p>
+                                <p><strong>Fecha y Hora:</strong> ${fecha_turno_texto}</p>
+                                <p><strong>Paciente:</strong> ${nombrePaciente}</p>
+                            </div>
+
+                            <p>Te enviaremos otro correo cuando tu turno haya sido confirmado definitivamente.</p>
+                            <hr>
+                            <p style="font-size: 12px; color: #777;">Centro de Ojos Chivilcoy</p>
+                        </div>
+                    `
+                };
+
+                await transporter.sendMail(mailOptions);
+                console.log("E mail enviado correctamente a " + destinatario);
+            } catch (error) {
+                console.error("Error enviando email:", error);
+            }
+        };
 
         // Paso 1: Verificamos si el turno está disponible
         turnoModel.obtenerTurno(id_turno, (turno) => {
@@ -270,6 +438,7 @@ class TurnoController {
                     if (!resultado) {
                     return res.json({ mensaje: "Error confirmando el turno. Contacte al administrador." });
                     }
+                    enviarConfirmacionEmail(correo, nombre_apellido);
                     res.json({ success: true });
                 });
                 });
@@ -283,6 +452,7 @@ class TurnoController {
                     if (!resultado) {
                         return res.json({ mensaje: "Error confirmando el turno. Contacte al administrador." });
                     }
+                    enviarConfirmacionEmail(correo, nombre_apellido);
                     res.json({ success: true });
                     });
                 })

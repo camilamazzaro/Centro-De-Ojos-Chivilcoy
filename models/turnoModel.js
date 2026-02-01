@@ -499,6 +499,30 @@ class TurnoModel{
             callback(null, result);
         });
     }
+
+    obtenerDetalleTurno(idTurno, callback) {
+        const sql = `
+            SELECT 
+                t.id, 
+                t.fecha_hora, 
+                u.nombre as nombre_medico,   
+                p.nombre as nombre_paciente, 
+                p.email as email_paciente    
+            FROM turnos t
+            LEFT JOIN medicos m ON t.id_medico = m.id
+            LEFT JOIN usuarios u ON m.id_usuario = u.id
+            LEFT JOIN pacientes p ON t.id_paciente = p.id
+            WHERE t.id = ?
+        `;
+        
+        conx.query(sql, [idTurno], (err, results) => {
+            if (err) {
+                console.error("Error SQL en obtenerDetalleTurno:", err);
+                return callback(err, null);
+            }
+            callback(null, results[0] || null);
+        });
+    }
 }
 
 module.exports = TurnoModel;
