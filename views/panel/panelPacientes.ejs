@@ -1,179 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel General</title>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet">
-    
+    <%- include('../commons/head', { title: 'Mi Panel' }) %>
     <link rel="stylesheet" href="/public/css/panel/panel_pacientes.css">
-
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="contenedor-flex">
 
+    <div class="contenedor-flex">
         <div class="contenedor-barra-lateral">
-            <!-- Mostrar el menú correspondiente basado en el idCategoriaUsuario -->
-            <% if (categoria  === 1) { %>
-                <%- include('../commons/barra-lateral-admin') %> <!-- Menú para administradores -->
-            <% } else if (categoria  === 3) { %>
-                <%- include('../commons/barra-lateral-secretarias') %> <!-- Menú para secretarias -->
-            <% } else if (categoria === 2) { %>
-                <%- include('../commons/barra-lateral-medicos') %> <!-- Menú para médicos -->
-            <% } else { %>
-                <p>No tienes permisos para ver este contenido.</p>
-            <% } %>
+             <%- include('../commons/barra-lateral-pacientes') %>
         </div>
 
         <div class="contenedor-panel-general">
-            <div class="div-superior">
-                <h1>Panel de Pacientes</h1>
-                <div class="botones-panel">
-                    <a href="" class="btn">Pedir Turno</a>
+            
+            <div class="header-bienvenida">
+                <div class="texto">
+                    <h1>Hola, <%= usuario.nombre.split(' ')[0] %> 👋</h1>
+                    <p>Bienvenido a tu portal de salud. Aquí tienes un resumen de tu actividad.</p>
+                </div>
+                <div class="boton-accion">
+                    <a href="/panelPacientes/nuevo-turno" class="btn-nuevo-turno">
+                        <i class="fa-solid fa-plus"></i> Solicitar Turno
+                    </a>
                 </div>
             </div>
-            
-            <div class="tablas-general">
-                <% if (turnos.length > 0) { %>
-                    <div class="contenedor-tabla-turnos">
-                        <table class="tabla-turnos-general">
-                            <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Médico</th>
-                                <th>Práctica</th>
-                                <th>Estado</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <% turnos.forEach(turno => { %>
-                                <tr>
-                                <td><%= new Date(turno.fecha_hora).toLocaleString('es-AR') %></td>
-                                <td><%= turno.medico %></td>
-                                <td><%= turno.practica || 'Sin práctica' %></td>
-                                <td><%= turno.estado %></td>
-                                </tr>
-                            <% }) %>
-                            </tbody>
-                        </table>
+
+            <% if (locals.proximoTurno) { %>
+                <div class="tarjeta-proximo-turno">
+                    <div class="icono-reloj">
+                        <i class="fa-regular fa-clock"></i>
                     </div>
-                    
-                    <% } else { %>
-                    <p>No tenés turnos registrados.</p>
-                <% } %>
+                    <div class="info-turno">
+                        <h3>Próximo Turno Confirmado</h3>
+                        <p class="fecha-grande">
+                            <%= new Date(proximoTurno.fecha_hora).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) %>
+                            a las <%= new Date(proximoTurno.fecha_hora).toLocaleTimeString('es-AR', { hour: '2-digit', minute:'2-digit' }) %> hs
+                        </p>
+                        <p class="medico"><i class="fa-solid fa-user-doctor"></i> Dr/a. <%= proximoTurno.medico_nombre %></p>
+                        <p class="ubicacion"><i class="fa-solid fa-location-dot"></i> Centro de Ojos Chivilcoy</p>
+                    </div>
+                    <div class="estado-badge confirmado">
+                        Confirmado
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="tarjeta-proximo-turno vacio">
+                    <div class="info-turno">
+                        <h3>No tienes turnos próximos</h3>
+                        <p>¿Necesitas ver a un especialista?</p>
+                    </div>
+                    <a href="/panelPacientes/nuevo-turno" class="btn-link">Agendar ahora</a>
+                </div>
+            <% } %>
 
-                <div class="tabla-recetas-general"></div>
-            </div>
-            
+            <div class="grid-dashboard">
+                
+                <div class="card-dashboard">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-prescription-bottle-medical"></i> Últimas Recetas</h2>
+                        <a href="/panelPacientes/recetas" class="ver-todo">Ver todas</a>
+                    </div>
+                    <div class="card-body">
+                        <% if (locals.ultimasRecetas && ultimasRecetas.length > 0) { %>
+                            <ul class="lista-recetas">
+                                <% ultimasRecetas.forEach(receta => { %>
+                                    <li>
+                                        <div class="info-receta">
+                                            <span class="fecha"><%= new Date(receta.fecha).toLocaleDateString('es-AR') %></span>
+                                            <strong><%= receta.tratamiento %></strong>
+                                            <span class="doctor">Dr. <%= receta.medico_nombre %></span>
+                                        </div>
+                                        <div class="accion-receta">
+                                            <% if (receta.archivo_firma_digital) { %>
+                                                <a href="/public/recetas/<%= receta.archivo_firma_digital %>" target="_blank" class="btn-icon" title="Descargar PDF">
+                                                    <i class="fa-solid fa-file-pdf"></i>
+                                                </a>
+                                            <% } else { %>
+                                                <span class="badge-pendiente">En proceso</span>
+                                            <% } %>
+                                        </div>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fa-solid fa-file-medical"></i>
+                                <p>No hay recetas recientes.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
 
-        </div>
-            
+                <div class="card-dashboard">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-list-check"></i> Historial de Turnos</h2>
+                        <a href="/panelPacientes/turnos" class="ver-todo">Ver todos</a>
+                    </div>
+                    <div class="card-body padding-0">
+                        <% if (locals.historialTurnos && historialTurnos.length > 0) { %>
+                            <div class="table-responsive">
+                                <table class="tabla-resumen">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Médico</th>
+                                            <th>Estado</th>
+                                    </thead>
+                                    <tbody>
+                                        <% historialTurnos.forEach(turno => { %>
+                                            <tr>
+                                                <td>
+                                                    <div style="font-weight: 600;">
+                                                        <%= new Date(turno.fecha_hora).toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit'}) %>
+                                                    </div>
+                                                    <small style="color: #888;">
+                                                        <%= new Date(turno.fecha_hora).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) %> hs
+                                                    </small>
+                                                </td>
+                                                
+                                                <td><%= turno.medico_nombre %></td>
+                                                
+                                                <td>
+                                                    <% 
+                                                        let clase = 'pendiente';
+                                                        if(turno.id_estado_turno == 3) clase = 'confirmado';
+                                                        else if(turno.id_estado_turno == 4) clase = 'completado';
+                                                        else if(turno.id_estado_turno == 5) clase = 'cancelado';
+                                                    %>
+                                                    <span class="badge-estado <%= clase %>">
+                                                        <%= turno.estado_nombre %>
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fa-regular fa-calendar-xmark"></i>
+                                <p>No hay historial disponible.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+            </div> </div>
     </div>
 
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <!-- Bootstrap necesario para el modal) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            $('#cobertura').select2({
-                placeholder: "Escribe aquí",
-                allowClear: true,
-                width: '100%',
-                minimumInputLength: 0,
-                matcher: function(params, data) {
-                    if ($.trim(params.term) === '') {
-                        return data;
-                    }
-                    if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) === 0) {
-                        return data;
-                    }
-                    return null;
-                }
-            });
-
-            $('#cobertura').on('change', function() {
-                const obraSocialId = $(this).val();
-                fetch(`/medicos/por-obra-social/${obraSocialId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const medicosContainer = document.getElementById('tabla-medicos');
-                        medicosContainer.innerHTML = ''; // Limpiar el contenedor de médicos
-                        if (data.length > 0) {
-                            data.forEach(medico => {
-                                medicosContainer.innerHTML += `
-                                    <tr>
-                                        <td class="contenedor-id">${medico.id}</td>
-                                        <td class="contenedor-nombre">${medico.nombre_medico}</td>
-                                        <td>${medico.telefono}</td>
-                                    </tr>
-                                `;
-                            });
-                        } else {
-                            medicosContainer.innerHTML = '<tr><td colspan="4">No hay médicos disponibles para esta obra social.</td></tr>';
-                        }
-                    })
-                    .catch(error => {
-                        const medicosContainer = document.getElementById('tabla-medicos');
-                        medicosContainer.innerHTML = '<tr><td colspan="4">Error al cargar los médicos.</td></tr>';
-                    });
-            });
-
-        });
-
-
-        $(document).ready(function() { //Escucha el evento input en el campo de búsqueda y ejecuta la función cada vez que se ingresa texto.
-            $('#buscador-turnos').on('input', function() {
-                let valorBusqueda = $(this).val().toLowerCase();
-        
-                $('#tabla-turnos tr').filter(function() {
-                    $(this).toggle(
-                        $(this).find('td:nth-child(2)').text().toLowerCase().indexOf(valorBusqueda) > -1 || // Buscar por médico
-                        $(this).find('td:nth-child(3)').text().toLowerCase().indexOf(valorBusqueda) > -1    // Buscar por paciente
-                    );
-                });
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-          $('#guardarFechas').on('click', function() {
-            const fechaDesde = $('#fechaDesde').val();
-            const fechaHasta = $('#fechaHasta').val();
-      
-            if (fechaDesde && fechaHasta) {
-              // Enviar datos al servidor
-              $.ajax({
-                url: '/turnos/desdeHorarios',
-                method: 'GET',
-                data: { fechaDesde, fechaHasta },
-                success: function(response) {
-                  alert(`Se han generado ${response.turnosCreados} turnos.`);
-                  // Cerrar el modal
-                  $('#modalGenerarTurnos').modal('hide');
-                },
-                error: function() {
-                  alert('Error al generar turnos.');
-                }
-              });
-            } else {
-              alert('Por favor seleccione ambas fechas.');
-            }
-          });
-        });
-      </script>
 </body>
 </html>

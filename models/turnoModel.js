@@ -440,6 +440,31 @@ class TurnoModel{
         });
     }
 
+    listarTurnosPorPaciente(idPaciente, callback) {
+        const sql = `
+            SELECT 
+                t.id, t.fecha_hora, t.id_estado_turno,
+                COALESCE(u.nombre, 'Médico no disponible') as medico_nombre,
+                COALESCE(et.nombre, 'Desconocido') as estado_nombre,
+                COALESCE(pr.nombre, 'Consulta General') as practica
+            FROM turnos t
+            LEFT JOIN medicos m ON t.id_medico = m.id
+            LEFT JOIN usuarios u ON m.id_usuario = u.id
+            LEFT JOIN turno_estados et ON t.id_estado_turno = et.id
+            LEFT JOIN practicas pr ON t.id_practica = pr.id
+            WHERE t.id_paciente = ?
+            ORDER BY t.fecha_hora ASC
+        `;
+        
+        conx.query(sql, [idPaciente], (err, results) => {
+            if (err) {
+                console.error("Error SQL:", err);
+                return callback([]);
+            }
+            callback(results);
+        });
+    }
+    
     obtenerPerfil(idPaciente, callback) {
     const query = `
         SELECT 

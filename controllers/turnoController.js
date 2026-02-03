@@ -258,7 +258,7 @@ class TurnoController {
         });
     }
     
-    //funcion para cancelar turnos
+    // Función para cancelar turnos
     async cancelarTurno(req, res) {
         const id = req.params.id;
 
@@ -266,7 +266,7 @@ class TurnoController {
             
             turnoModel.cancelarTurno(id, (result) => {
                 if (!result) {
-                    return res.status(500).send("Error al cancelar el turno.");
+                    return res.status(500).json({ success: false, message: "Error al cancelar el turno en BD." });
                 }
 
                 if (!err && turno && turno.email_paciente) {
@@ -319,11 +319,10 @@ class TurnoController {
                     enviarEmailCancelacion();
                 }
 
-                res.redirect('/turnos'); 
+                res.json({ success: true, message: "Turno cancelado correctamente." }); 
             });
         });
-    } 
-    
+    }
     async obtenerTurnosDisponibles(req, res) {
         const { fecha, id_medico } = req.params;
 

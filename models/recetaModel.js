@@ -38,20 +38,20 @@ class RecetaModel{
     listarPorPaciente(idPaciente) {
         return new Promise((resolve, reject) => {
             const sql = `
-                SELECT r.*, u.nombre as nombre_medico 
+                SELECT r.*, u.nombre as medico_nombre 
                 FROM recetas r
                 INNER JOIN medicos m ON r.id_medico = m.id
                 INNER JOIN usuarios u ON m.id_usuario = u.id
                 WHERE r.id_paciente = ?
                 ORDER BY r.fecha DESC
             `;
+            // Asegúrate que aquí diga 'conx' o 'pool' según corresponda a tu archivo
             conx.query(sql, [idPaciente], (err, results) => {
                 if (err) return reject(err);
                 resolve(results);
             });
         });
     }
-
     editarReceta(idReceta, datos, archivos) {
         return new Promise((resolve, reject) => {
             

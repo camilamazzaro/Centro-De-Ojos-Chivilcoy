@@ -12,55 +12,95 @@ const recetaModel = new RecetaModel();
 const bcrypt = require('bcrypt'); 
 const moment = require('moment');
 
-
-
-class PanelPacientesController{
+class PanelPacientesController {
 
     async mostrarPanelPacientes(req, res) {
         try {
-            const idPaciente = req.session.usuario.id_paciente;
+            const idPaciente = req.session.idPaciente;
+            if (!idPaciente) return res.redirect('/loginPacientes');
 
-            const turnos = await turnoModel.listarTurnosPaciente(idPaciente);
+            console.log("⏳ Cargando panel para paciente:", idPaciente);
 
-            res.render('panel/panelPacientes', {
-                title: 'Panel del Paciente',
-                turnos, 
+            // 1. Carga en Paralelo (Turnos y Recetas)
+            const [todosLosTurnos, recetas] = await Promise.all([
+                new Promise((resolve) => {
+                    turnoModel.listarTurnosPorPaciente(idPaciente, (result) => resolve(result || []));
+                }),
+                recetaModel.listarPorPaciente(idPaciente).catch(() => [])
+            ]);
+
+            // 2. Procesar Próximo Turno (Tarjeta Destacada)
+            const ahora = new Date();
+            let proximoTurno = null;
+
+            // Buscamos el primer turno futuro confirmado/reservado
+            const indexProximo = todosLosTurnos.findIndex(t => {
+                const fechaTurno = new Date(t.fecha_hora);
+                return fechaTurno > ahora && (t.id_estado_turno === 2 || t.id_estado_turno === 3);
             });
+
+            if (indexProximo !== -1) {
+                proximoTurno = todosLosTurnos[indexProximo];
+            }
+
+            // 3. Historial Completo
+            // CAMBIO: Ya NO filtramos el próximo turno. Mostramos TODO en la tabla.
+            // Si quieres ocultarlo de la tabla, descomenta la linea de abajo.
+            let historialTurnos = todosLosTurnos; 
+            // historialTurnos = todosLosTurnos.filter((t, index) => index !== indexProximo);
+
+            // Ordenamos: Los más recientes primero
+            historialTurnos.sort((a, b) => new Date(b.fecha_hora) - new Date(a.fecha_hora));
+
+            res.render('panel/panelPacientes', { 
+                title: 'Mi Panel',
+                proximoTurno: proximoTurno,       
+                historialTurnos: historialTurnos, 
+                ultimasRecetas: recetas.slice(0, 3),   
+                
+                // Datos de sesión para la barra lateral
+                usuario: { 
+                    nombre: req.session.nombre, 
+                    email: req.session.email 
+                },
+                // Variables sueltas por si la barra lateral las usa así
+                nombreUsuario: req.session.nombre,
+                emailUsuario: req.session.email
+            });
+
         } catch (error) {
-            console.error('Error al listar los turnos:', error);
-            res.render('panel/panelPacientes', {
-                title: 'Panel del Paciente',
-                turnos: [],
-                error: 'No se pudieron cargar los turnos',
-            });
+            console.error('🔥 Error en panel:', error);
+            res.status(500).send("Error al cargar el panel.");
         }
     }
 
     async pacienteTurnos(req, res) {
         try {
-            if (!req.session.usuario) {
-                return res.redirect('/loginPacientes');
-            }
+            const idPaciente = req.session.idPaciente;
 
-            const idPaciente = req.session.usuario.id_paciente; 
+            if (!idPaciente) return res.redirect('/loginPacientes');
 
             const turnos = await turnoModel.obtenerPorPaciente(idPaciente);
 
             res.render('pacientes/pacienteTurnos', {
                 title: 'Mis Turnos',
-                user: req.session.usuario,
-                nombreUsuario: req.session.usuario.nombre,
-                emailUsuario: req.session.usuario.email,
+                user: { 
+                    nombre: req.session.nombre,
+                    email: req.session.email
+                },
+                // FORZAMOS EL ENVÍO DE DATOS
+                nombreUsuario: req.session.nombre,
+                emailUsuario: req.session.email,
                 turnos: turnos,
                 moment: moment
             });
         } catch (error) {
             console.error(error);
-            res.render('panel/pacienteTurnos', {
+            res.render('pacientes/pacienteTurnos', {
                 title: 'Mis Turnos',
-                user: req.session.usuario || {},
-                nombreUsuario: req.session.usuario?.nombre || 'Invitado',
-                emailUsuario: req.session.usuario?.email || '',
+                user: { nombre: req.session.nombre, email: req.session.email },
+                nombreUsuario: req.session.nombre,
+                emailUsuario: req.session.email,
                 turnos: [],
                 error: 'Error al cargar los turnos.',
                 moment: moment
@@ -70,22 +110,22 @@ class PanelPacientesController{
 
     async nuevoTurno(req, res) {
         try {
-            if (!req.session.usuario) {
-                return res.redirect('/loginPacientes');
-            }
+            const idPaciente = req.session.idPaciente;
 
-            const idPaciente = req.session.usuario.id_paciente;
+            if (!idPaciente) return res.redirect('/loginPacientes');
 
             turnoModel.obtenerPerfil(idPaciente, (datosPaciente) => {
-                
                 pacienteModel.obtenerObrasSociales((obrasSociales) => {
-
                     res.render('pacientes/pacienteNuevoTurno', {
                         title: 'Solicitar Nuevo Turno',
-                        user: req.session.usuario,
-                        
+                        user: {
+                            nombre: req.session.nombre,
+                            email: req.session.email
+                        },
+                        // FORZAMOS EL ENVÍO DE DATOS
+                        nombreUsuario: req.session.nombre,
+                        emailUsuario: req.session.email,
                         paciente: datosPaciente, 
-
                         obras_sociales: obrasSociales || []
                     });
                 });
@@ -110,7 +150,7 @@ class PanelPacientesController{
 
     async reservarTurno(req, res) {
         try {
-            const idPaciente = req.session.usuario.id_paciente;
+            const idPaciente = req.session.idPaciente;
             const { id_turno, id_practica } = req.body;
 
             if (!id_turno) return res.json({ success: false, mensaje: "Error: No se seleccionó un turno." });
@@ -139,7 +179,20 @@ class PanelPacientesController{
         try {
             res.render('pacientes/perfilPaciente', {
                 title: 'Mi Perfil',
-                user: req.session.usuario 
+                user: { 
+                    id: req.session.idUsuario,
+                    nombre: req.session.nombre,
+                    email: req.session.email,
+                    id_paciente: req.session.idPaciente
+                },
+                // --- AQUÍ ESTABA EL PROBLEMA ---
+                // Pasamos las variables con los nombres que espera tu app.js/sidebar
+                nombreUsuario: req.session.nombre,
+                emailUsuario: req.session.email,
+                usuario: { 
+                    nombre: req.session.nombre, 
+                    email: req.session.email 
+                }
             });
         } catch (error) {
             console.error(error);
@@ -149,24 +202,22 @@ class PanelPacientesController{
 
     async actualizarDatosUsuario(req, res) {
         try {
-            const idUsuario = req.session.usuario.id;
-            const idPaciente = req.session.usuario.id_paciente; 
+            const idUsuario = req.session.idUsuario;
+            const idPaciente = req.session.idPaciente; 
             const { nombre, email } = req.body;
 
             if (!nombre || !email) {
                 return res.json({ success: false, mensaje: 'Todos los campos son obligatorios.' });
             }
 
-            // Actualizo ambas tablas (usuarios y pacientes)
             await usuarioModel.actualizarDatosSimples(idUsuario, nombre, email);
 
             if (idPaciente) {
                 await pacienteModel.actualizarDatosBasicos(idPaciente, nombre, email);
             }
 
-            // Actualizo la sesión para que se vea reflejado en la web
-            req.session.usuario.nombre = nombre;
-            req.session.usuario.email = email;
+            req.session.nombre = nombre;
+            req.session.email = email;
             
             req.session.save(err => {
                 if (err) console.error("Error guardando sesión", err);
@@ -181,7 +232,7 @@ class PanelPacientesController{
 
     async cambiarPassword(req, res) {
         try {
-            const idUsuario = req.session.usuario.id;
+            const idUsuario = req.session.idUsuario;
             const { currentPassword, newPassword, confirmPassword } = req.body;
 
             if (newPassword !== confirmPassword) {
@@ -213,14 +264,26 @@ class PanelPacientesController{
 
     async misRecetas(req, res) {
         try {
-            const idPaciente = req.session.usuario.id_paciente;
+            const idPaciente = req.session.idPaciente;
+
+            if (!idPaciente) return res.redirect('/loginPacientes');
 
             const recetas = await recetaModel.listarPorPaciente(idPaciente);
 
             res.render('pacientes/pacienteRecetas', {
                 title: 'Mis Recetas',
-                user: req.session.usuario, 
-                recetas: recetas
+                user: {
+                    nombre: req.session.nombre,
+                    email: req.session.email
+                },
+                recetas: recetas,
+                // --- AQUÍ TAMBIÉN AGREGAMOS LOS DATOS ---
+                nombreUsuario: req.session.nombre,
+                emailUsuario: req.session.email,
+                usuario: { 
+                    nombre: req.session.nombre, 
+                    email: req.session.email 
+                }
             });
 
         } catch (error) {

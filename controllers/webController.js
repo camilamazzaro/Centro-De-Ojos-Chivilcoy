@@ -10,6 +10,9 @@ const horarioModel = new HorarioModel();
 const UsuarioModel = require('../models/usuariosModel');
 const usuarioModel = new UsuarioModel();
 
+const TurnoModel = require('../models/turnoModel');
+const turnoModel = new TurnoModel();
+
 const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken'); //pide la librería jwt
@@ -158,11 +161,6 @@ class WebController{
         }
     }
 
-    async mostrarPanelPacientes(req,res){
-        res.render('web/panel-pacientes', {
-            title: 'Centro de Ojos Chivilcoy - Panel de Pacientes',
-        });
-    }
     async mostrarRegistroPacientes(req,res){
         try {
             // Obtener las obras sociales para el formulario
@@ -195,7 +193,6 @@ class WebController{
         try {
             const usuario = await usuarioModel.buscarPorEmail(email);
 
-            console.log("Usuario encontrado: ", usuario);
             if (!usuario || usuario.id_categoriaUsuario !== 4) {
                 return res.status(401).json({ error: 1, message: 'Usuario no encontrado o sin permisos.' });
             }
@@ -206,16 +203,19 @@ class WebController{
                 return res.status(401).json({ error: 1, message: 'Contraseña incorrecta.' });
             }
 
-            // Podés guardar info en sesión si estás usando express-session:
-            req.session.usuario = {
-                id: usuario.id,
-                nombre: usuario.nombre,
-                email: usuario.email,
-                id_categoriaUsuario: usuario.id_categoriaUsuario,
-                id_paciente: usuario.id_paciente
-            };
+            // guardo las variables sueltas para que el middleware las detecte
+            req.session.idUsuario = usuario.id;
+            req.session.categoria = usuario.id_categoriaUsuario;
+            req.session.idPaciente = usuario.id_paciente; 
+            req.session.nombre = usuario.nombre;
+            req.session.email = usuario.email;
 
-            return res.json({ error: 0, message: 'Login exitoso.', usuario: req.session.usuario });
+            req.session.save(err => {
+                if (err) {
+                    return res.status(500).json({ error: 1, message: 'Error de sesión' });
+                }
+                return res.json({ error: 0, message: 'Login exitoso.' });
+            });
 
         } catch (err) {
             console.error('Error en login:', err);

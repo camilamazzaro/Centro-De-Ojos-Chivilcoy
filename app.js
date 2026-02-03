@@ -61,6 +61,7 @@ const rutasWeb = require('./routes/webRoute');
 const rutasPanelPacientes = require('./routes/panelPacientesRoute.js');
 const rutasLogin = require('./routes/loginRoute.js');
 const rutasPanelSecretaria = require('./routes/panelSecretariasRoute');
+const rutasPanelMedico = require('./routes/panelMedicosRoute');
 
 
 // rutas públicas
@@ -76,6 +77,7 @@ app.use('/', rutasHorarios);
 app.use('/', rutasPanelAdmin);
 app.use('/', rutasPanelPacientes);
 app.use('/', rutasPanelSecretaria);
+app.use('/', rutasPanelMedico);
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
