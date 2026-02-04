@@ -15,8 +15,12 @@ router.get('/panelMedicos',autenticar, panelMedicosController.mostrarPanelGenera
 router.get('/panelMedicos/calendarioTurnos', autenticar, panelMedicosController.mostrarCalendario);
 
 // Esta ruta también queda protegida automáticamente
-router.get('/calendario/obtenerTurnos',autenticar, panelMedicosController.obtenerTurnosCalendarioMedicos);
+router.get('/calendarioMedico/obtenerTurnos',autenticar, panelMedicosController.obtenerTurnosCalendarioMedicos);
 
 router.post('/turnos/confirmar/:id', autenticar, panelMedicosController.confirmarTurno);
+
+router.get('/recetas', autenticar, panelMedicosController.mostrarMisRecetas);
+router.get('/recetas/nueva', autenticar, panelMedicosController.mostrarFormularioReceta);
+router.post('/recetas/guardar', autenticar, panelMedicosController.guardarReceta);
 
 module.exports = router;

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../commons/head') %>
+    <title>Mis Recetas</title>
+    <link rel="stylesheet" href="/public/css/panel/panel_medicos.css">
+    
+    <style>
+        .tabla-recetas { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .tabla-recetas table { margin-bottom: 0; }
+        .btn-pdf { color: #e74c3c; font-size: 1.2rem; transition: 0.2s; }
+        .btn-pdf:hover { color: #c0392b; transform: scale(1.1); }
+        .buscador-container { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    </style>
+</head>
+
+<body>
+    
+    <div class="contenedor-flex">
+
+        <div class="contenedor-barra-lateral">
+             <%- include('../commons/barra-lateral-medicos') %>
+        </div>
+
+        <div class="contenedor-calendario"> 
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fa-solid fa-file-prescription"></i> Mis Recetas</h2>
+            </div>
+
+            <div class="buscador-container">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
+                    <input type="text" id="buscadorRecetas" class="form-control" placeholder="Buscar por nombre de paciente o diagnóstico...">
+                </div>
+            </div>
+
+            <div class="tabla-recetas">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Paciente</th>
+                            <th>DNI</th>
+                            <th>Diagnóstico</th>
+                            <th class="text-center">Archivo</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCuerpo">
+                        <% if (recetas && recetas.length > 0) { %>
+                            <% recetas.forEach(receta => { %>
+                                <tr>
+                                    <td>
+                                        <%= new Date(receta.fecha).toLocaleDateString('es-AR') %>
+                                    </td>
+                                    <td class="fw-bold"><%= receta.nombre_paciente %></td>
+                                    <td><%= receta.dni_paciente %></td>
+                                    <td><%= receta.diagnostico || '-' %></td>
+                                    
+                                    <td class="text-center">
+    <a href="/receta/ver/<%= receta.id %>" target="_blank" class="btn-pdf" title="Ver/Descargar PDF">
+        <i class="fa-solid fa-file-pdf"></i>
+    </a>
+</td>
+
+                                    <td class="text-end">
+                                        <a href="/paciente/historias-clinicas/<%= receta.id_paciente %>" class="btn btn-sm btn-outline-secondary" title="Ver Historia">
+                                            <i class="fa-solid fa-user-clock"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
+                                    <i class="fa-solid fa-folder-open mb-2" style="font-size: 2rem;"></i>
+                                    <p>Aún no has generado recetas.</p>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        
+    </div>
+
+    <script>
+        document.getElementById('buscadorRecetas').addEventListener('keyup', function() {
+            const valor = this.value.toLowerCase();
+            const filas = document.querySelectorAll('#tablaCuerpo tr');
+
+            filas.forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                if (texto.includes(valor)) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

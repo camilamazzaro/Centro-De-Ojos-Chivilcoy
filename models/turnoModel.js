@@ -279,14 +279,17 @@ class TurnoModel{
     
 
     //Obtenemos datos de turnos para mostrar en el Calendario de Turnos, tanto de panel secretarias como de médicos
+    // Obtenemos datos de turnos para mostrar en el Calendario
     seleccionarTurnosCalendario(medicos, estado, fechaInicio, fechaFin, callback) {
         let sql = `
             SELECT 
                 T.id, 
                 T.fecha_hora,
                 T.id_estado_turno,
+                T.id_paciente,
                 U.nombre AS medico_nombre, 
-                P.nombre AS paciente_nombre 
+                P.nombre AS paciente_nombre,
+                T.id_medico 
             FROM turnos T 
             LEFT JOIN medicos M ON T.id_medico = M.id 
             LEFT JOIN usuarios U ON M.id_usuario = U.id 
@@ -296,12 +299,24 @@ class TurnoModel{
         
         let parametros = [fechaInicio, fechaFin];
 
-        // Filtro de médicos
-        if (medicos && medicos.length > 0 && !medicos.includes('todos')) {
-            const placeholders = medicos.map(() => '?').join(',');
-            sql += ` AND T.id_medico IN (${placeholders})`;
-            parametros.push(...medicos);
+        // --- CORRECCIÓN DE FILTRO DE MÉDICOS ---
+        
+        // 1. Normalizamos: Si es un string único, lo convertimos en array
+        let listaMedicos = [];
+        if (Array.isArray(medicos)) {
+            listaMedicos = medicos;
+        } else if (medicos && medicos !== 'todos') {
+            listaMedicos = [medicos]; // Convertimos "5" en ["5"]
         }
+
+        // 2. Aplicamos el filtro si hay médicos y NO está la palabra 'todos'
+        if (listaMedicos.length > 0 && !listaMedicos.includes('todos')) {
+            const placeholders = listaMedicos.map(() => '?').join(',');
+            sql += ` AND T.id_medico IN (${placeholders})`;
+            parametros.push(...listaMedicos);
+        }
+
+        // --- FIN CORRECCIÓN ---
 
         // Filtro de estado
         if (estado && estado !== 'todos') {
@@ -493,6 +508,35 @@ class TurnoModel{
                 return callback(err, null);
             }
             callback(null, results[0] || null);
+        });
+    }
+
+    // Listar los próximos N turnos futuros (para el dashboard)
+    listarProximosTurnos(idMedico, limite, callback) {
+        const sql = `
+            SELECT 
+                t.fecha_hora,
+                p.nombre AS nombre_paciente,
+                pr.nombre AS nombre_practica,
+                te.nombre AS nombre_estado,
+                t.id_estado_turno
+            FROM turnos t
+            JOIN pacientes p ON t.id_paciente = p.id
+            LEFT JOIN practicas pr ON t.id_practica = pr.id
+            JOIN turno_estados te ON t.id_estado_turno = te.id
+            WHERE t.id_medico = ?
+            AND t.fecha_hora > NOW() -- Solo turnos futuros
+            AND t.id_estado_turno IN (2, 3) -- Solo Reservados (2) o Confirmados (3)
+            ORDER BY t.fecha_hora ASC
+            LIMIT ?
+        `;
+
+        conx.query(sql, [idMedico, limite], (err, results) => {
+            if (err) {
+                console.error("Error en listarProximosTurnos:", err);
+                return callback([]);
+            }
+            callback(results);
         });
     }
 }

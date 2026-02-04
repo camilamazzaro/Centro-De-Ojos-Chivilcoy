@@ -31,18 +31,27 @@ app.use((req, res, next) => {
     // Si hay un usuario en sesión, pasamos sus datos a locals
     if (req.session && req.session.idUsuario) {
         res.locals.isLogged = true;
-        res.locals.nombreUsuario = req.session.nombreUsuario;
+    
+        res.locals.nombreUsuario = req.session.nombre; 
+        res.locals.emailUsuario = req.session.email;
+        
         res.locals.categoria = req.session.categoria;
         res.locals.idUsuario = req.session.idUsuario;
-        res.locals.nombreUsuario = req.session.nombreUsuario; 
-        res.locals.emailUsuario = req.session.emailUsuario;
+        
+        res.locals.usuario = {
+            nombre: req.session.nombre,
+            email: req.session.email,
+            id: req.session.idUsuario
+        };
+
     } else {
         // Si no hay sesión, definimos valores por defecto para que EJS no falle
         res.locals.isLogged = false;
-        res.locals.nombreUsuario = null;
+        res.locals.nombreUsuario = 'Invitado'; 
         res.locals.categoria = null;
         res.locals.emailUsuario = '';
         res.locals.idUsuario = null;
+        res.locals.usuario = null;
     }
     next();
 });

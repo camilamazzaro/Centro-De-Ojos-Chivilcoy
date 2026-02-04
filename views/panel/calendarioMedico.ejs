@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../commons/head') %>
+    <title>Mi Agenda</title>
+    <link rel="stylesheet" href="/public/css/panel_admin.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        .fc-event { cursor: pointer; }
+        .referencia-colores { margin-bottom: 15px; font-size: 0.9em; display: flex; gap: 15px; }
+        .badge-ref { display: flex; align-items: center; gap: 5px; }
+        .badge-box { width: 15px; height: 15px; border-radius: 3px; }
+    </style>
+</head>
+
+<body>
+    
+    <div class="contenedor-flex">
+
+        <div class="contenedor-barra-lateral">
+             <%- include('../commons/barra-lateral-medicos') %>
+        </div>
+
+        <div class="contenedor-calendario">
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="fa-solid fa-calendar-days"></i> Mi Agenda</h2>
+            </div>
+
+            <form id="filtroEstadoForm" class="filtros-turnos sombra" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px;">
+                <span style="font-weight: bold; margin-right: 10px;">Ver:</span>
+                <label style="margin-right: 15px;"><input type="radio" name="estado" value="todos" checked> Todos</label>
+                <label style="margin-right: 15px;"><input type="radio" name="estado" value="1"> Disponibles</label>
+                <label style="margin-right: 15px;"><input type="radio" name="estado" value="2"> Reservados</label>
+                <label style="margin-right: 15px;"><input type="radio" name="estado" value="3"> Confirmados</label>
+                <label><input type="radio" name="estado" value="4"> Atendidos/Cancelados</label>
+            </form>
+
+            <div class="referencia-colores">
+                <div class="badge-ref"><div class="badge-box" style="background-color: #198754;"></div> Disponible</div>
+                <div class="badge-ref"><div class="badge-box" style="background-color: #ffc107;"></div> Reservado</div>
+                <div class="badge-ref"><div class="badge-box" style="background-color: #0d6efd;"></div> Confirmado</div>
+                <div class="badge-ref"><div class="badge-box" style="background-color: #6c757d;"></div> Cancelado</div>
+            </div>
+
+            <div id="calendar" class="sombra" style="background: white; padding: 20px; border-radius: 8px;"></div>
+        </div>
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const filtroEstadoForm = document.getElementById('filtroEstadoForm');
+            
+            const idMedicoLogueado = "<%= idMedico || '' %>";
+            
+            console.log("👨‍⚕️ ID Médico Logueado:", idMedicoLogueado);
+
+            let selectedEstado = 'todos'; 
+        
+            // Actualizar calendario al cambiar filtro
+            filtroEstadoForm.addEventListener('change', function() {
+                const radioButtons = document.querySelectorAll('input[name="estado"]');
+                radioButtons.forEach(radio => {
+                    if (radio.checked) selectedEstado = radio.value;
+                });
+                calendar.refetchEvents();
+            });
+        
+            // Configuración FullCalendar
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'es',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                
+                // 2. FUNCIÓN PARA OBTENER EVENTOS
+                events: function(info, successCallback, failureCallback) {
+                    const url = '/calendarioMedico/obtenerTurnos'; 
+                    
+                    const params = new URLSearchParams({
+                        start: info.startStr,
+                        end: info.endStr,
+                        medicos: idMedicoLogueado, // <--- ¡AQUÍ ESTÁ LA MAGIA! Enviamos solo nuestro ID
+                        estado: selectedEstado 
+                    });
+                    console.log("📡 Solicitando turnos con URL:", `${url}?${params}`); // DEBUG
+                    fetch(`${url}?${params}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Error en la red');
+                            return response.json();
+                        })
+                        .then(data => {
+                            if(data.error) {
+                                console.error(data.error);
+                                failureCallback(data.error);
+                            } else {
+                                successCallback(data);
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            failureCallback(err);
+                        });
+                },
+
+                // Configuración visual
+                hiddenDays: [0], // Oculta domingo (0) si quieres
+                slotMinTime: '08:00:00',
+                slotMaxTime: '21:00:00',
+                slotDuration: '00:15:00',
+                slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false },
+                allDaySlot: false,
+                height: 'auto',
+                expandRows: true,
+                nowIndicator: true, // Línea roja de la hora actual
+
+                // 3. CLIC EN UN TURNO
+                eventClick: function(info) {
+                    const props = info.event.extendedProps;
+                    const nombrePaciente = props.pacienteNombre || 'Sin paciente';
+                    const estadoId = props.estadoTurno;
+                    
+                    let estadoTexto = 'Desconocido';
+                    if(estadoId == 1) estadoTexto = 'Disponible';
+                    if(estadoId == 2) estadoTexto = 'Reservado';
+                    if(estadoId == 3) estadoTexto = 'Confirmado';
+                    if(estadoId == 4) estadoTexto = 'Atendido/Cancelado';
+
+                    // Configuramos la alerta
+                    let swalOptions = {
+                        title: `${info.event.title}`,
+                        html: `
+                            <div style="text-align: center;">
+                                <p><strong>📅 Horario:</strong> ${info.event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} hs</p>
+                                <p><strong>Paciente:</strong> ${nombrePaciente}</p>
+                                <p><strong>ℹ️ Estado:</strong> ${estadoTexto}</p>
+                            </div>
+                        `,
+                        icon: 'info',
+                        showCancelButton: true,
+                        cancelButtonText: 'Cerrar',
+                        confirmButtonText: 'Ver Historia Clínica'
+                    };
+
+                    // Si está Confirmado (3), mostramos botón de Atender/Historia
+                    if (estadoId === 3) {
+                        swalOptions.confirmButtonColor = '#005b6f';
+                        swalOptions.confirmButtonText = 'Iniciar Consulta / Ver Historia';
+                    } else if (estadoId === 1) {
+                        swalOptions.showConfirmButton = false; // Si está libre, el médico no hace nada aquí
+                    }
+
+                    Swal.fire(swalOptions).then((result) => {
+        if (result.isConfirmed && estadoId === 3) {
+            
+            // Validamos que haya ID (por si acaso es un error de base de datos)
+            if (props.idPaciente) {
+                // CAMBIO: Agregamos '/' al inicio para que sea ruta absoluta
+                window.location.href = `/paciente/historias-clinicas/${props.idPaciente}`;
+                
+                // Opcional: Feedback visual
+                // Swal.fire('Cargando...', 'Abriendo historia clínica', 'success');
+            } else {
+                Swal.fire('Error', 'No se encontró el ID del paciente en este turno.', 'error');
+            }
+        }
+    });
+                }
+            });
+        
+            calendar.render();
+        });
+    </script>
+</body>
+</html>

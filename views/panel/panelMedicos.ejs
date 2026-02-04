@@ -1,315 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel General</title>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/public/css/panel_admin.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" href="/public/img/Icono redondeado CMV .png" type="image/x-icon">  
+    <%- include('../commons/head', { title: 'Portal Médico' }) %>
+    <link rel="stylesheet" href="/public/css/panel/panel_medicos.css">
 </head>
 <body>
+
     <div class="contenedor-flex">
         <div class="contenedor-barra-lateral">
-            <!-- Mostrar el menú correspondiente basado en el idCategoriaUsuario -->
-            <% if (categoria  === 1) { %>
-                <%- include('../commons/barra-lateral-admin') %> <!-- Menú para administradores -->
-            <% } else if (categoria  === 3) { %>
-                <%- include('../commons/barra-lateral-secretarias') %> <!-- Menú para secretarias -->
-            <% } else if (categoria === 2) { %>
-                <%- include('../commons/barra-lateral-medicos') %> <!-- Menú para médicos -->
-            <% } else { %>
-                <p>No tienes permisos para ver este contenido.</p>
-            <% } %>
+             <%- include('../commons/barra-lateral-medicos') %>
         </div>
+
         <div class="contenedor-panel-general">
-            <h1>Centro de Ojos Chivilcoy</h1>
-            <div class="botones-panel">
-                <a href="pacientes/agregar/0">Agregar Paciente</a>
-                <a href="turnos/agregar/0">Agendar Turno</a>
-                <a href="#" class="generar-turnos" data-bs-toggle="modal" data-bs-target="#modalGenerarTurnos">Generar Turnos</a>
-                <div class="modal fade" id="modalGenerarTurnos" tabindex="-1" aria-labelledby="modalGenerarTurnosLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="modalGenerarTurnosLabel">Generar Turnos</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <form id="formGenerarTurnos">
-                            <div class="mb-3">
-                              <label for="fechaDesde" class="form-label">Fecha Desde</label>
-                              <input type="date" class="form-control" id="fechaDesde" name="fechaDesde" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="fechaHasta" class="form-label">Fecha Hasta</label>
-                              <input type="date" class="form-control" id="fechaHasta" name="fechaHasta" required>
-                            </div>
-                          </form>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                          <button type="button" class="btn btn-primary" id="guardarFechas">Guardar</button>
-                        </div>
-                      </div>
+            
+            <div class="header-medico">
+                <div class="saludo">
+                    <h1>Dr/a. <%= usuario.nombre.split(' ').slice(-1) %></h1> <p class="fecha-hoy"><i class="fa-regular fa-calendar"></i> <%= new Date().toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'}) %></p>
+                </div>
+                <div class="kpi-container">
+                    <div class="kpi-card">
+                        <span class="numero"><%= stats.totalHoy %></span>
+                        <span class="label">Pacientes Hoy</span>
                     </div>
-                  </div>
+                </div>
             </div>
 
+            <div class="grid-medico">
+                
+                <div class="col-principal">
+                    
+                    <% if (proximoPaciente) { %>
+                        <div class="card-proximo-paciente">
+                            <div class="titulo-card">
+                                <i class="fa-solid fa-user-clock"></i> A continuación
+                            </div>
+                            <div class="info-paciente-grande">
+                                <div class="avatar-placeholder">
+                                    <%= proximoPaciente.nombre_paciente.charAt(0) %>
+                                </div>
+                                <div class="datos">
+                                    <h2><%= proximoPaciente.nombre_paciente %></h2>
+                                    <p class="dni">DNI: <%= proximoPaciente.dni %></p>
+                                    <div class="hora-turno">
+                                        <i class="fa-regular fa-clock"></i> 
+                                        <%= new Date(proximoPaciente.fecha_hora).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) %> hs
+                                    </div>
+                                    <p class="motivo">Práctica: <strong><%= proximoPaciente.nombre_practica || 'Consulta General' %></strong></p>
+                                </div>
+                            </div>
+                            <div class="acciones-paciente">
+                                <a href="/paciente/historias-clinicas/<%= proximoPaciente.id_paciente %>" class="btn-primario">Ver Historia</a>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div class="card-proximo-paciente vacio">
+                            <i class="fa-solid fa-mug-hot"></i>
+                            <h3>No hay pacientes próximos asignados por ahora.</h3>
+                        </div>
+                    <% } %>
 
-            <% if (locals.turnosReservados && turnosReservados.length > 0) { %>
-            <div class="card shadow-sm mt-4 mb-4 border-warning">
-                <div class="card-header bg-warning bg-opacity-10">
-                    <h5 class="mb-0 text-dark"><i class="fa-solid fa-clock-rotate-left me-2"></i> Turnos Pendientes de Confirmación</h5>
+
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light sticky-top">
-                                <tr>
-                                    <th>Fecha y Hora</th>
-                                    <th>Paciente</th>
-                                    <th>Médico</th>
-                                    <th class="text-end">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% turnosReservados.forEach(turno => { %>
-                                    <% let date = new Date(turno.fecha_hora) %>
-                                    <tr id="fila-turno-<%= turno.id %>">
-                                        <td>
-                                            <strong><%= date.getDate() %>/<%= date.getMonth() + 1 %></strong> - 
-                                            <%= date.getHours() %>:<%= String(date.getMinutes()).padStart(2, '0') %> hs
-                                        </td>
-                                        <td><%= turno.nombre_paciente %> <%= turno.apellido_paciente %></td>
-                                        <td><%= turno.nombre_medico %></td>
-                                        <td class="text-end">
-                                            <button class="btn btn-success btn-sm btn-confirmar" data-id="<%= turno.id %>">
-                                                <i class="fa-solid fa-check"></i> Confirmar
-                                            </button>
-                                        </td>
-                                    </tr>
+
+                <div class="col-lateral">
+                    <div class="card-agenda">
+                        <h3>Agenda de Hoy</h3>
+                        <div class="lista-agenda">
+                            <% if (turnosHoy.length > 0) { %>
+                                <% turnosHoy.forEach(turno => { 
+                                    const esProximo = proximoPaciente && turno.id === proximoPaciente.id;
+                                    const yaPaso = turno.id_estado_turno === 4; // Completado
+                                %>
+                                    <div class="item-agenda <%= esProximo ? 'activo' : '' %> <%= yaPaso ? 'pasado' : '' %>">
+                                        <div class="hora">
+                                            <%= new Date(turno.fecha_hora).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) %>
+                                        </div>
+                                        <div class="detalle">
+                                            <strong><%= turno.nombre_paciente %></strong>
+                                            <span><%= turno.nombre_practica || 'Consulta' %></span>
+                                        </div>
+                                        <div class="estado-dot"></div>
+                                    </div>
                                 <% }) %>
-                            </tbody>
-                        </table>
+                            <% } else { %>
+                                <p class="text-center p-3">Agenda libre hoy.</p>
+                            <% } %>
+                        </div>
                     </div>
                 </div>
+
             </div>
-            <% } %>
-
-            <div class="contenedores-previews-medicos">
-                <div class="listado-medicos-general">
-                    <h4>Médicos</h4>
-                    <table class="table table-striped table-bordered border rounded shadow-lg">
-                        <thead>
-                            <tr>
-                                <th class="col">ID</th>
-                                <th class="col">Nombre</th>
-                                <th class="col">Teléfono</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-medicos">
-                            <% medicos.forEach(function(medico) { %>
-                                <tr>
-                                    <td class="contenedor-id"><%= medico.id %></td>
-                                    <td class="contenedor-nombre"><%= medico.nombre_medico %></td>
-                                    <td><%= medico.telefono %></td>
-                                </tr>
-                            <% }); %>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="buscador-coberturas">
-                    <h4>Buscar Obra Social</h4>
-                    <p>Seleccione una cobertura médica para visualizar listado de médicos asociados a la misma.</p>
-                    <select id="cobertura" name="cobertura" class="form-select" required>
-                        <option value="" selected>Buscar cobertura...</option>
-                        <% if (obrasSociales && obrasSociales.length > 0) { %>
-                            <% obrasSociales.forEach(function(obra) { %>
-                                <option value="<%= obra.id %>"><%= obra.nombre %></option>
-                            <% }); %>
-                        <% } else { %>
-                            <option disabled>No hay obras sociales disponibles en este momento</option>
-                        <% } %>
-                    </select>
-                    <div class="listado-medicos-coberturas" id="listado-medicos-obras-sociales">
-                        <!-- Listado de médicos se actualizará aquí -->
-                    </div>
-                </div>
-            </div>
-            
-    </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <!-- Bootstrap necesario para el modal) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            $('#cobertura').select2({
-                placeholder: "Escribe aquí",
-                allowClear: true,
-                width: '100%',
-                minimumInputLength: 0,
-                matcher: function(params, data) {
-                    if ($.trim(params.term) === '') {
-                        return data;
-                    }
-                    if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) === 0) {
-                        return data;
-                    }
-                    return null;
-                }
-            });
-
-            $('#cobertura').on('change', function() {
-                const obraSocialId = $(this).val();
-                fetch(`/medicos/por-obra-social/${obraSocialId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const medicosContainer = document.getElementById('tabla-medicos');
-                        medicosContainer.innerHTML = ''; // Limpiar el contenedor de médicos
-                        if (data.length > 0) {
-                            data.forEach(medico => {
-                                medicosContainer.innerHTML += `
+            <div class="card-panel mt-4">
+                        <h3><i class="fa-solid fa-calendar-days"></i> Próximos Turnos (Agenda Futura)</h3>
+                        <div class="table-responsive">
+                            <table class="tabla-simple">
+                                <thead>
                                     <tr>
-                                        <td class="contenedor-id">${medico.id}</td>
-                                        <td class="contenedor-nombre">${medico.nombre_medico}</td>
-                                        <td>${medico.telefono}</td>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Paciente</th>
+                                        <th>Motivo</th>
+                                        <th>Estado</th>
                                     </tr>
-                                `;
-                            });
-                        } else {
-                            medicosContainer.innerHTML = '<tr><td colspan="4">No hay médicos disponibles para esta obra social.</td></tr>';
-                        }
-                    })
-                    .catch(error => {
-                        const medicosContainer = document.getElementById('tabla-medicos');
-                        medicosContainer.innerHTML = '<tr><td colspan="4">Error al cargar los médicos.</td></tr>';
-                    });
-            });
-
-        });
-
-
-        $(document).ready(function() { //Escucha el evento input en el campo de búsqueda y ejecuta la función cada vez que se ingresa texto.
-            $('#buscador-turnos').on('input', function() {
-                let valorBusqueda = $(this).val().toLowerCase();
-        
-                $('#tabla-turnos tr').filter(function() {
-                    $(this).toggle(
-                        $(this).find('td:nth-child(2)').text().toLowerCase().indexOf(valorBusqueda) > -1 || // Buscar por médico
-                        $(this).find('td:nth-child(3)').text().toLowerCase().indexOf(valorBusqueda) > -1    // Buscar por paciente
-                    );
-                });
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-          $('#guardarFechas').on('click', function() {
-            const fechaDesde = $('#fechaDesde').val();
-            const fechaHasta = $('#fechaHasta').val();
-      
-            if (fechaDesde && fechaHasta) {
-              // Enviar datos al servidor
-              $.ajax({
-                url: '/turnos/desdeHorarios',
-                method: 'GET',
-                data: { fechaDesde, fechaHasta },
-                success: function(response) {
-                  alert(`Se han generado ${response.turnosCreados} turnos.`);
-                  // Cerrar el modal
-                  $('#modalGenerarTurnos').modal('hide');
-                },
-                error: function() {
-                  alert('Error al generar turnos.');
-                }
-              });
-            } else {
-              alert('Por favor seleccione ambas fechas.');
-            }
-          });
-        });
-      </script>
-
-      <script>
-    // Script para confirmar turnos
-    document.querySelectorAll('.btn-confirmar').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            // Evitamos que el botón envíe forms si está dentro de uno
-            this.disabled = true; 
-            
-            const idTurno = this.getAttribute('data-id');
-
-            // LOG 1: Ver si el clic funciona y captura el ID
-            console.log("🛑 [FRONTEND] 1. Clic detectado. ID Turno:", idTurno);
-
-            const fila = document.getElementById(`fila-turno-${idTurno}`);
-
-            try {
-                // SweetAlert para confirmar acción
-                const result = await Swal.fire({
-                    title: '¿Confirmar asistencia?',
-                    text: "El turno pasará a estado Confirmado",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#198754',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sí, confirmar',
-                    cancelButtonText: 'Cancelar'
-                });
-
-                if (result.isConfirmed) {
-                    console.log("🛑 [FRONTEND] 2. Usuario dijo SÍ en Swal. Enviando fetch...");
-
-                    const response = await fetch(`/turnos/confirmar/${idTurno}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    console.log("🛑 [FRONTEND] 3. Respuesta del servidor (status):", response.status);
-
-                    const data = await response.json();
-                    console.log("🛑 [FRONTEND] 4. Datos JSON recibidos:", data);
-
-                    if (data.success) {
-                        await Swal.fire({
-                            icon: 'success',
-                            title: '¡Confirmado!',
-                            text: 'El turno ha sido confirmado.',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                        
-                        // Recargar la página para actualizar tablas
-                        location.reload(); 
-                    } else {
-                        throw new Error(data.message);
-                    }
-                } else {
-                    // Si cancela, reactivamos el botón
-                    this.disabled = false;
-                }
-            } catch (error) {
-                console.error(error);
-                console.error("🛑 [FRONTEND] CATCH ERROR:", error);
-                Swal.fire('Error', 'No se pudo confirmar el turno', 'error');
-                this.disabled = false;
-            }
-        });
-    });
-</script>
+                                </thead>
+                                <tbody>
+                                    <% if (proximosTurnos && proximosTurnos.length > 0) { %>
+                                        <% proximosTurnos.forEach(turno => { %>
+                                            <tr>
+                                                <td>
+                                                    <strong><%= new Date(turno.fecha_hora).toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit'}) %></strong>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(turno.fecha_hora).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) %> hs
+                                                </td>
+                                                <td><%= turno.nombre_paciente %></td>
+                                                <td><%= turno.nombre_practica || 'Consulta' %></td>
+                                                <td>
+                                                    <% if (turno.id_estado_turno == 3) { %>
+                                                        <span style="color: #198754; font-weight: bold;">Confirmado</span>
+                                                    <% } else { %>
+                                                        <span style="color: #ffc107; font-weight: bold;">Reservado</span>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="5" class="text-center py-3">No hay turnos próximos agendados.</td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="footer-card">
+                            <a href="/panelMedicos/calendarioTurnos" class="btn">Ver Agenda Completa →</a>
+                        </div>
+                    </div>
+        </div>
+    </div>
 </body>
 </html>

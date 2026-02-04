@@ -43,56 +43,64 @@ class LoginController {
         res.render ('usuarios/login');
     }
 
-    async validarFormulario (req, res) {
-        const email = req.body.email;
-        const password = req.body.password;
-        const recordar = req.body.recordar;
-    
-        // Paso 1: Validar al usuario
-        loginModel.validarUsuario (email, password, (err, usuario) => {
+    async validarFormulario(req, res) {
+        const { email, password, recordar } = req.body;
+
+        // Paso 1: Validar credenciales básicas (Email y Pass)
+        loginModel.validarUsuario(email, password, async (err, usuario) => {
             if (err) {
-                return res.status (500).json({
-                    success: false,
-                    message: "Error al validar el usuario."
-                });
+                return res.status(500).json({ success: false, message: "Error de servidor." });
             }
-    
-            if (usuario && (bcrypt.compareSync(password, usuario.password) || password === usuario.password)) {
-                // Usuario válido
-                req.session.cookie.maxAge = recordar ? (1000 * 60 * 60 * 24 * 7) : (1000 * 60 * 60);
+
+            // Verificar si el usuario existe y la contraseña coincide
+            // Nota: Se recomienda usar siempre bcrypt.compare (asíncrono) o compareSync
+            const passwordValida = usuario && (await bcrypt.compare(password, usuario.password));
+
+            if (usuario && passwordValida) {
+                
+                // --- CONFIGURACIÓN BASE DE LA SESIÓN ---
+                req.session.cookie.maxAge = recordar ? (1000 * 60 * 60 * 24 * 7) : (1000 * 60 * 60); // 7 días o 1 hora
+                
                 req.session.idUsuario = usuario.id;
                 req.session.categoria = usuario.id_categoriaUsuario;
-                req.session.nombreUsuario = usuario.nombre;
-                req.session.emailUsuario = usuario.email;
-    
-                // Paso 2: Obtener el ID del médico, si aplica. Esto es para poder usar el id del médico en menu lateral del panel de médicos.
-                loginModel.obtenerIdMedicoPorUsuario (usuario.id, (err, idMedico) => {
-                    if (err) {
-                        console.error ("Error al obtener el ID del médico:", err);
-                        return res.status (500).json({
-                            success: false,
-                            message: "Error al obtener el ID del médico."
-                        });
-                    }
-    
-                    req.session.save((err) => {
-                        if (err) {
-                            console.error("Error al guardar la sesión:", err);
-                            return res.status(500).json({ error: 1, message: "Error al iniciar sesión" });
-                        }
+                req.session.nombre = usuario.nombre; // Usamos 'nombre' para consistencia con app.js
+                req.session.email = usuario.email;
 
+                // --- LÓGICA ESPECÍFICA POR ROL ---
+                
+                // CASO A: ES MÉDICO (Categoría 2)
+                if (usuario.id_categoriaUsuario === 2) {
+                    loginModel.obtenerIdMedico(usuario.id, (err, idMedico) => {
+                        if (idMedico) {
+                            req.session.idMedico = idMedico; // ¡ESTO ES LO IMPORTANTE!
+                        }
+                        guardarYResponder();
+                    });
+                } 
+                // CASO C: ADMIN O SECRETARIA (No requieren ID extra)
+                else {
+                    guardarYResponder();
+                }
+
+                // Función auxiliar para no repetir código
+                function guardarYResponder() {
+                    req.session.save((errSave) => {
+                        if (errSave) {
+                            console.error("Error sesión:", errSave);
+                            return res.status(500).json({ error: 1 });
+                        }
+                        // Respondemos al frontend con éxito
                         res.json({
-                            idUsuario: usuario.id,
+                            error: 0,
                             categoria: usuario.id_categoriaUsuario,
-                            error: 0 
+                            idUsuario: usuario.id
                         });
                     });
-                });
+                }
+
             } else {
-                // No hay usuario
-                res.json ({
-                    error: 1, // error en el usuario o la contraseña
-                });
+                // Usuario o contraseña incorrectos
+                res.json({ error: 1, message: "Credenciales incorrectas" });
             }
         });
     }

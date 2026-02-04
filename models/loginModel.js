@@ -83,6 +83,52 @@ class LoginModel {
         });
     }
     
+    obtenerIdMedico(idUsuario, callback) {
+        const sql = "SELECT id FROM medicos WHERE id_usuario = ?";
+        // Asegúrate de usar tu variable de conexión (conx, pool, o db)
+        conx.query(sql, [idUsuario], (err, rows) => {
+            if (err) {
+                console.error("Error buscando médico:", err);
+                return callback(err, null);
+            }
+            // Si encuentra fila, devuelve el ID, si no devuelve null
+            callback(null, rows.length > 0 ? rows[0].id : null);
+        });
+    }
+
+    obtenerIdPaciente(idUsuario, callback) {
+        const sql = "SELECT id FROM pacientes WHERE id_usuario = ?"; // Asumiendo que pacientes tiene id_usuario
+        /* NOTA: Si tu tabla pacientes NO tiene id_usuario y se vincula por email,
+           deberías cambiar la consulta a: "SELECT id FROM pacientes WHERE email = ?"
+           y pasar el email en vez del idUsuario.
+        */
+        conx.query(sql, [idUsuario], (err, rows) => {
+            if (err) return callback(err, null);
+            callback(null, rows.length > 0 ? rows[0].id : null);
+        });
+    }
+
+    listarTurnosHoyMedico(idMedico, fechaInicio, fechaFin, callback) {
+        const sql = `
+            SELECT t.*, p.nombre as nombre_paciente, p.dni, p.id as id_paciente, pr.nombre as nombre_practica
+            FROM turnos t
+            JOIN pacientes p ON t.id_paciente = p.id
+            LEFT JOIN practicas pr ON t.id_practica = pr.id
+            WHERE t.id_medico = ? 
+            AND t.fecha_hora BETWEEN ? AND ?
+            AND t.id_estado_turno IN (3, 4) -- 3: Confirmado, 4: Completado/Atendido
+            ORDER BY t.fecha_hora ASC
+        `;
+        
+        // Asumiendo que usas 'conx' como en tus otros modelos
+        conx.query(sql, [idMedico, fechaInicio, fechaFin], (err, results) => {
+            if (err) {
+                console.error("Error listando turnos hoy:", err);
+                return callback([]);
+            }
+            callback(results);
+        });
+    }
 }
 
 module.exports = LoginModel;

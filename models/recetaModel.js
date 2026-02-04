@@ -153,7 +153,53 @@ class RecetaModel{
             });
         });
     }
+
+    listarUltimasPorMedico(idMedico, callback) {
+        const sql = `
+            SELECT r.*, p.nombre as nombre_paciente
+            FROM recetas r
+            JOIN pacientes p ON r.id_paciente = p.id
+            WHERE r.id_medico = ?
+            ORDER BY r.created_at DESC LIMIT 5
+        `;
+        
+        conx.query(sql, [idMedico], (err, results) => {
+            if (err) {
+                console.error("Error listando recetas:", err);
+                return callback([]);
+            }
+            callback(results);
+        });
+    }
+
+
+    listarTodasPorMedico(idMedico, callback) {
+        const sql = `
+            SELECT 
+                r.id,
+                r.fecha,
+                r.diagnostico,
+                r.tratamiento,
+                r.archivo_firma_digital,
+                p.nombre AS nombre_paciente,
+                p.dni AS dni_paciente,
+                p.id AS id_paciente
+            FROM recetas r
+            JOIN pacientes p ON r.id_paciente = p.id
+            WHERE r.id_medico = ?
+            ORDER BY r.fecha DESC
+        `;
+                
+        conx.query(sql, [idMedico], (err, results) => {
+            if (err) {
+                console.error("Error al listar recetas:", err);
+                return callback([]);
+            }
+            callback(results);
+        });
+    }
 }
+
 
 
 module.exports = RecetaModel;
