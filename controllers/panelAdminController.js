@@ -82,23 +82,64 @@ class PanelAdminController {
     obtenerTurnosCalendarioMedicos(req, res) {
         let fechaInicio = req.query.start;
         let fechaFin = req.query.end;
-        // let idUsuario = req.session.idUsuario;
-        // let categoriaUsuario = req.session.categoria;
-        let medicos = req.query.medicos ? req.query.medicos.split(',') : [];
-        let estado = req.query.estado || '3'; // Por defecto mostrar confirmados
+        
+        let medicosRaw = req.query.medicos ? req.query.medicos.split(',') : [];
+        let medicos = medicosRaw.includes('todos') ? [] : medicosRaw;
+
+        let estado = req.query.estado || 'todos';
 
         const filtroInicio = moment(fechaInicio).format("YYYY-MM-DD HH:mm:ss");
         const filtroFin = moment(fechaFin).format("YYYY-MM-DD HH:mm:ss");
 
-        turnoModel.seleccionarTurnosCalendario(medicos, estado, filtroInicio, filtroFin, (turnos) => { //al principio luego tengo que agregar idUsuario y categoriaUsuario
+        turnoModel.seleccionarTurnosCalendario(medicos, estado, filtroInicio, filtroFin, (turnos) => {
             if (turnos) {
-                res.json(turnos);
+                
+                const eventos = turnos.map(turno => {
+                    let colorFondo = '#3788d8'; // Azul por defecto
+                    let colorTexto = '#ffffff';
+
+                    const estadoID = parseInt(turno.id_estado_turno); 
+
+                    switch (estadoID) {
+                        case 1: // Disponible
+                            colorFondo = '#198754'; 
+                            break;
+                        case 2: // Reservado
+                            colorFondo = '#ffc107'; 
+                            colorTexto = '#000000'; 
+                            break;
+                        case 3: // Confirmado
+                            colorFondo = '#0d6efd'; 
+                            break;
+                        case 4: // Cancelado
+                            colorFondo = '#6c757d'; 
+                            break;
+                    }
+
+                    const apellidoMedico = turno.medico_nombre ? turno.medico_nombre.split(' ').pop() : 'Médico';
+
+                    return {
+                        id: turno.id,
+                        title: apellidoMedico,
+                        start: moment(turno.fecha_hora).format("YYYY-MM-DD HH:mm:ss"),
+                        end: moment(turno.fecha_hora).add(15, 'minutes').format("YYYY-MM-DD HH:mm:ss"), // Duración 15 min
+                        color: colorFondo,     
+                        textColor: colorTexto, 
+                        extendedProps: {       
+                            pacienteNombre: turno.paciente_nombre || 'Sin paciente',
+                            nombreMedico: turno.medico_nombre || 'Sin médico',
+                            estadoTurno: estadoID,
+                            medicoId: turno.id_medico || turno.medico_id 
+                        }
+                    };
+                });
+
+                res.json(eventos);
             } else {
                 res.status(500).json({ error: "Error al obtener los turnos" });
             }
         });
     }
-
 }
 
 module.exports = PanelAdminController;

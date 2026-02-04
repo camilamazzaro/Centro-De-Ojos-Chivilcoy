@@ -16,8 +16,8 @@ router.get('/turnos',autenticar, turnoController.listarTurnos);
 router.get('/turnos/editar/:id',autenticar, turnoController.editarTurno);
 router.post('/turnos/editar/:id', turnoController.guardarTurno);
 
-router.get('/turnos/agregar/0',autenticar, turnoController.agregarTurno);
-router.post('/turnos/agregar/0', turnoController.guardarTurno);
+router.get('/turnos/agregar/:id',autenticar, turnoController.agregarTurno);
+router.post('/turnos/agregar/:id', turnoController.guardarTurno);
 
 //Ruta para eliminar turnos
 router.post('/turnos/cancelar/:id', turnoController.cancelarTurno);

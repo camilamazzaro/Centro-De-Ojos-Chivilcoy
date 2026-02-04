@@ -120,6 +120,11 @@ class TurnoController {
         const datos = req.body;
         console.log("💾 Datos recibidos para guardar:", datos);
 
+        // Si la fecha_hora viene vacía o inválida, evitamos guardar basura en la BD
+        if (!datos.fecha_hora || datos.fecha_hora.trim() === '') {
+            return res.status(400).send({ "success": false, "message": "La fecha y hora son obligatorias" });
+        }
+
         const enviarEmailNovedadLocal = async (turno, esEdicion) => {
             try {
                 const transporter = nodemailer.createTransport({
@@ -179,15 +184,12 @@ class TurnoController {
             const idTurno = (datos.id && datos.id != 0) ? datos.id : result.insertId;
             const esEdicion = (datos.id && datos.id != 0);
 
+            // Buscamos detalles para el mail
             turnoModel.obtenerDetalleTurno(idTurno, (err, turnoDetalle) => {
-                
                 if (!err && turnoDetalle && turnoDetalle.email_paciente) {
-                    // AQUÍ ESTÁ EL CAMBIO: Llamamos a la función local, no a 'this.'
                     enviarEmailNovedadLocal(turnoDetalle, esEdicion); 
-                } else {
-                    console.log("ℹ️ No se envió mail (Faltan datos o paciente sin email).");
                 }
-
+                
                 res.send({
                     "success": true,
                     "message": "Turno guardado correctamente"
@@ -197,55 +199,77 @@ class TurnoController {
     }
 
 
-    //Funcion para agregar el nuevo turno
+    // Función para agregar el nuevo turno (Vista)
+    // Función para agregar o editar turno (Vista)
     async agregarTurno(req, res) {
+        
+        // 1. Detectar si es Edición (ID > 0) o Alta (ID 0)
+        // El router suele ser: router.get('/turnos/agregar/:id', ...)
+        const idParam = req.params.id || 0; 
+
         let turno = {
+            id: idParam, // Si viene del calendario, este será el ID del turno "Libre"
             id_medico: '',
             id_paciente: '',
             id_practica: '',
-            fecha_hora: '',
+            fecha_hora: new Date(),
             id_estadoTurno: ''
         };
-        
-        //para obtener los médicos y pacientes
+
+        // 2. CAPTURA DE DATOS DESDE EL CALENDARIO (Query Params)
+        if (req.query.medico) {
+            turno.id_medico = req.query.medico; // Guardamos el ID del médico
+        }
+
+        if (req.query.fecha && req.query.hora) {
+            const fechaMoment = moment(`${req.query.fecha} ${req.query.hora}`, "YYYY-MM-DD HH:mm");
+            if (fechaMoment.isValid()) {
+                turno.fecha_hora = fechaMoment.toDate();
+            }
+        }
+
+        // 3. Si tenemos un ID válido (click desde calendario en turno existente), 
+        // buscamos ese turno en la BD para asegurar que los datos sean reales.
+        if (idParam > 0) {
+            await new Promise((resolve) => {
+                // Reutilizamos tu modelo 'obtenerTurno' o similar
+                // Nota: Esto sobreescribirá lo de arriba si la BD tiene datos, lo cual es correcto.
+                turnoModel.obtenerTurno(idParam, (result) => {
+                    if (result) {
+                        turno = result; 
+                        // Si venía fecha/hora nueva por URL (reprogramación), podrías priorizarla aquí si quisieras
+                    }
+                    resolve();
+                });
+            });
+        }
+
+        // 4. Carga de listas (Pacientes, Médicos, etc)
         Promise.all([
-            new Promise((resolve, reject) => {
-                const limit = req.query.limit || 10; 
+            new Promise((resolve) => {
+                const limit = req.query.limit || 10;
                 const offset = req.query.offset || 0;
-                pacienteModel.listarPacientes(limit, offset, {}, (pacientes, total) => {
-                    resolve(pacientes);
-                });
+                pacienteModel.listarPacientes(limit, offset, {}, (pacientes) => resolve(pacientes));
             }),
-            new Promise((resolve, reject) => {
-                medicoModel.listarMedicos((medicos) => {
-                    resolve(medicos);
-                });
+            new Promise((resolve) => {
+                medicoModel.listarMedicos((medicos) => resolve(medicos));
             }),
-            new Promise((resolve, reject) => {
-                estadoTurnoModel.listarEstadoTurno((estado_turnos) => {
-                    resolve(estado_turnos);
-                });
+            new Promise((resolve) => {
+                estadoTurnoModel.listarEstadoTurno((estado_turnos) => resolve(estado_turnos));
             }),
-            new Promise((resolve, reject) => {
-                if(turno.id_medico) {
-                    medicoModel.obtenerPracticasPorMedico(turno.id_medico, (practicas) => {
-                        resolve(practicas);
-                    });
+            new Promise((resolve) => {
+                // Cargamos prácticas del médico pre-seleccionado
+                if (turno.id_medico) {
+                    medicoModel.obtenerPracticasPorMedico(turno.id_medico, (practicas) => resolve(practicas));
                 } else {
-                    resolve([]);  // Si no hay id_medico, devolvemos un array vacío
+                    resolve([]);
                 }
             })
         ])
         .then(([pacientes, medicos, estado_turnos, practicas]) => {
             res.render("../views/turnos/agregarTurno", {
-                turno: {
-                    id: 0,
-                    id_medico: '',
-                    id_paciente: '',
-                    id_practica: '',
-                    fecha_hora: '',
-                    id_estadoTurno: ''
-                }, 
+                title: idParam > 0 ? 'Confirmar/Editar Turno' : 'Agregar Turno',
+                turno: turno, 
                 pacientes: pacientes,
                 medicos: medicos,
                 estado_turnos: estado_turnos,

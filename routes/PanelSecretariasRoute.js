@@ -19,4 +19,5 @@ router.get('/calendario/obtenerTurnos',autenticar, panelSecretariaController.obt
 
 router.post('/turnos/confirmar/:id', autenticar, panelSecretariaController.confirmarTurno);
 
+
 module.exports = router;

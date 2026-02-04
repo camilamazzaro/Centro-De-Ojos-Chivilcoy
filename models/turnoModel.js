@@ -279,98 +279,45 @@ class TurnoModel{
     
 
     //Obtenemos datos de turnos para mostrar en el Calendario de Turnos, tanto de panel secretarias como de médicos
-
-    seleccionarTurnosCalendario(medicos, estado, fechaInicio, fechaFin, callback) { //idUsuario, categoriaUsuario, 
-        // Base de la consulta SQL
+    seleccionarTurnosCalendario(medicos, estado, fechaInicio, fechaFin, callback) {
         let sql = `
-        SELECT 
-            T.*, 
-            U.nombre AS medico_nombre, 
-            P.nombre AS paciente_nombre 
-        FROM turnos T 
-        LEFT JOIN medicos M ON T.id_medico = M.id 
-        LEFT JOIN usuarios U ON M.id_usuario = U.id 
-        LEFT JOIN pacientes P ON T.id_paciente = P.id 
-        WHERE T.fecha_hora >= ? AND T.fecha_hora <= ?`;
+            SELECT 
+                T.id, 
+                T.fecha_hora,
+                T.id_estado_turno,
+                U.nombre AS medico_nombre, 
+                P.nombre AS paciente_nombre 
+            FROM turnos T 
+            LEFT JOIN medicos M ON T.id_medico = M.id 
+            LEFT JOIN usuarios U ON M.id_usuario = U.id 
+            LEFT JOIN pacientes P ON T.id_paciente = P.id 
+            WHERE T.fecha_hora BETWEEN ? AND ?
+        `;
         
         let parametros = [fechaInicio, fechaFin];
 
-        //para que un médico vea su propio calendario
-        // if (categoriaUsuario != 3) {
-        //     sql += " AND T.id_medico = ?";
-        //     parametros.push(idUsuario);
-        // }
-
-        //filtrar por calendarios por médicos
-        if (medicos.length > 0) {
+        // Filtro de médicos
+        if (medicos && medicos.length > 0 && !medicos.includes('todos')) {
             const placeholders = medicos.map(() => '?').join(',');
             sql += ` AND T.id_medico IN (${placeholders})`;
             parametros.push(...medicos);
         }
 
-        //filtrar por estado si se ha seleccionado un estado específico
-        if (estado !== 'todos') {
+        // Filtro de estado
+        if (estado && estado !== 'todos') {
             sql += " AND T.id_estado_turno = ?";
             parametros.push(estado);
         }
 
         conx.query(sql, parametros, (err, results) => {
             if (err) {
-                console.log(err);
-                callback(null);
-                return;
+                console.error("Error SQL Calendario:", err);
+                return callback(null);
             }
-
-            // Mapear los resultados a un formato compatible con FullCalendar
-            const elementos = results.map(elemento => {
-                let color;
-                switch (elemento.id_estadoTurno) {
-                    case 1:
-                        color = 'light-blue'; // disponible
-                        break;
-                    case 2:
-                        color = 'orange'; // reservado
-                        break;
-                    case 3:
-                        color = 'green'; // confirmado
-                        break;
-                    case 4:
-                        color = 'gray';
-                        break;
-                    case 5:
-                        color = 'red'; // cancelado
-                        break;
-                    default:
-                        color = 'gray'; // otros
-                        break;
-                }
-
-                //extraer el apellido del nombre completo del médico
-                const apellido = elemento.medico_nombre ? elemento.medico_nombre.split(' ').pop() : 'Médico';
-
-                //obtener el nombre del paciente; si no hay, es porque el turno está libre 
-                const nombrePaciente = elemento.paciente_nombre ? elemento.paciente_nombre : 'Sin paciente asignado';
-
-                //nombre completo del médico
-                const nombreMedico = elemento.medico_nombre ? elemento.medico_nombre : 'Sin médico';
-
-                //retorna el objeto de evento para mostrar en el FullCalendar
-                return {
-                    color: color,
-                    title: `${apellido}`,
-                    start: moment(elemento.fecha_hora).format("YYYY-MM-DD HH:mm:ss"),
-                    end: moment(elemento.fecha_hora).add(15, 'minutes').format("YYYY-MM-DD HH:mm:ss"),
-                    extendedProps: {
-                        pacienteNombre: nombrePaciente,
-                        estadoTurno: elemento.id_estado_turno,
-                        nombreMedico: nombreMedico
-                    }
-                };
-            });
-
-            callback(elementos);
+            callback(results);
         });
     }
+
 
     async listarTurnosPaciente(id_paciente) {
         return new Promise((resolve, reject) => {
