@@ -223,16 +223,14 @@ body {
 .seccion-servicios {
     color: white;
     position: relative;
-    padding: 20px 0 0 0;
+    padding: 0; /* Sin relleno para que las olas toquen los bordes */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    align-content: center;
-    height: 500px;
-    overflow: hidden;
+    /* QUITAMOS justify-content: space-between y height: 500px */
     width: 100%;
-    margin-top: 1em;
+    margin-top: 2em;
+    height: auto !important; /* Deja que la altura se ajuste sola */
+    background: transparent;
 }
 
 .seccion-servicios h2{
@@ -240,28 +238,41 @@ body {
     margin-bottom: 1em;
 }
 
+/* 2. CONTENIDO (FONDO AZUL) */
 .seccion-servicios .contenido {
     background-color: var(--COLOR_PRINCIPAL);
     text-align: center;
     position: relative;
     width: 100%;
     z-index: 1;
-    height: 30%;
+    height: auto; 
+    margin: 0;
+    padding: 3em 0;
+}
+
+.seccion-servicios .wave {
+    width: 100%;
+    height: 150px; 
+    position: relative;
+    z-index: 2;
+    margin-top: -2px; 
+    overflow: hidden;
+}
+
+.seccion-servicios .wave svg {
+    position: absolute; 
     top: 0;
-    gap: 2em;
-    margin-top: 6%;
-    padding-top: 2em;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
-
-.seccion-servicios .wave{
-    bottom: 24%;
-}
-
 .seccion-servicios .servicios-carousel {
     overflow: hidden;
     position: relative;
     width: 90%;
     margin: 0 auto;
+    z-index: 3; 
 }
 
 .seccion-servicios .servicios-track {
@@ -423,7 +434,7 @@ body {
     justify-content: space-between;
     align-items: center;
     align-content: center;
-    height: 700px;
+    height: 800px;
     overflow: hidden;
 }
 
@@ -489,17 +500,22 @@ body {
 /* NOTICIAS */
 
 .noticias {
-    padding: 50px 0 0 0;
     position: relative;
+    padding: 0; 
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.noticias-container{
+.noticias-container {
     background-color: var(--COLOR_PRINCIPAL);
-    padding: 2em;
-    margin-bottom: 16%;
-    z-index: 99;
+    padding: 4em 2em; 
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    height: auto;
 }
-
 .noticias h2 {
     text-align: center;
     font-size: 28px;
@@ -509,22 +525,23 @@ body {
 
 .noticias-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 30px;
     justify-content: center;
+    width: 100%;
+    max-width: 1200px; 
+    margin: 0 auto;
 }
-
 .noticia-card {
     background: #ffffff;
-    padding: 30px 20px;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
-    white-space: normal;
-    word-wrap: break-word;
-    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
 }
-
 .noticia-card:hover {
     transform: translateY(-5px);
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
@@ -543,11 +560,11 @@ body {
 
 .noticia-card img {
     width: 100%; 
-    height: auto;
-    max-height: 200px; 
+    height: 200px; 
     object-fit: cover; 
     border-radius: 8px;
     display: block; 
+    margin-bottom: 15px;
 }
 
 .noticia-card .fecha{
@@ -556,6 +573,25 @@ body {
 
 .container-noticias{
     position: absolute;
+}
+
+.noticias .wave {
+    width: 100%;
+    height: 150px; 
+    position: relative;
+    z-index: 2;
+    margin-top: -10px; 
+    overflow: hidden;
+    background: transparent;
+}
+
+.noticias .wave svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
 
@@ -634,15 +670,21 @@ body {
 
 
 /*Icónos resúmen*/
-.seccion-iconos-resumen{
+.seccion-iconos-resumen {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10em;
+    /* CORRECCIÓN 1: Bajamos el gap de 10em a 4em (aprox 64px) para que entren en laptops */
+    gap: 4em; 
     margin-top: 5em;
     padding: 5em 20px;
+    width: 100%;
+    max-width: 1200px; /* Limitamos el ancho máximo para que no se dispersen en TV */
+    margin-left: auto;
+    margin-right: auto;
 }
-.seccion-iconos-resumen article{
+
+.seccion-iconos-resumen article {
     width: 100%;
     max-width: 300px;
     display: flex;
@@ -651,32 +693,41 @@ body {
     text-align: center;
     align-items: center;
 }
-.seccion-iconos-resumen article h4{
+
+.seccion-iconos-resumen article h4 {
     margin-bottom: 0;
     margin-top: 20px;
-    font-size: 25px;
+    font-size: 24px; /* Ajuste leve para mejor lectura */
+    color: #333; /* Aseguramos contraste */
+    font-weight: 700;
 }
 
-.seccion-iconos-resumen article p{
-    font-size: 18px;
+.seccion-iconos-resumen article p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.5;
+    margin-top: 10px;
 }
 
-.icono-resumen{
+.icono-resumen {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     background-color: var(--COLOR_PRINCIPAL);
-    text-align: center;
-    align-content: center;
+    display: flex;          /* Centrado perfecto del ícono */
+    justify-content: center;
+    align-items: center;
     transition: all .3s ease-in-out;
+    text-decoration: none;
 }
 
-.icono-resumen:hover{
-    transform: scale(1.2);
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.4);
+.icono-resumen:hover {
+    transform: scale(1.1); /* 1.2 a veces es mucho, 1.1 es más elegante */
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    background-color: var(--COLOR_SECUNDARIO_3); /* Opcional: cambio de color al hover */
 }
 
-.icono-resumen i{
+.icono-resumen i {
     color: white;
     font-size: 40px;
 }
@@ -734,4 +785,261 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     background-color: var(--COLOR_SECUNDARIO_3);
+}
+
+
+/* --- TABLETS Y PANTALLAS MEDIANAS (hasta 1024px) --- */
+@media screen and (max-width: 1024px) {
+    
+    .bienvenida {
+        border-radius: 0;
+    }
+
+    .carrusel-bienvenida .swiper-wrapper .slide-texto .carrusel-bienvenida-texto {
+        font-size: 20px;
+        padding-top: 70px;
+    }
+
+    .seccion-servicios{
+        height: 200px;
+    }
+
+    .seccion-servicios .wave {
+        height: 100px; 
+    }
+
+    .seccion-servicios .servicio-card {
+        flex: 0 0 calc(33.333% - 20px); /* 3 por fila */
+    }
+
+    .grid-imagenes {
+        height: auto; 
+        gap: 20px;
+    }
+    
+    .grid-imagenes .img1, .grid-imagenes .img2, 
+    .grid-imagenes .img3, .grid-imagenes .img4 {
+        width: 45%;
+        height: 300px;
+    }
+}
+
+/* --- MOVILES (hasta 768px) --- */
+@media screen and (max-width: 768px) {
+
+    h3 {
+        font-size: 2em;
+        text-align: center;
+    }
+
+    /* BIENVENIDA */
+    .bienvenida {
+        height: 100vh; 
+        min-height: 600px;
+        max-height: 800px;
+        border-radius: 0; 
+    }
+
+    .carrusel-bienvenida .swiper-wrapper .slide-texto {
+        padding: 0 20px; 
+        background-position: right;
+        background-size: cover; 
+    }
+
+    .carrusel-bienvenida .swiper-wrapper .slide-texto .carrusel-bienvenida-texto {
+        width: 100%; 
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center; 
+        align-items: center;
+        backdrop-filter: blur(1px); 
+        margin-top: 60px; 
+    }
+
+    .carrusel-bienvenida .carrusel-bienvenida-texto h2 {
+        font-size: 26px; 
+        line-height: 1.3;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    .carrusel-bienvenida .carrusel-bienvenida-texto .horario-atencion {
+        justify-content: center;
+        gap: 8px;
+        font-size: 16px;
+    }
+
+    .carrusel-bienvenida .carrusel-bienvenida-texto .horario-atencion i{
+        display: none;
+    }
+    
+    .carrusel-bienvenida .carrusel-bienvenida-texto .bienvenida-encontranos {
+        font-size: 16px;
+    }
+
+    .carrusel-bienvenida .carrusel-bienvenida-texto a {
+        margin-top: 30px;
+        width: auto; 
+        font-size: 18px; 
+        padding: 12px 25px;
+    }
+
+    
+    .swiper-button-next, .swiper-button-prev {
+        display: none;
+    }
+
+    /* NOSOTROS */
+    .seccion-nosotros {
+        flex-direction: column-reverse; 
+
+        width: 90%;
+        padding: 40px 0;
+        gap: 2em;
+    }
+
+    .seccion-nosotros .nosotros-foto {
+        width: 100%;
+        height: 300px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 15px;
+    }
+
+    .seccion-nosotros .nosotros-textos {
+        width: 100%;
+        text-align: center;
+        align-items: center;
+    }
+
+    /* SERVICIOS */
+    .seccion-servicios .wave {
+        height: 60px; 
+    }
+
+    .seccion-servicios .servicio-card {
+        flex: 0 0 calc(50% - 20px); /* 2 por fila */
+    }
+
+    /* PROFESIONALES */
+    .seccion-profesionales {
+        padding: 40px 0;
+    }
+
+    .carrusel-medicos {
+        height: auto;
+        padding-bottom: 40px;
+    }
+
+    .medico-card {
+        width: 100%;
+        height: auto;
+        padding: 20px;
+        background: #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        border-radius: 10px;
+    }
+
+    .medico-card .contenedor-img {
+        height: 300px;
+    }
+
+    /* RESEÑAS */
+    .review-images {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;    
+        gap: 30px !important;              
+        width: 100% !important;
+        height: auto !important;
+        margin-bottom: 20px;
+    }
+
+    .review-images img {
+        width: 80% !important;  
+        height: auto !important; 
+        max-width: 400px;        
+        margin: 0 auto;
+    }
+
+    .container-review {
+        height: auto !important; 
+        display: block !important;
+        padding-bottom: 60px;
+        margin-bottom: 0;
+    }
+
+    .review {
+        position: relative !important; 
+        top: 0 !important;
+        margin-top: 0 !important;
+        width: 100% !important;
+    }
+
+
+    /* ÍCONOS RESUMEN */
+    .seccion-iconos-resumen {
+        padding: 60px 20px;
+        margin-top: 20px;
+        flex-direction: column; 
+        align-items: center;
+        height: 100vh !important;
+        margin-bottom: 40%;
+    }
+
+    .seccion-iconos-resumen article {
+        max-width: 100%; 
+        padding: 0 10px;
+    }
+    
+    .seccion-iconos-resumen article h4 {
+        font-size: 22px;
+    }
+
+    .icono-resumen {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .icono-resumen i {
+        font-size: 35px;
+    }
+
+    /* CTA PEDIR TURNO */
+    .seccion-pedir-turno {
+        height: 400px;
+        padding: 60px 20px;
+    }
+
+    .cta-content h2 {
+        font-size: 2rem;
+    }
+    
+    .cta-content p {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .seccion-servicios .servicio-card {
+        flex: 0 0 100%; 
+    }
+    
+    .carrusel-bienvenida .carrusel-bienvenida-texto h2 {
+        font-size: 24px;
+    }
+    
+    .btn-subir {
+        font-size: 16px !important;
+        padding: 10px 15px;
+    }
+
+    .seccion-servicios .servicio-card {
+        flex: 0 0 100%; 
+    }
+
+    .seccion-iconos-resumen {
+        margin-bottom: 30em;
+    }
+
 }

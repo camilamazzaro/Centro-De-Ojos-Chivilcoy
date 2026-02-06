@@ -67,3 +67,34 @@
                 }
             });
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuHamburguesa = document.querySelector(".icon-menu");
+        const header = document.querySelector("header"); 
+    
+        menuHamburguesa.addEventListener("click", function () {
+            header.classList.toggle("desplegado");
+            
+            // Cambiar el ícono de hamburguesa a cruz (X) y viceversa
+            const icon = menuHamburguesa.querySelector("i");
+            if (header.classList.contains("desplegado")) {
+                icon.classList.remove("fa-bars");
+                icon.classList.add("fa-xmark"); 
+            } else {
+                icon.classList.remove("fa-xmark");
+                icon.classList.add("fa-bars");
+            }
+        });
+
+        const enlaces = document.querySelectorAll(".menu-responsive a");
+        enlaces.forEach(link => {
+            link.addEventListener("click", () => {
+                header.classList.remove("desplegado");
+                const icon = menuHamburguesa.querySelector("i");
+                icon.classList.remove("fa-xmark");
+                icon.classList.add("fa-bars");
+            });
+        });
+    });    
+</script>

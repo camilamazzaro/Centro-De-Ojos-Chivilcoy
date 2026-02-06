@@ -10,6 +10,10 @@
     --COLOR_SECUNDARIO_3: #38b5a9;
 }
 
+.swal2-container {
+    z-index: 10000 !important; 
+}
+
 .contenedor-pacientes{
     margin-right: 1%;
     padding: 20px;

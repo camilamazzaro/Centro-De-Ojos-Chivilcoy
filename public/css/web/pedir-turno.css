@@ -11,6 +11,49 @@
     display: none !important;
 }
 
+.form-group {
+    margin-bottom: 20px;
+    width: 100%;
+    position: relative;
+}
+
+.form-group label {
+    display: block; 
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--COLOR_PRINCIPAL);
+    font-size: 16px;
+}
+
+.form-group input, 
+.form-group select {
+    width: 100% !important;   
+    height: 50px;            
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;     
+    background-color: #fff;
+    font-size: 16px;          
+    color: #333;
+    box-sizing: border-box;   
+    outline: none;
+    transition: border 0.3s;
+    -webkit-appearance: none; 
+    appearance: none;
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    border-color: var(--COLOR_SECUNDARIO_3);
+    box-shadow: 0 0 0 3px rgba(56, 181, 169, 0.1);
+}
+
+.form-group select {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right .7em top 50%;
+    background-size: .65em auto;
+}
 
 .boton-ayuda {
     position: fixed;
@@ -163,6 +206,13 @@ input[type="date" i] {
     font-family: monospace;
     padding-inline-start: 1px;
     cursor: pointer;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap; 
+    margin-right: -15px;
+    margin-left: -15px;
 }
 
 .medico {
@@ -490,4 +540,159 @@ input[type="date" i] {
 .contenido img {
     height: 50px;
     margin-top: 10px;
+}
+
+
+@media (max-width: 992px) {
+    
+    .container-pasoUno, 
+    .container-pasoDos {
+        width: 95%; 
+        padding: 20px 15px;
+        margin-top: 80px; 
+    }
+    
+    .form-group.col-md-3,
+    .form-group.col-md-6,
+    .form-group.col-md-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        width: 100%;
+        padding: 0;      
+        margin-bottom: 20px;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: column; 
+        gap: 5px;
+        margin: 0;
+    }
+
+    .container-pasoUno,
+    .container-pasoDos {
+        width: 95% !important;
+        padding: 20px 15px !important;
+    }
+
+    .diagrama-proceso {
+        gap: 10px;
+    }
+    .flecha {
+        width: 20px;
+    }
+
+    .medico {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        text-align: center;
+        background: #fdfdfd;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .medico .info-medico-turnos {
+        width: 100%;
+        flex-direction: column; 
+        justify-content: center;
+    }
+
+    .medico .info-medico-turnos .foto-medico {
+        margin-right: 0;
+        margin-bottom: 10px;
+        width: 80px; 
+        height: 80px;
+    }
+
+    .medico .turnos-disponibles {
+        width: 100%;
+        margin-left: 0;
+        justify-content: center; 
+    }
+
+    .contenedor-detalle-formulario {
+        flex-direction: column;
+    }
+
+    .columna-izquierda {
+        margin-right: 0;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 20px;
+    }
+
+    .detalle-medico {
+        text-align: center;
+    }
+
+    .info-medico-turnos {
+        justify-content: center; 
+    }
+
+    /* --- BOTONES --- */
+    .boton-siguiente,
+    .boton-confirmar {
+        width: 100%; 
+    }
+
+    /* --- DIAGRAMA DE PASOS --- */
+    .diagrama-proceso {
+        gap: 1em;
+        margin-bottom: 30px;
+    }
+    
+    .paso span {
+        font-size: 14px; 
+        text-align: center;
+    }
+
+    .flecha {
+        width: 15px;
+    }
+
+}
+
+@media (max-width: 480px) {
+    
+    /* Títulos */
+    .container-pasoUno h1, 
+    .container-pasoDos h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Ajuste Botón Ayuda Flotante */
+    .boton-ayuda {
+        padding: 8px 12px;
+        bottom: 20px;
+        right: 10px;
+    }
+    
+    .boton-ayuda span {
+        display: none; 
+    }
+    
+    .boton-ayuda i {
+        margin-right: 0;
+        font-size: 24px;
+    }
+
+    .container-paso {
+        width: 100%; 
+        flex-direction: column;
+        height: auto;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .numero {
+        margin: 0 0 15px 0; 
+    }
+
+    .contenido {
+        width: 100%;
+        margin-left: 0;
+        height: auto;
+    }
 }

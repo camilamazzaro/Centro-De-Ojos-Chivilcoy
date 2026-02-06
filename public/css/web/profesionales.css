@@ -28,6 +28,7 @@
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .hero-texto .separador {
@@ -455,38 +456,91 @@
 }
 
 @media (max-width: 900px) {
+
+    /* --- HERO --- */
     .hero-profesionales {
         flex-direction: column;
-        padding: 40px 20px;
+        padding: 120px 20px 40px 20px;
         text-align: center;
+        margin-top: 0;
+        gap: 20px;
     }
 
     .hero-texto {
         padding-right: 0;
-        margin-bottom: 40px;
+    }
+
+    .hero-texto h1 {
+        font-size: 2.5rem;
     }
 
     .hero-texto .separador {
-        margin: 0 auto 20px auto;
+        margin: 20px auto;
+    }
+
+    .hero-texto p {
+        margin: 0 auto;
     }
 
     .hero-imagenes {
+        display: none;
+    }
+
+    /* --- LISTA DE MÉDICOS --- */
+    .container-medicos {
+        flex-direction: column; 
+        align-items: center;
+        gap: 40px;
+        margin-top: 40px;
+        margin-bottom: 25em;
         width: 100%;
-        height: 350px;
+        padding: 0 15px;
     }
 
-    .foto-principal {
-        width: 200px;
-        height: 280px;
-        right: 50%;
-        transform: translateX(50%); 
+    .tarjeta-medico-container {
+        width: 100%;
+        max-width: 350px; 
+        margin-bottom: 20px;
     }
 
-    .foto-secundaria {
-        width: 160px;
-        height: 160px;
-        left: 50%;
-        transform: translateX(-80%); 
-        bottom: 0;
+    .tarjeta-medico {
+        width: 100%; 
+        padding: 15px;
+    }
+
+    .tarjeta-medico .medico-foto {
+        height: 350px; 
+    }
+
+    .container-botones {
+        width: 100%;
+        flex-direction: row; 
+        gap: 10px;
+    }
+
+    .medico-contacto, 
+    .ver-mas {
+        width: 50%; 
+        font-size: 14px;
+        padding: 12px 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-texto h1 {
+        font-size: 2rem;
+    }
+
+    
+    .hero-texto h1 {
+        font-size: 2rem;
+    }
+
+    .tarjeta-medico .medico-foto {
+        height: 280px; 
+    }
+    
+    .medico-nombre {
+        font-size: 20px;
     }
 }

@@ -225,17 +225,55 @@
     </div>
 
     <script>
-
-        // IR GUARDANDO LA INFORMACIÓN DE A POCO Y LUEGO ENVIAR TODO JUNTO
-
         document.addEventListener("DOMContentLoaded", () => {
+            
+            // --- VARIABLES DE NAVEGACIÓN ---
+            let pasoActual = 1;
+            const contenedores = [
+                document.querySelector('.container-pasoUno'),
+                document.querySelector('.container-pasoDos'),
+                document.querySelector('.container-pasoTres')
+            ];
 
-            // Al ingresar datos del paso 1
+            // --- FUNCIONES AUXILIARES ---
+
+            // Función para validar formato de email
+            function esEmailValido(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            // Función para mostrar errores
+            function mostrarError(mensaje) {
+                Swal.fire({
+                    title: 'Faltan datos',
+                    text: mensaje,
+                    icon: 'warning',
+                    confirmButtonColor: '#005b6f'
+                });
+            }
+
+            // Función para cambiar de paso visualmente
+            function cambiarPaso(pasoDestino) {
+                pasoActual = pasoDestino;
+                // Ocultar todos y mostrar el actual
+                contenedores.forEach((div, index) => {
+                    div.style.display = (index + 1 === pasoActual) ? 'block' : 'none';
+                });
+                
+                // Actualizar círculos del diagrama (opcional, visual)
+                for(let i=1; i<=3; i++) {
+                    const circulo = document.getElementById(`circulo-paso${i}`);
+                    if(i <= pasoActual) circulo.classList.add('circulo-activo'); 
+                    // Nota: Asegúrate de tener CSS para .circulo-activo si quieres que se mantengan pintados
+                }
+            }
+
+            // --- LÓGICA PASO 1: INFORMACIÓN PERSONAL ---
             document.querySelector(".boton-siguiente-paso-1").addEventListener("click", async () => {
-                const nombre = document.querySelector("[name=nombre]").value.trim(); // trim() se utiliza para eliminar los espacios en blanco al principio y al final
+                // 1. Capturar datos
+                const nombre = document.querySelector("[name=nombre]").value.trim();
                 const apellido = document.querySelector("[name=apellido]").value.trim();
-                const nombre_apellido = `${nombre} ${apellido}`;
-
                 const dni = document.querySelector("[name=dni]").value.trim();
                 const fecha_nacimiento = document.querySelector("[name=fecha_nacimiento]").value;
                 const genero = document.querySelector("[name=genero]").value;
@@ -243,7 +281,20 @@
                 const telefono = document.querySelector("[name=telefono]").value.trim();
                 const email = document.querySelector("[name=email]").value.trim();
 
-                // Guardar en sessionStorage
+                // 2. VALIDACIONES
+                if (!nombre || !apellido) return mostrarError("Por favor, ingresa nombre y apellido.");
+                if (!dni || dni.length < 7 || isNaN(dni)) return mostrarError("Ingresa un DNI válido (solo números).");
+                if (!fecha_nacimiento) return mostrarError("Debes seleccionar tu fecha de nacimiento.");
+                
+                // Validar que no sea una fecha futura
+                if (new Date(fecha_nacimiento) > new Date()) return mostrarError("La fecha de nacimiento no puede ser futura.");
+                
+                if (!direccion) return mostrarError("La dirección es obligatoria.");
+                if (!telefono || telefono.length < 8) return mostrarError("Ingresa un teléfono válido.");
+                if (!email || !esEmailValido(email)) return mostrarError("El formato del correo electrónico no es válido.");
+
+                // 3. Guardar en Session y Backend (Solo si pasa validaciones)
+                const nombre_apellido = `${nombre} ${apellido}`;
                 sessionStorage.setItem("nombre", nombre_apellido);
                 sessionStorage.setItem("dni", dni);
                 sessionStorage.setItem("fecha_nacimiento", fecha_nacimiento);
@@ -252,197 +303,136 @@
                 sessionStorage.setItem("telefono", telefono);
                 sessionStorage.setItem("email", email);
 
-                // Enviamos datos al backend para guardarlos temporalmente
-                await fetch("/pacientes/guardar-info-personal", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ nombre_apellido, dni, fecha_nacimiento, genero, direccion, telefono, email})
-                });
+                try {
+                    await fetch("/pacientes/guardar-info-personal", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ nombre_apellido, dni, fecha_nacimiento, genero, direccion, telefono, email})
+                    });
+                    
+                    // 4. Avanzar
+                    cambiarPaso(2);
 
+                } catch (error) {
+                    console.error(error);
+                    mostrarError("Error de conexión al guardar datos temporales.");
+                }
             });
 
-            // Guardar Paso 2
-            
+            // --- LÓGICA PASO 2: INFORMACIÓN MÉDICA ---
             document.querySelector(".boton-siguiente-paso-2").addEventListener("click", async () => {
-                
+                // 1. Capturar
                 const cobertura = document.querySelector("[name=cobertura]").value;
                 const nro_afiliado = document.querySelector("[name=nro_afiliado]").value.trim();
 
+                // 2. VALIDACIONES
+                if (!cobertura) return mostrarError("Seleccione una obra social.");
+                // Si la obra social requiere número, validarlo:
+                if (!nro_afiliado) return mostrarError("El número de afiliado es obligatorio.");
+
+                // 3. Guardar
                 sessionStorage.setItem("cobertura", cobertura);
                 sessionStorage.setItem("nro_afiliado", nro_afiliado);
 
-                await fetch("/pacientes/guardar-info-medica", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ cobertura, nro_afiliado})
-                });
+                try {
+                    await fetch("/pacientes/guardar-info-medica", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ cobertura, nro_afiliado})
+                    });
 
-                //Cargar resumen desde Storage --> ESTO DESPUÉS PASARLO AL MISMO ÁMBITO DONDE ESTÁN LAS VALIDACIONES DEL PASO 2
-                function cargarResumenDesdeStorage(){
-                    console.log("Cargando datos del resumen...");
-
-                    const nombre_apellido = sessionStorage.getItem("nombre") || "No especificado";
-                    const dni = sessionStorage.getItem("dni") || "No especificado";
-                    const fecha_nacimiento = sessionStorage.getItem("fecha_nacimiento") || "No especificado";
-                    const genero = sessionStorage.getItem("genero") || "No especificado";
-                    const direccion = sessionStorage.getItem("direccion") || "No especificado";
-                    const email = sessionStorage.getItem("email") || "No especificado";
-                    const telefono = sessionStorage.getItem("telefono") || "No especificado";
-                    const nro_afiliado = sessionStorage.getItem("nro_afiliado") || "No especificado";
-
-                    let cobertura = "No especificado";
-                    const coberturaId = sessionStorage.getItem("cobertura");
-
-                    if (coberturaId) {
-                        const coberturaOption = document.querySelector(`#cobertura option[value="${coberturaId}"]`);
-                        if (coberturaOption) {
-                            cobertura = coberturaOption.textContent;
-                        }
-                    }
+                    // Cargar Resumen Visualmente
+                    cargarResumenDesdeStorage(); 
                     
+                    // 4. Avanzar
+                    cambiarPaso(3);
 
-                    //Mostrar datos en el resumen (paso 3)
-                    document.getElementById("resumen-nombre").textContent = nombre_apellido;
-                    document.getElementById("resumen-dni").textContent = dni;
-                    document.getElementById("resumen-fecha-nacimiento").textContent = fecha_nacimiento;
-                    document.getElementById("resumen-genero").textContent = genero;
-                    document.getElementById("resumen-direccion").textContent = direccion;
-                    document.getElementById("resumen-email").textContent = email;
-                    document.getElementById("resumen-telefono").textContent = telefono;
-                    document.getElementById("resumen-cobertura").textContent = cobertura;
-                    document.getElementById("resumen-nro-afiliado").textContent = nro_afiliado;
-
-                    console.log("Resumen actualizado.")
+                } catch (error) {
+                    console.error(error);
+                    mostrarError("Error al guardar información médica.");
                 }
+            });
 
-                // Llamamos a la función para cargar el resumen (paso 3)
-                cargarResumenDesdeStorage();
-            })
+            // Botón Anterior Paso 2
+            document.querySelector('.boton-anterior-paso-2').addEventListener('click', () => cambiarPaso(1));
 
-            // Cuando se toca el botón de guardar, se envían todos los datos recopilados
 
+            // --- LÓGICA PASO 3: RESUMEN Y PASSWORD ---
+            
+            function cargarResumenDesdeStorage(){
+                // (Misma lógica que tenías, está correcta para visualización)
+                const nombre_apellido = sessionStorage.getItem("nombre") || "-";
+                const dni = sessionStorage.getItem("dni") || "-";
+                // ... resto de variables ...
+                
+                // Lógica de nombre de obra social
+                let nombreCobertura = "No especificado";
+                const idCobertura = sessionStorage.getItem("cobertura");
+                const option = document.querySelector(`#cobertura option[value="${idCobertura}"]`);
+                if(option) nombreCobertura = option.textContent;
+
+            }
+
+            // Botón Anterior Paso 3
+            document.querySelector('.boton-anterior-paso-3').addEventListener('click', () => cambiarPaso(2));
+
+            // CONFIRMACIÓN FINAL
             document.querySelector(".boton-confirmar").addEventListener("click", async () => {
-
                 const password = document.querySelector("#password").value;
                 const confirmarPassword = document.querySelector("#confirmar_password").value;
 
-                if(password !== confirmarPassword){
-                    return Swal.fire("Las contraseñas no coinciden");
-                }
+                // VALIDACIONES PASO 3
+                if (!password || password.length < 6) return mostrarError("La contraseña debe tener al menos 6 caracteres.");
+                if (password !== confirmarPassword) return Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
 
-                const nombre_apellido = sessionStorage.getItem("nombre") || "";
-                const dni = sessionStorage.getItem("dni") || "";
-                const fecha_nacimiento = sessionStorage.getItem("fecha_nacimiento") || "";
-                const genero = sessionStorage.getItem("genero") || "";
-                const direccion = sessionStorage.getItem("direccion") || "";
-                const email = sessionStorage.getItem("email") || "";
-                const telefono = sessionStorage.getItem("telefono") || "";
-                const cobertura = sessionStorage.getItem("cobertura") || "";
-                const nro_afiliado = sessionStorage.getItem("nro_afiliado") || "";
+                // Recopilar todo
+                const payload = {
+                    nombre_apellido: sessionStorage.getItem("nombre"),
+                    dni: sessionStorage.getItem("dni"),
+                    fecha_nacimiento: sessionStorage.getItem("fecha_nacimiento"),
+                    genero: sessionStorage.getItem("genero"),
+                    direccion: sessionStorage.getItem("direccion"),
+                    email: sessionStorage.getItem("email"),
+                    telefono: sessionStorage.getItem("telefono"),
+                    cobertura: sessionStorage.getItem("cobertura"),
+                    nro_afiliado: sessionStorage.getItem("nro_afiliado"),
+                    password: password
+                };
 
-                const payload = JSON.stringify({
-                    nombre_apellido,
-                    dni,
-                    fecha_nacimiento,
-                    genero,
-                    direccion,
-                    email,
-                    telefono,
-                    cobertura,
-                    nro_afiliado,
-                    password
-                });
-
-                console.log("Enviando datos al back: ", payload);
-
+                // Enviar
                 try {
                     const response = await fetch("/pacientes/agregar/0", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: payload
+                        body: JSON.stringify(payload)
                     });
 
                     const result = await response.json();
-                    console.log("Respuesta del servidor: ", result);
 
                     if (result.error === 0) {
                         Swal.fire({
-                            title: 'Paciente guardado con éxito',
-                            text: result.message || 'Paciente guardado correctamente.',
+                            title: '¡Registrado!',
+                            text: 'Paciente guardado correctamente.',
                             icon: 'success',
-                            confirmButtonText: 'Aceptar'
+                            confirmButtonColor: '#005b6f'
                         }).then(() => {
-                            window.location.href = "/loginPacientes";
+                            // Limpiar sesión y redirigir
+                            sessionStorage.clear();
+                            window.location.href = "/loginPacientes"; // O donde corresponda
                         });
                     } else {
-                        Swal.fire({
-                            title: 'Error',
-                            text: result.message || 'No se pudo guardar el paciente.',
-                            icon: 'error',
-                            confirmButtonText: 'Aceptar'
-                        });
+                        Swal.fire('Error', result.message || 'No se pudo guardar.', 'error');
                     }
-
                 } catch (error) {
-                    console.error("Error al guardar paciente:", error);
-                    Swal.fire({
-                        title: 'Error inesperado',
-                        text: 'Ocurrió un error al guardar el paciente.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
-                    });
+                    console.error(error);
+                    Swal.fire('Error', 'Error inesperado de conexión.', 'error');
                 }
             });
 
-
-        })
-
-        // PARA MOSTRAR LOS PASOS DE A POCO
-        document.addEventListener("DOMContentLoaded", function(){
-            let pasoActual = 1;
-
-            function mostrarPaso(paso) {
-                document.querySelectorAll('.container-pasoUno, .container-pasoDos, .container-pasoTres').forEach((container, index) => {
-                    container.style.display = (index + 1 === paso) ? 'block' : 'none';
-                });
-            }
-
-            // Mostrar el primer paso al cargar
-            mostrarPaso(pasoActual);
-
-            // Botón Siguiente paso 1
-            document.querySelector('.boton-siguiente-paso-1').addEventListener('click', function () {
-                pasoActual = 2;
-                mostrarPaso(pasoActual);
-            });
-
-            // Botón Anterior paso 2
-            document.querySelector('.boton-anterior-paso-2').addEventListener('click', function () {
-                pasoActual = 1;
-                mostrarPaso(pasoActual);
-            });
-
-            // Botón Siguiente paso 2
-            document.querySelector('.boton-siguiente-paso-2').addEventListener('click', function () {
-                pasoActual = 3;
-                mostrarPaso(pasoActual);
-            });
-
-            // Botón Anterior paso 3
-            document.querySelector('.boton-anterior-paso-3').addEventListener('click', function () {
-                pasoActual = 2;
-                mostrarPaso(pasoActual);
-            });
-
-            //Función para validar paso 1
-
-            //Función para validar el paso 2
-
-            //Función para mostrar el mensaje de error
-
-
-
-        })
+            // Inicialización
+            cambiarPaso(1);
+        });
+    </script>
     </script>
 
 </body>

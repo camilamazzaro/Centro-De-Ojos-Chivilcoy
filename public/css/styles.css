@@ -302,20 +302,24 @@ select{
     margin-right: -15px; 
     margin-left: -15px;
     margin-bottom: 1rem;
-    /* ELIMINADO: gap: 4em; -> Esto era lo que rompía el ancho de la fila */
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.col-md-12, .col-md-6, .col-md-4, .col-md-3 {
+    padding-right: 15px; 
+    padding-left: 15px;
 }
 
 .col-md-12{
     flex: 0 100%;
     max-width: 100%;
     width: 100%;
-    padding: 0 ;
 }
 
 .col-md-6 {
     flex: 0 50%;
     max-width: 50%;
-    padding: 0;
 }
 
 .col-md-4 {
@@ -328,7 +332,6 @@ select{
 .col-md-3 {
     flex: 0 0 25%;
     max-width: 25%;
-    padding: 0 ;
 }
 
 .form-control, 
